@@ -12,7 +12,7 @@
         android:layout_height="80dp">
 
         <ImageView
-            android:id="@+id/museum_img"
+            android:id="@+id/museum_logo"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:contentDescription="Picture"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
-            app:layout_constraintStart_toEndOf="@id/museum_img"
+            app:layout_constraintStart_toEndOf="@id/museum_logo"
             app:layout_constraintTop_toTopOf="@id/CL"
             android:layout_margin="@dimen/normalize_margin"
             tools:hint="Museum Name"/>
@@ -39,7 +39,7 @@
             android:layout_margin="@dimen/normalize_margin"
             android:padding="@dimen/mSmall"
             android:background="@drawable/bg_catalog"
-            app:layout_constraintStart_toEndOf="@id/museum_img"
+            app:layout_constraintStart_toEndOf="@id/museum_logo"
             app:layout_constraintTop_toBottomOf="@id/museum_name"
             app:layout_constraintBottom_toBottomOf="@id/CL"
             tools:hint="Catalog"/>

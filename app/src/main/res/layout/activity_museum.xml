@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".MuseumActivity">
 
     <android.support.design.widget.CoordinatorLayout
@@ -25,7 +26,8 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:contentInsetStart="0dp"
-                app:layout_scrollFlags="scroll|enterAlways"/>
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView
