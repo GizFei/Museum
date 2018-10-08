@@ -13,6 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.giz.utils.Museum;
+import com.giz.utils.MuseumLib;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MuseumActivity extends AppCompatActivity {
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -42,29 +48,46 @@ public class MuseumActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.list_museum);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(new MuseumAdapter());
+        rv.setAdapter(new MuseumAdapter(MuseumLib.get(this).getMuseumList()));
     }
 
     private class MuseumHolder extends RecyclerView.ViewHolder{
 
         private TextView mMuseumName;
-        private TextView mMuseumCatalog;
+        private List<TextView> mMuseumCatalogs;
         private ImageView mMuseumLogo;
 
         private MuseumHolder(@NonNull View itemView) {
             super(itemView);
             mMuseumName = itemView.findViewById(R.id.museum_name);
-            mMuseumCatalog = itemView.findViewById(R.id.museum_catalog);
+            mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog1));
+            mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog2));
+            mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog3));
             mMuseumLogo = itemView.findViewById(R.id.museum_logo);
         }
 
-        private void bind(String name, String catalog){
-            mMuseumName.setText(name);
-            mMuseumCatalog.setText(catalog);
+        private void bind(Museum museum){
+            mMuseumName.setText(museum.getName());
+            int catalogs = museum.getCatalog().size();
+            for(int i = 0; i < mMuseumCatalogs.size(); i++){
+                if(i < catalogs){
+                    mMuseumCatalogs.get(i).setText(museum.getCatalog().get(i));
+                }else{
+                    mMuseumCatalogs.get(i).setVisibility(View.GONE);
+                }
+            }
+            mMuseumLogo.setImageResource(museum.getLogo());
         }
     }
 
     private class MuseumAdapter extends RecyclerView.Adapter<MuseumHolder>{
+
+        private List<Museum> mMuseums;
+
+        private MuseumAdapter(List<Museum> list){
+            mMuseums = list;
+        }
+
         @NonNull
         @Override
         public MuseumHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -75,12 +98,12 @@ public class MuseumActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MuseumHolder museumHolder, int i) {
-            museumHolder.bind("Museum"+i, "Museum");
+            museumHolder.bind(mMuseums.get(i));
         }
 
         @Override
         public int getItemCount() {
-            return 10;
+            return mMuseums.size();
         }
     }
 
