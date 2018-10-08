@@ -1,0 +1,10 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="mLarge">16dp</dimen>
+    <dimen name="pLarge">16dp</dimen>
+    <dimen name="mSmall">4dp</dimen>
+    <dimen name="pSmall">4dp</dimen>
+    <dimen name="normalize_margin">8dp</dimen>
+    <dimen name="normalize_padding">8dp</dimen>
+
+</resources>

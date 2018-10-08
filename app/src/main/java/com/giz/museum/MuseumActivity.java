@@ -1,0 +1,84 @@
+package com.giz.museum;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+public class MuseumActivity extends AppCompatActivity {
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    return true;
+                case R.id.navigation_dashboard:
+                    return true;
+                case R.id.navigation_notifications:
+                    return true;
+            }
+            return false;
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_museum);
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        RecyclerView rv = findViewById(R.id.list_museum);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(new MuseumAdapter());
+    }
+
+    private class MuseumHolder extends RecyclerView.ViewHolder{
+
+        private TextView mMuseumName;
+        private TextView mMuseumCatalog;
+
+        private MuseumHolder(@NonNull View itemView) {
+            super(itemView);
+            mMuseumName = itemView.findViewById(R.id.museum_name);
+            mMuseumCatalog = itemView.findViewById(R.id.museum_catalog);
+        }
+
+        private void bind(String name, String catalog){
+            mMuseumName.setText(name);
+            mMuseumCatalog.setText(catalog);
+        }
+    }
+
+    private class MuseumAdapter extends RecyclerView.Adapter<MuseumHolder>{
+        @NonNull
+        @Override
+        public MuseumHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            LayoutInflater inflater = LayoutInflater.from(MuseumActivity.this);
+            return new MuseumHolder(inflater.inflate(R.layout.list_museum_item, viewGroup,
+                    false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MuseumHolder museumHolder, int i) {
+            museumHolder.bind("Museum"+i, "Museum");
+        }
+
+        @Override
+        public int getItemCount() {
+            return 10;
+        }
+    }
+
+}
