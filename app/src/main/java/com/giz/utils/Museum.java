@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class Museum {
+    /**
+     * 博物馆类，拥有博物馆的所有信息
+     */
 
     private UUID mMuseumId;       // 博物馆ID（唯一，用来传递信息）
     private String mName;     // 博物馆名称

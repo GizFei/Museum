@@ -40,6 +40,12 @@ public class MuseumPicturePagerAdapter extends PagerAdapter {
         return mPictures.length;
     }
 
+    /**
+     * 必须重写该函数，否则无法正常显示内容
+     * @param container
+     * @param position
+     * @param object
+     */
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((ImageView)object);

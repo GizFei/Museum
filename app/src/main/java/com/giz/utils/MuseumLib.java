@@ -11,11 +11,16 @@ import java.util.UUID;
 
 public class MuseumLib {
     /**
-     * Museum Library 博物馆单例
+     * Museum Library 博物馆单例，在程序运行期间存在
      */
     private static MuseumLib sMuseumLib;
     private List<Museum> mMuseumList;
 
+    /**
+     * 单例的静态构造函数
+     * @param context 上下文
+     * @return MuseumLib实例
+     */
     public static MuseumLib get(Context context){
         if(sMuseumLib == null){
             sMuseumLib = new MuseumLib(context);
@@ -23,11 +28,18 @@ public class MuseumLib {
         return sMuseumLib;
     }
 
-    private MuseumLib(Context  context){
+    /**
+     * 内部私有构造函数（实际的构造函数）
+     * @param context 上下文
+     */
+    private MuseumLib(Context context){
         mMuseumList = new ArrayList<>();
         initMuseumList();
     }
 
+    /**
+     * 初始化博物馆列表
+     */
     private void initMuseumList(){
         Museum museum = new Museum();
         museum.setName("浙江省博物馆");
@@ -58,10 +70,19 @@ public class MuseumLib {
         mMuseumList.add(museum3);
     }
 
+    /**
+     * 外部获取博物馆列表接口
+     * @return 博物馆列表
+     */
     public List<Museum> getMuseumList(){
         return mMuseumList;
     }
 
+    /**
+     * 根据ID查询博物馆
+     * @param museumId 博物馆ID
+     * @return 博物馆对象
+     */
     public Museum getMuseumById(UUID museumId){
         for(Museum museum: mMuseumList){
             if(museum.getMuseumId().equals(museumId)){

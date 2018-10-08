@@ -10,6 +10,10 @@ import java.io.InputStream;
 
 public class PictureManager {
 
+    /**
+     * 图片资源管理类，用于获取assets文件夹中的资源
+     */
+
     private AssetManager mAssetManager;
     private String mFolderName;
 
