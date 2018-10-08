@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Museum</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+
+    <string name="title_info">信息</string>
+    <string name="title_nav">导览</string>
+    <string name="title_pano">全景</string>
+    <string name="search_museum">搜索博物馆</string>
 </resources>

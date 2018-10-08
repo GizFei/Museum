@@ -1,110 +1,84 @@
 package com.giz.museum;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.giz.utils.Museum;
 import com.giz.utils.MuseumLib;
+import com.giz.utils.MuseumPicturePagerAdapter;
+import com.giz.utils.PictureManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 public class MuseumActivity extends AppCompatActivity {
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private static final String EXTRA_MUSEUM = "museum_intent";
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    return true;
-                case R.id.navigation_dashboard:
-                    return true;
-                case R.id.navigation_notifications:
-                    return true;
-            }
-            return false;
-        }
-    };
+    private Museum mMuseum;
+    private LinearLayout mDotsLinearLayout;
+
+    public static Intent newIntent(Context context, UUID museumId){
+        Intent intent = new Intent(context, MuseumActivity.class);
+        intent.putExtra(EXTRA_MUSEUM, museumId);
+        return intent;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_museum);
+        setContentView(R.layout.details_museum);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        UUID museumId = (UUID)getIntent().getSerializableExtra(EXTRA_MUSEUM);
+        mMuseum = MuseumLib.get(this).getMuseumById(museumId);
 
-        RecyclerView rv = findViewById(R.id.list_museum);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(new MuseumAdapter(MuseumLib.get(this).getMuseumList()));
+        initViews();
     }
 
-    private class MuseumHolder extends RecyclerView.ViewHolder{
+    private void initViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(mMuseum.getName());
 
-        private TextView mMuseumName;
-        private List<TextView> mMuseumCatalogs;
-        private ImageView mMuseumLogo;
+        ViewPager pictures = findViewById(R.id.picture_vp);
+        final MuseumPicturePagerAdapter adapter = new MuseumPicturePagerAdapter(this,
+                mMuseum.getPicFolder());
+        pictures.setAdapter(adapter);
 
-        private MuseumHolder(@NonNull View itemView) {
-            super(itemView);
-            mMuseumName = itemView.findViewById(R.id.museum_name);
-            mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog1));
-            mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog2));
-            mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog3));
-            mMuseumLogo = itemView.findViewById(R.id.museum_logo);
+        mDotsLinearLayout = findViewById(R.id.dots_ll);
+        for(int i = adapter.getCount(); i < 5; i++){
+            mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
         }
 
-        private void bind(Museum museum){
-            mMuseumName.setText(museum.getName());
-            int catalogs = museum.getCatalog().size();
-            for(int i = 0; i < mMuseumCatalogs.size(); i++){
-                if(i < catalogs){
-                    mMuseumCatalogs.get(i).setText(museum.getCatalog().get(i));
-                }else{
-                    mMuseumCatalogs.get(i).setVisibility(View.GONE);
+        pictures.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                for(int k = 0; k < adapter.getCount(); k++){
+                    if(k == i){
+                        mDotsLinearLayout.getChildAt(k).
+                                setBackgroundResource(R.drawable.icon_dot_active);
+                    }else{
+                        mDotsLinearLayout.getChildAt(k).setBackgroundResource(R.drawable.icon_dot);
+                    }
                 }
             }
-            mMuseumLogo.setImageResource(museum.getLogo());
-        }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
-
-    private class MuseumAdapter extends RecyclerView.Adapter<MuseumHolder>{
-
-        private List<Museum> mMuseums;
-
-        private MuseumAdapter(List<Museum> list){
-            mMuseums = list;
-        }
-
-        @NonNull
-        @Override
-        public MuseumHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            LayoutInflater inflater = LayoutInflater.from(MuseumActivity.this);
-            return new MuseumHolder(inflater.inflate(R.layout.list_museum_item, viewGroup,
-                    false));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MuseumHolder museumHolder, int i) {
-            museumHolder.bind(mMuseums.get(i));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mMuseums.size();
-        }
-    }
-
 }
