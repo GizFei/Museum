@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:layout_marginStart="@dimen/normalize_margin"
+    android:layout_marginEnd="@dimen/normalize_margin"
+    android:layout_marginTop="@dimen/mSmall"
+    android:layout_marginBottom="@dimen/mSmall"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/CL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/museum_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="Picture"
+            android:src="@drawable/icon_map"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/mask"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="#66000000"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/museum_logo">
+
+            <TextView
+                android:id="@+id/museum_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:padding="@dimen/normalize_padding"
+                android:layout_marginStart="@dimen/mSmall"
+                tools:hint="Museum Name"
+                tools:textColorHint="@color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/museum_catalog1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/normalize_margin"
+                    android:layout_marginEnd="@dimen/mSmall"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:padding="@dimen/mSmall"
+                    android:background="@drawable/bg_catalog_grid"
+                    tools:textColorHint="@color/white"
+                    tools:hint="Catalog"/>
+
+                <TextView
+                    android:id="@+id/museum_catalog2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:padding="@dimen/mSmall"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="@dimen/mSmall"
+                    android:layout_marginEnd="@dimen/mSmall"
+                    android:background="@drawable/bg_catalog_grid"
+                    tools:textColorHint="@color/white"
+                    tools:hint="Catalog"/>
+
+                <TextView
+                    android:id="@+id/museum_catalog3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:padding="@dimen/mSmall"
+                    android:layout_marginStart="@dimen/mSmall"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_catalog_grid"
+                    tools:hint="Catalog"
+                    tools:textColorHint="@color/white"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>
+

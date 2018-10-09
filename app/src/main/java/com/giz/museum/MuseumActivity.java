@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -40,6 +41,8 @@ public class MuseumActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_museum);
+
+        getWindow().setEnterTransition(new android.transition.Slide());
 
         UUID museumId = (UUID)getIntent().getSerializableExtra(EXTRA_MUSEUM);
         mMuseum = MuseumLib.get(this).getMuseumById(museumId);

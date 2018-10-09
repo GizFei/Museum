@@ -1,0 +1,45 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="36dp"
+            android:height="36dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <group
+                android:name="group"
+                android:pivotX="12"
+                android:pivotY="12">
+                <path
+                    android:name="path"
+                    android:pathData="M4,14h4v-4L4,10v4zM4,19h4v-4L4,15v4zM4,9h4L8,5L4,5v4zM9,14h12v-4L9,10v4zM9,19h12v-4L9,15v4zM9,5v4h12L21,5L9,5z"
+                    android:fillColor="#000000"
+                    android:strokeColor="#000000"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="group">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="rotation"
+                android:duration="500"
+                android:valueFrom="0"
+                android:valueTo="90"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="path">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="500"
+                android:valueFrom="M 4 10 L 8 10 L 8 14 L 4 14 L 4 14 L 4 10 M 8 19 L 4 19 L 4 19 L 4 15 L 8 15 L 8 17 L 8 19 M 4 9 L 4 5 L 8 5 L 8 9 L 4 9 L 4 9 M 9 10 L 21 10 L 21 14 L 9 14 L 9 14 L 9 10 M 9 15 L 21 15 L 21 19 L 9 19 L 9 19 L 9 15 M 9 5 L 9 9 L 21 9 L 21 5 L 9 5 Z M 12 6 L 12 6 L 12 6 L 12 6 L 12 6 L 12 6 M 18 12 L 18 12 L 18 12 L 18 12 L 18 12 L 18 12 M 18 18 L 18 18 L 18 18 L 18 18 L 18 18 L 18 18"
+                android:valueTo="M 4 8 L 8 8 L 8 4 L 4 4 L 4 8 L 4 8 M 10 20 L 12 20 L 14 20 L 14 16 L 10 16 L 10 20 L 10 20 M 4 20 L 8 20 L 8 16 L 4 16 L 4 20 L 4 20 M 4 14 L 8 14 L 8 10 L 4 10 L 4 14 L 4 14 M 10 14 L 14 14 L 14 10 L 10 10 L 10 14 L 10 14 M 16 4 L 16 8 L 20 8 L 20 4 L 16 4 Z M 10 8 L 14 8 L 14 4 L 10 4 L 10 8 L 10 8 M 16 14 L 20 14 L 20 10 L 16 10 L 16 14 L 16 14 M 16 20 L 20 20 L 20 16 L 16 16 L 16 20 L 16 20"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

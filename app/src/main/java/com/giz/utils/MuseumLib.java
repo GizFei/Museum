@@ -68,6 +68,11 @@ public class MuseumLib {
         mMuseumList.add(museum);
         mMuseumList.add(museum2);
         mMuseumList.add(museum3);
+        mMuseumList.add(museum1);
+        mMuseumList.add(museum1);
+        mMuseumList.add(museum1);
+        mMuseumList.add(museum1);
+
     }
 
     /**

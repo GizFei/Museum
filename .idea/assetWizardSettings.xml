@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_insert_photo_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_apps_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,9 +28,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="icon_pano" />
+                            <entry key="color" value="404040" />
+                            <entry key="height" value="36" />
+                            <entry key="outputName" value="icon_grid" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\DELL" />
+                            <entry key="width" value="36" />
                           </map>
                         </option>
                       </PersistentState>
