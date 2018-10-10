@@ -1,32 +1,48 @@
 package com.giz.museum;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.animation.Animation;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.ScaleAnimation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.giz.utils.CoverFlowEffectTransformer;
+import com.giz.utils.CoverFlowPagerAdapter;
+import com.giz.utils.FastBlur;
 import com.giz.utils.Museum;
 import com.giz.utils.MuseumLib;
+import com.giz.utils.PictureManager;
+import com.giz.utils.SliderTouchHelperCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,36 +54,37 @@ public class MuseumListActivity extends AppCompatActivity {
     private boolean isListStyle = true;
     private MuseumAdapter mMuseumAdapter;
     private RecyclerView mMuseumRecyclerView;
+    private ViewPager mMuseumViewPager;
     private ImageView mSwitchIcon;
+    private View mPagerBg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_museum);
 
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setExitTransition(new Explode());
-        getWindow().setReenterTransition(new Explode());
-
+        // 初始化列表
         mMuseumRecyclerView = findViewById(R.id.list_museum);
         mMuseumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMuseumAdapter = new MuseumAdapter(MuseumLib.get(this).getMuseumList());
-//        mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
-//                R.anim.layout_anim_from_bottom));
         mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SliderTouchHelperCallback());
+        itemTouchHelper.attachToRecyclerView(mMuseumRecyclerView);
 
-        final FloatingActionButton fab = findViewById(R.id.map_fab);
+        // 初始化悬浮按钮
+        FloatingActionButton fab = findViewById(R.id.map_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityOptionsCompat compat = ActivityOptionsCompat.makeScaleUpAnimation(fab,
-                        fab.getWidth()/2, fab.getHeight()/2, 0, 0);
+                ActivityOptionsCompat compat = ActivityOptionsCompat.makeScaleUpAnimation(v,
+                        v.getWidth()/2, v.getHeight()/2, 0, 0);
                 ActivityCompat.startActivity(MuseumListActivity.this,
                         new Intent(MuseumListActivity.this, MuseumMapActivity.class),
                         compat.toBundle());
             }
         });
 
+        // 初始化列表样式转换按钮
         mSwitchIcon = findViewById(R.id.list_style);
         mSwitchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +92,113 @@ public class MuseumListActivity extends AppCompatActivity {
                 switchRecyclerView();
             }
         });
+
+        // 初始化搜索框事件
+        SearchView mSearchView = findViewById(R.id.search_view);
+        View underline = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        if(underline != null){
+            underline.setBackgroundColor(Color.TRANSPARENT);
+        }
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mMuseumAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).queryMuseumsByWord(newText));
+                mMuseumAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
+        mMuseumViewPager = findViewById(R.id.pager_museum);
+        mPagerBg = findViewById(R.id.pager_bg);
+        initViewPager();
+    }
+
+    private void initViewPager(){
+        mMuseumViewPager.setClipChildren(false);
+        mMuseumViewPager.setOffscreenPageLimit(3);
+        mMuseumViewPager.setPageTransformer(false, new CoverFlowEffectTransformer(this));
+
+        CoverFlowPagerAdapter adapter = new CoverFlowPagerAdapter(this,
+                MuseumLib.get(this).getMuseumList(), this);
+        mMuseumViewPager.setAdapter(adapter);
+
+        mMuseumViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            /**
+             * state
+             * SCROLL_STATE_DRAGGING 1 手指按下
+             * SCROLL_STATE_SETTLING 2 手指松开
+             * SCROLL_STATE_IDLE 0 停止滑动
+             */
+            int currentPage = 0;
+            int state;
+            boolean pageChanged = false;
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+//                Log.d("onPageScrolled", String.format("%d %f", i, v));
+                if(state == 1){ // 手指滑动
+                    if(i < currentPage)
+                        mPagerBg.setAlpha(v);
+                    else
+                        mPagerBg.setAlpha(1 - v);
+                }else if(state == 2){ // 布局自己滑动（补足偏差）
+                    if(!pageChanged){
+                        if(i == currentPage){
+                            mPagerBg.setAlpha(1 - v);
+                        }else{
+                            if(v != 0f)
+                                mPagerBg.setAlpha(v);
+                        }
+                    }else{
+                        if(i == currentPage){
+                            mPagerBg.setAlpha(v);
+                        }else{
+                            mPagerBg.setAlpha(1 - v);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onPageSelected(int i){
+                pageChanged = true;
+//                Log.d("onPageSelected", String.valueOf(i));
+                currentPage = i;
+                setMuseumViewPagerBg(currentPage);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+                state = i;
+                if(i == ViewPager.SCROLL_STATE_IDLE){
+                    if(pageChanged){
+                        ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
+                                0f, 1.0f);
+                        animator.setDuration(300);
+                        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                        animator.start();
+                        pageChanged = false;
+                    }else{
+                        mPagerBg.setAlpha(1);
+                    }
+
+                }
+//                Log.d("onPageScrollState", String.valueOf(i));
+            }
+        });
+    }
+
+    void setMuseumViewPagerBg(int i){
+        Museum museum = MuseumLib.get(MuseumListActivity.this).getMuseumList().get(i);
+        Drawable drawable = new PictureManager(MuseumListActivity.this,
+                museum.getPicFolder()).getFirstDrawable();
+        Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 20, false);
+        mPagerBg.setBackground(new BitmapDrawable(blurBg));
+
     }
 
     /**
@@ -87,18 +211,44 @@ public class MuseumListActivity extends AppCompatActivity {
             mSwitchIcon.setImageDrawable(listToGridAnim);
             ((Animatable)mSwitchIcon.getDrawable()).start();
             isListStyle = false;
-            mMuseumAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).getMuseumList());
-            mMuseumRecyclerView.setAdapter(mMuseumAdapter);
-            mMuseumRecyclerView.startAnimation(mMuseumRecyclerView.getLayoutAnimation().getAnimation());
+
+            mMuseumRecyclerView.setVisibility(View.GONE);
+            mMuseumViewPager.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
+                    R.anim.layout_anim_from_bottom));
+            mMuseumViewPager.setVisibility(View.VISIBLE);
+            mPagerBg.setVisibility(View.VISIBLE);
+            mMuseumViewPager.setCurrentItem(0, true);
+            setMuseumViewPagerBg(0);
+
+//            LinearLayoutManager llm = new LinearLayoutManager(this);
+//            llm.setOrientation(LinearLayoutManager.HORIZONTAL);
+//            mMuseumRecyclerView.setLayoutManager(llm);
+//            LinearSnapHelper linearSnapHelper= new LinearSnapHelper();
+//            new LinearSnapHelper().attachToRecyclerView(mMuseumRecyclerView);
+//            mMuseumAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).getMuseumList());
+//            mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
+//                    R.anim.layout_anim_from_bottom));
+//            mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+//            mMuseumRecyclerView.startLayoutAnimation();
         }else{
             AnimatedVectorDrawableCompat gridToListAnim = AnimatedVectorDrawableCompat.create(this,
                     R.drawable.av_grid_to_list);
             mSwitchIcon.setImageDrawable(gridToListAnim);
             ((Animatable)mSwitchIcon.getDrawable()).start();
             isListStyle = true;
+
+            mMuseumRecyclerView.setVisibility(View.VISIBLE);
+            mMuseumViewPager.setVisibility(View.GONE);
+            mPagerBg.setVisibility(View.GONE);
+
+//            LinearLayoutManager llm = new LinearLayoutManager(this);
+//            llm.setOrientation(LinearLayoutManager.VERTICAL);
+//            mMuseumRecyclerView.setLayoutManager(llm);
             mMuseumAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).getMuseumList());
+            mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
+                    R.anim.layout_anim_from_bottom));
             mMuseumRecyclerView.setAdapter(mMuseumAdapter);
-            mMuseumRecyclerView.startAnimation(mMuseumRecyclerView.getLayoutAnimation().getAnimation());
+            mMuseumRecyclerView.startLayoutAnimation();
         }
     }
 
@@ -139,7 +289,15 @@ public class MuseumListActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = MuseumActivity.newIntent(MuseumListActivity.this,
                     mMuseum.getMuseumId());
-            startActivity(intent);
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
+                        MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
+            ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
+//            }else{
+//                ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                        MuseumListActivity.this, itemView.findViewById(R.id.museum_logo),
+//                        getResources().getString(R.string.image_trans));
+//                ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
+//            }
         }
     }
 
@@ -155,13 +313,8 @@ public class MuseumListActivity extends AppCompatActivity {
         @Override
         public MuseumHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             LayoutInflater inflater = LayoutInflater.from(MuseumListActivity.this);
-            if(isListStyle){
-                return new MuseumHolder(inflater.inflate(R.layout.list_museum_item, viewGroup,
+            return new MuseumHolder(inflater.inflate(R.layout.list_museum_item, viewGroup,
                         false));
-            }else{
-                return new MuseumHolder(inflater.inflate(R.layout.list_museum_item_grid, viewGroup,
-                        false));
-            }
         }
 
         @Override

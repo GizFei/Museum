@@ -5,6 +5,8 @@
     <string name="title_nav">导览</string>
     <string name="title_pano">全景</string>
     <string name="search_museum">搜索博物馆</string>
+    <string name="image_description">An Image</string>
+    <string name="image_trans">transitionImg</string>
 
     <string name="long_text">"Carousel buffet serves global gastronomy that appeals to all
         diners. From Mediterranean, Asian, Japanese fare, a lavish seafood spread, an impress

@@ -1,95 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="400dp"
-    android:layout_marginStart="@dimen/normalize_margin"
-    android:layout_marginEnd="@dimen/normalize_margin"
-    android:layout_marginTop="@dimen/mSmall"
-    android:layout_marginBottom="@dimen/mSmall"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent"
+    android:padding="@dimen/normalize_padding" >
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/CL"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/mSmall"
+        android:background="@color/transparent"
+        android:backgroundTint="@color/transparent"
+        app:cardElevation="@dimen/pSmall"
+        app:cardCornerRadius="@dimen/normalize_padding">
 
-        <ImageView
-            android:id="@+id/museum_logo"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/CL"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:contentDescription="Picture"
-            android:src="@drawable/icon_map"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/mask"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="#66000000"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@id/museum_logo">
-
-            <TextView
-                android:id="@+id/museum_name"
+            <ImageView
+                android:id="@+id/museum_logo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:padding="@dimen/normalize_padding"
-                android:layout_marginStart="@dimen/mSmall"
-                tools:hint="Museum Name"
-                tools:textColorHint="@color/white" />
+                android:layout_height="400dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/image_description"
+                android:transitionName="@string/image_trans"
+                android:src="@drawable/icon_map"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
+                android:id="@+id/mask"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:background="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/museum_logo"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
-                    android:id="@+id/museum_catalog1"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/museum_name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/normalize_margin"
-                    android:layout_marginEnd="@dimen/mSmall"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"
-                    android:padding="@dimen/mSmall"
-                    android:background="@drawable/bg_catalog_grid"
-                    tools:textColorHint="@color/white"
-                    tools:hint="Catalog"/>
-
-                <TextView
-                    android:id="@+id/museum_catalog2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:padding="@dimen/mSmall"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:padding="@dimen/normalize_padding"
                     android:layout_marginStart="@dimen/mSmall"
-                    android:layout_marginEnd="@dimen/mSmall"
-                    android:background="@drawable/bg_catalog_grid"
-                    tools:textColorHint="@color/white"
-                    tools:hint="Catalog"/>
+                    tools:hint="Museum Name"
+                    tools:textColorHint="@color/black" />
 
-                <TextView
-                    android:id="@+id/museum_catalog3"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:padding="@dimen/mSmall"
-                    android:layout_marginStart="@dimen/mSmall"
-                    android:textColor="@color/white"
-                    android:background="@drawable/bg_catalog_grid"
-                    tools:hint="Catalog"
-                    tools:textColorHint="@color/white"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/museum_catalog1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="@dimen/mSmall"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/mSmall"
+                        android:background="@drawable/bg_catalog_grid"
+                        tools:textColorHint="@color/black"
+                        tools:hint="Catalog"/>
+
+                    <TextView
+                        android:id="@+id/museum_catalog2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:padding="@dimen/mSmall"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="@dimen/mSmall"
+                        android:layout_marginEnd="@dimen/mSmall"
+                        android:background="@drawable/bg_catalog_grid"
+                        tools:textColorHint="@color/black"
+                        tools:hint="Catalog"/>
+
+                    <TextView
+                        android:id="@+id/museum_catalog3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:padding="@dimen/mSmall"
+                        android:layout_marginStart="@dimen/mSmall"
+                        android:textColor="@color/black"
+                        android:background="@drawable/bg_catalog_grid"
+                        tools:hint="Catalog"
+                        tools:textColorHint="@color/black"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
 
-</android.support.v7.widget.CardView>
+</FrameLayout>
 

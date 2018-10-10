@@ -47,7 +47,7 @@ public class InfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         UUID uuid = (UUID)getArguments().getSerializable(ARGS_ID);
-        Log.d(TAG, uuid.toString());
+//        Log.d(TAG, uuid.toString());
 
         mMuseum = MuseumLib.get(getContext()).getMuseumById(uuid);
     }

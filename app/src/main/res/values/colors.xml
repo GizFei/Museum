@@ -6,6 +6,8 @@
 
     <color name="transparent">#00FFFFFF</color>
     <color name="white">#FFF</color>
+    <color name="black">#000</color>
     <color name="gray">#CCC</color>
     <color name="light_gray">#F2F3F4</color>
+    <color name="nice_blue">#33B5E6</color>
 </resources>

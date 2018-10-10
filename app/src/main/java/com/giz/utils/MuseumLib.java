@@ -45,6 +45,7 @@ public class MuseumLib {
         museum.setName("浙江省博物馆");
         museum.setCatalog(Arrays.asList("综合", "人文", "省级"));
         museum.setLogo(R.drawable.museum_zhejiang);
+        museum.setPicFolder("ZJMGS");
         mMuseumList.add(museum);
 
         Museum museum1 = new Museum();
@@ -55,14 +56,16 @@ public class MuseumLib {
         mMuseumList.add(museum1);
 
         Museum museum2 = new Museum();
-        museum2.setName("杭州工艺美术馆");
+        museum2.setName("杭州工艺美术博物馆");
         museum2.setCatalog(Arrays.asList("工艺", "刀剪剑"));
+        museum2.setPicFolder("HZACM");
         museum2.setLogo(R.drawable.museum_ac);
         mMuseumList.add(museum2);
 
         Museum museum3 = new Museum();
         museum3.setName("中国印学博物馆");
         museum3.setCatalog(Arrays.asList("印章", "园林式"));
+        museum3.setPicFolder("SLYS");
         museum3.setLogo(R.drawable.museum_print);
         mMuseumList.add(museum3);
         mMuseumList.add(museum);
@@ -95,5 +98,15 @@ public class MuseumLib {
             }
         }
         return null;
+    }
+
+    public List<Museum> queryMuseumsByWord(String newText) {
+        List<Museum> museums = new ArrayList<>();
+        for(Museum museum: mMuseumList){
+            if(museum.getName().contains(newText)){
+                museums.add(museum);
+            }
+        }
+        return museums;
     }
 }

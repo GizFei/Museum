@@ -7,11 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -41,8 +47,6 @@ public class MuseumActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_museum);
-
-        getWindow().setEnterTransition(new android.transition.Slide());
 
         UUID museumId = (UUID)getIntent().getSerializableExtra(EXTRA_MUSEUM);
         mMuseum = MuseumLib.get(this).getMuseumById(museumId);
@@ -141,5 +145,11 @@ public class MuseumActivity extends AppCompatActivity {
         if(mInfoFragment != null){
             transaction.hide(mInfoFragment);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ActivityCompat.finishAfterTransition(this);
     }
 }

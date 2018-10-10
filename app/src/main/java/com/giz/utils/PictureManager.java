@@ -45,4 +45,9 @@ public class PictureManager {
         }
         return drawable;
     }
+
+    public Drawable getFirstDrawable(){
+        String name = getPictures()[0];
+        return getDrawable(name);
+    }
 }
