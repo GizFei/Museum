@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:background="@color/light_gray"
     android:layout_width="match_parent">
@@ -89,6 +90,19 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/nice_blue"
+        android:src="@drawable/icon_mark"
+        app:rippleColor="@color/light_gray"
+        app:borderWidth="0dp"
+        app:elevation="@dimen/mSmall"
+        app:fabCustomSize="48dp"
+        app:layout_anchor="@+id/myAppBar"
+        app:layout_anchorGravity="right|bottom" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/fragment_container"

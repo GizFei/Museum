@@ -3,45 +3,35 @@ package com.giz.museum;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.transition.Slide;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.giz.utils.BlurBackgroundManager;
 import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
-import com.giz.utils.FastBlur;
 import com.giz.utils.Museum;
 import com.giz.utils.MuseumLib;
-import com.giz.utils.PictureManager;
 import com.giz.utils.SliderTouchHelperCallback;
 
 import java.util.ArrayList;
@@ -57,6 +47,7 @@ public class MuseumListActivity extends AppCompatActivity {
     private ViewPager mMuseumViewPager;
     private ImageView mSwitchIcon;
     private View mPagerBg;
+    private List<Drawable> mBgDrawables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +110,9 @@ public class MuseumListActivity extends AppCompatActivity {
     }
 
     private void initViewPager(){
+        // 预先加载好模糊背景
+        mBgDrawables = BlurBackgroundManager.get(this).getBlurBackgrounds();
+
         mMuseumViewPager.setClipChildren(false);
         mMuseumViewPager.setOffscreenPageLimit(3);
         mMuseumViewPager.setPageTransformer(false, new CoverFlowEffectTransformer(this));
@@ -137,27 +131,32 @@ public class MuseumListActivity extends AppCompatActivity {
             int currentPage = 0;
             int state;
             boolean pageChanged = false;
+
+            private float half(float alpha){
+                return (alpha * 0.5f + 0.5f);
+            }
+
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 //                Log.d("onPageScrolled", String.format("%d %f", i, v));
                 if(state == 1){ // 手指滑动
                     if(i < currentPage)
-                        mPagerBg.setAlpha(v);
+                        mPagerBg.setAlpha(half(v));
                     else
-                        mPagerBg.setAlpha(1 - v);
+                        mPagerBg.setAlpha(half(1-v));
                 }else if(state == 2){ // 布局自己滑动（补足偏差）
                     if(!pageChanged){
                         if(i == currentPage){
-                            mPagerBg.setAlpha(1 - v);
+                            mPagerBg.setAlpha(half(1-v));
                         }else{
                             if(v != 0f)
-                                mPagerBg.setAlpha(v);
+                                mPagerBg.setAlpha(half(v));
                         }
                     }else{
                         if(i == currentPage){
-                            mPagerBg.setAlpha(v);
+                            mPagerBg.setAlpha(half(v));
                         }else{
-                            mPagerBg.setAlpha(1 - v);
+                            mPagerBg.setAlpha(half(1-v));
                         }
                     }
                 }
@@ -168,7 +167,6 @@ public class MuseumListActivity extends AppCompatActivity {
                 pageChanged = true;
 //                Log.d("onPageSelected", String.valueOf(i));
                 currentPage = i;
-                setMuseumViewPagerBg(currentPage);
             }
 
             @Override
@@ -176,11 +174,7 @@ public class MuseumListActivity extends AppCompatActivity {
                 state = i;
                 if(i == ViewPager.SCROLL_STATE_IDLE){
                     if(pageChanged){
-                        ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
-                                0f, 1.0f);
-                        animator.setDuration(300);
-                        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                        animator.start();
+                        setMuseumViewPagerBg(currentPage);
                         pageChanged = false;
                     }else{
                         mPagerBg.setAlpha(1);
@@ -192,13 +186,25 @@ public class MuseumListActivity extends AppCompatActivity {
         });
     }
 
-    void setMuseumViewPagerBg(int i){
-        Museum museum = MuseumLib.get(MuseumListActivity.this).getMuseumList().get(i);
-        Drawable drawable = new PictureManager(MuseumListActivity.this,
-                museum.getPicFolder()).getFirstDrawable();
-        Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 20, false);
-        mPagerBg.setBackground(new BitmapDrawable(blurBg));
 
+    /**
+     * 设置ViewPager列表样式下应用背景
+     * @param i 列表项位置
+     */
+    private void setMuseumViewPagerBg(int i){
+        // 前后图片平滑过渡
+        TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{
+                mPagerBg.getBackground(), mBgDrawables.get(i)});
+        mPagerBg.setBackground(transitionDrawable);
+        transitionDrawable.startTransition(400);
+
+        // 恢复图片的透明度至1
+//        mPagerBg.setBackground(mBgDrawables.get(i));
+        ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
+                0.5f, 1.0f);
+        animator.setDuration(200);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.start();
     }
 
     /**
@@ -207,7 +213,7 @@ public class MuseumListActivity extends AppCompatActivity {
     private void switchRecyclerView() {
         if(isListStyle){
             AnimatedVectorDrawableCompat listToGridAnim = AnimatedVectorDrawableCompat.create(this,
-                    R.drawable.av_list_to_grid);
+                    R.drawable.av_list_to_pager);
             mSwitchIcon.setImageDrawable(listToGridAnim);
             ((Animatable)mSwitchIcon.getDrawable()).start();
             isListStyle = false;
@@ -216,9 +222,9 @@ public class MuseumListActivity extends AppCompatActivity {
             mMuseumViewPager.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
                     R.anim.layout_anim_from_bottom));
             mMuseumViewPager.setVisibility(View.VISIBLE);
-            mPagerBg.setVisibility(View.VISIBLE);
+//            mPagerBg.setVisibility(View.VISIBLE);
             mMuseumViewPager.setCurrentItem(0, true);
-            setMuseumViewPagerBg(0);
+            mPagerBg.setBackground(mBgDrawables.get(0));
 
 //            LinearLayoutManager llm = new LinearLayoutManager(this);
 //            llm.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -232,14 +238,15 @@ public class MuseumListActivity extends AppCompatActivity {
 //            mMuseumRecyclerView.startLayoutAnimation();
         }else{
             AnimatedVectorDrawableCompat gridToListAnim = AnimatedVectorDrawableCompat.create(this,
-                    R.drawable.av_grid_to_list);
+                    R.drawable.av_pager_to_list);
             mSwitchIcon.setImageDrawable(gridToListAnim);
             ((Animatable)mSwitchIcon.getDrawable()).start();
             isListStyle = true;
 
             mMuseumRecyclerView.setVisibility(View.VISIBLE);
             mMuseumViewPager.setVisibility(View.GONE);
-            mPagerBg.setVisibility(View.GONE);
+            mPagerBg.setBackgroundResource(R.color.light_bg);
+//            mPagerBg.setVisibility(View.GONE);
 
 //            LinearLayoutManager llm = new LinearLayoutManager(this);
 //            llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -251,7 +258,6 @@ public class MuseumListActivity extends AppCompatActivity {
             mMuseumRecyclerView.startLayoutAnimation();
         }
     }
-
 
     private class MuseumHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -292,12 +298,6 @@ public class MuseumListActivity extends AppCompatActivity {
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
                         MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
             ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
-//            }else{
-//                ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                        MuseumListActivity.this, itemView.findViewById(R.id.museum_logo),
-//                        getResources().getString(R.string.image_trans));
-//                ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
-//            }
         }
     }
 

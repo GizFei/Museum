@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_view_list_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_bookmark_border_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,11 +28,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="36" />
-                            <entry key="outputName" value="icon_list1" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="height" value="32" />
+                            <entry key="outputName" value="icon_mark" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="E:\ChromeDownloads\if_view-list_326721.svg" />
-                            <entry key="width" value="36" />
+                            <entry key="width" value="32" />
                           </map>
                         </option>
                       </PersistentState>

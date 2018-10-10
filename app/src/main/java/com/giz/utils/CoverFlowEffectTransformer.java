@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 public class CoverFlowEffectTransformer implements ViewPager.PageTransformer {
@@ -33,7 +34,6 @@ public class CoverFlowEffectTransformer implements ViewPager.PageTransformer {
             //ViewCompat.setElevation(view, 0.0f);
         }
         ViewCompat.setElevation(view, scaleFactor);
-
     }
 
     /**

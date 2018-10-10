@@ -14,9 +14,8 @@
         android:contentDescription="@string/image_description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/transparent"
-        tools:background="@color/nice_blue"/>
+        android:background="@color/light_bg"
+        tools:background="@color/light_bg"/>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -40,12 +39,12 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="@dimen/normalize_margin">
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content">
 
                         <android.support.v7.widget.SearchView
                             android:id="@+id/search_view"
@@ -53,9 +52,8 @@
                             android:layout_height="wrap_content"
                             app:defaultQueryHint="@string/search_museum"
                             app:iconifiedByDefault="false"
-                            android:background="@color/white"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/divider"/>
+                            app:layout_constraintEnd_toStartOf="@id/divider"
+                            app:layout_constraintStart_toStartOf="parent" />
 
                         <View
                             android:id="@+id/divider"
@@ -73,7 +71,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/av_list_to_grid"
+                            android:src="@drawable/av_list_to_pager"
                             android:layout_marginEnd="@dimen/normalize_margin"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -116,12 +114,11 @@
 
         </FrameLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.giz.customize.DraggableFloatingActionButton
             android:id="@+id/map_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginEnd="@dimen/mLarge"
             android:layout_marginBottom="@dimen/mLarge"
             android:scaleType="center"
             android:src="@drawable/icon_map"
