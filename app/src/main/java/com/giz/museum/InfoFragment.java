@@ -26,7 +26,6 @@ public class InfoFragment extends Fragment {
     private static final String TAG = "InfoFragment";
 
     private Museum mMuseum;
-    private MapView mMapView = null;
 
     /**
      * 创建InfoFragment，传入博物馆的ID
@@ -57,28 +56,21 @@ public class InfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
 
-        mMapView = view.findViewById(R.id.map);
-        mMapView.onCreate(savedInstanceState);
-        AMap aMap = mMapView.getMap();
-
         return view;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
     }
 }

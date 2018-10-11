@@ -12,18 +12,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mSmall"
         android:layout_marginBottom="@dimen/mSmall"
-        app:cardElevation="2dp">
+        android:layout_marginStart="@dimen/mSmall"
+        android:layout_marginEnd="@dimen/mSmall"
+        android:translationZ="3dp"
+        app:cardCornerRadius="@dimen/mSmall"
+        app:cardElevation="0dp">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/CL"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="76dp">
 
             <ImageView
                 android:id="@+id/museum_logo"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:contentDescription="Picture"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="@dimen/normalize_margin"
+                android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_launcher_background"
                 app:layout_constraintStart_toStartOf="@id/CL"
                 app:layout_constraintTop_toTopOf="@id/CL"
@@ -34,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@id/museum_logo"
                 app:layout_constraintTop_toTopOf="@id/CL"
                 android:layout_margin="@dimen/normalize_margin"
@@ -44,12 +50,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:textColor="@color/white"
                 android:layout_margin="@dimen/normalize_margin"
                 android:padding="@dimen/mSmall"
                 android:background="@drawable/bg_catalog"
                 app:layout_constraintStart_toEndOf="@id/museum_logo"
                 app:layout_constraintTop_toBottomOf="@id/museum_name"
                 app:layout_constraintBottom_toBottomOf="@id/CL"
+                tools:textColorHint="@color/white"
                 tools:hint="Catalog"/>
 
             <TextView
@@ -57,6 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:textColor="@color/white"
                 android:layout_margin="@dimen/normalize_margin"
                 android:padding="@dimen/mSmall"
                 android:background="@drawable/bg_catalog"
@@ -72,21 +81,12 @@
                 android:textSize="12sp"
                 android:layout_margin="@dimen/normalize_margin"
                 android:padding="@dimen/mSmall"
+                android:textColor="@color/white"
                 android:background="@drawable/bg_catalog"
                 app:layout_constraintStart_toEndOf="@id/museum_catalog2"
                 app:layout_constraintTop_toBottomOf="@id/museum_name"
                 app:layout_constraintBottom_toBottomOf="@id/CL"
                 tools:hint="Catalog"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Icon Star"
-                android:layout_marginEnd="@dimen/mLarge"
-                app:layout_constraintEnd_toEndOf="@id/CL"
-                app:layout_constraintTop_toTopOf="@id/CL"
-                app:layout_constraintBottom_toBottomOf="@id/CL"
-                android:src="@drawable/icon_star"/>
 
         </android.support.constraint.ConstraintLayout>
 
