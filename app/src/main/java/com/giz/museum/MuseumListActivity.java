@@ -30,16 +30,27 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.giz.bmob.MuseumLibrary;
 import com.giz.utils.BlurBackgroundManager;
 import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
-import com.giz.utils.Museum;
-import com.giz.utils.MuseumLib;
+import com.giz.bmob.Museum;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumListActivity extends AppCompatActivity {
 
@@ -56,19 +67,24 @@ public class MuseumListActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private CoverFlowPagerAdapter mPagerAdapter;
     private AppBarLayout mAppBarLayout;
+    private ProgressBar mProgressBar;
+
+    private List<Museum> mMuseumList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_museum);
 
-        mAppBarLayout = findViewById(R.id.myAppBar);
+        Bmob.initialize(this, "d86d0b43c41c255217e9377f570e3283");
 
+        mAppBarLayout = findViewById(R.id.myAppBar);
         // 初始化列表
         mMuseumRecyclerView = findViewById(R.id.list_museum);
         mMuseumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mMuseumAdapter = new MuseumAdapter(MuseumLib.get(this).getMuseumList());
-        mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+//        mMuseumAdapter = new MuseumAdapter(MuseumLib.get(this).getMuseumList());
+//        mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+//        new BmobTask().execute();
         // 初始化悬浮按钮
         mFab= findViewById(R.id.map_fab);
         // 初始化列表样式转换按钮
@@ -82,8 +98,16 @@ public class MuseumListActivity extends AppCompatActivity {
         // 初始化ViewPager
         mMuseumViewPager = findViewById(R.id.pager_museum);
         mPagerBg = findViewById(R.id.pager_bg);
+        //
+        mProgressBar = findViewById(R.id.progressBar);
         // 初始化事件
         initEvents();
+
+//        mMuseumLibrary = new MuseumLibrary();
+        mMuseumList = new ArrayList<>();
+        downloadMuseumList();
+//        new BmobTask().execute();
+        //
     }
 
     private void initEvents(){
@@ -142,22 +166,14 @@ public class MuseumListActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(isListStyle){
-                    mMuseumAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).queryMuseumsByWord(newText));
+                    mMuseumAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
                     mMuseumAdapter.notifyDataSetChanged();
                 }else{
-                    mPagerAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).queryMuseumsByWord(newText));
-                    mMuseumViewPager.setAdapter(mPagerAdapter);
+                    mPagerAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
+                    mPagerAdapter.notifyDataSetChanged();
+//                    mMuseumViewPager.setAdapter(mPagerAdapter);
                 }
                 return true;
-            }
-        });
-        mSearchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.d("SSSSS", String.valueOf(hasFocus));
-                if(!hasFocus){
-                    v.clearFocus();
-                }
             }
         });
 
@@ -165,17 +181,14 @@ public class MuseumListActivity extends AppCompatActivity {
     }
 
     private void initViewPager(){
-        // 预先加载好模糊背景，在后台工作
-        new BlurBgTask().execute();
-//        mBgDrawables = BlurBackgroundManager.get(this).getBlurBackgrounds();
 
         mMuseumViewPager.setClipChildren(false);
         mMuseumViewPager.setOffscreenPageLimit(3);
         mMuseumViewPager.setPageTransformer(false, new CoverFlowEffectTransformer(this));
 
-        mPagerAdapter = new CoverFlowPagerAdapter(this,
-                MuseumLib.get(this).getMuseumList(), this, mSearchView);
-        mMuseumViewPager.setAdapter(mPagerAdapter);
+//        mPagerAdapter = new CoverFlowPagerAdapter(this,
+//                MuseumLib.get(this).getMuseumList(), this, mSearchView);
+//        mMuseumViewPager.setAdapter(mPagerAdapter);
 
         mMuseumViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             /**
@@ -301,13 +314,12 @@ public class MuseumListActivity extends AppCompatActivity {
             mPagerBg.setBackgroundResource(R.color.light_bg);
 //            mPagerBg.setVisibility(View.GONE);
 
-//            LinearLayoutManager llm = new LinearLayoutManager(this);
-//            llm.setOrientation(LinearLayoutManager.VERTICAL);
-//            mMuseumRecyclerView.setLayoutManager(llm);
-            mMuseumAdapter.setMuseumList(MuseumLib.get(MuseumListActivity.this).getMuseumList());
+            //new BmobTask().execute();
+            mMuseumAdapter.setMuseumList(mMuseumList);
+            mMuseumAdapter.notifyDataSetChanged();
             mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
                     R.anim.layout_anim_from_bottom));
-            mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+            //mMuseumRecyclerView.setAdapter(mMuseumAdapter);
             mMuseumRecyclerView.startLayoutAnimation();
 
             // 悬浮球显示
@@ -347,7 +359,7 @@ public class MuseumListActivity extends AppCompatActivity {
                     mMuseumCatalogs.get(i).setVisibility(View.GONE);
                 }
             }
-            mMuseumLogo.setImageResource(museum.getLogo());
+            mMuseumLogo.setImageDrawable(museum.getLogo());
         }
 
         @Override
@@ -393,13 +405,103 @@ public class MuseumListActivity extends AppCompatActivity {
         }
     }
 
-    private class BlurBgTask extends AsyncTask<Void, Void, Void>{
+//    private class BlurBgTask extends AsyncTask<Void, Void, Void>{
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            Log.d("BLUR", "Downloading...");
+//            mBgDrawables = BlurBackgroundManager.get(MuseumListActivity.this).getBlurBackgrounds();
+//            return null;
+//        }
+//
+//    }
+
+    private class BmobTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            // 防止误点击
+            mSwitchIcon.setEnabled(false);
+            mProgressBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mBgDrawables = BlurBackgroundManager.get(MuseumListActivity.this).getBlurBackgrounds();
+            Log.d("kkk", "doInBackground");
+            for(int i = 0; i < mMuseumList.size(); i++){
+                try{
+                    mMuseumList.get(i).setLogo((Drawable.createFromStream(new URL(mMuseumList.get(i).getLogoUrl()).openStream(), "LL")));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mProgressBar.setVisibility(View.GONE);
+            Log.d("kkk", "onPostExecute");
+            if(mMuseumAdapter == null){
+                mMuseumAdapter = new MuseumAdapter(mMuseumList);
+                mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+                mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(MuseumListActivity.this,
+                        R.anim.layout_anim_from_bottom));
+                mMuseumRecyclerView.startLayoutAnimation();
+            }
+//            else{
+//                mMuseumAdapter.setMuseumList(mMuseumList);
+//                mMuseumAdapter.notifyDataSetChanged();
+//            }
+
+            if(mPagerAdapter == null){
+                mPagerAdapter = new CoverFlowPagerAdapter(MuseumListActivity.this,
+                        mMuseumList, MuseumListActivity.this, mSearchView);
+                mMuseumViewPager.setAdapter(mPagerAdapter);
+            }
+
+            // 预先加载好模糊背景
+            mBgDrawables = BlurBackgroundManager.get(MuseumListActivity.this).getBlurBackgrounds();
+            mSwitchIcon.setEnabled(true);
         }
     }
 
+    private void downloadMuseumList(){
+        Log.d("kkk", "download");
+        BmobQuery query = new BmobQuery("museum");
+        query.findObjectsByTable(new QueryListener<JSONArray>() {
+            @Override
+            public void done(JSONArray jsonArray, BmobException e) {
+                Log.d("kkk", "download");
+                if(e == null){
+                    try {
+                        for(int i = 0; i < jsonArray.length(); i++){
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            Museum museum = new Museum(object.getString("objectId"));
+                            museum.setName(object.getString("name"));
+                            museum.setCatalog(getCatalog(object.getJSONArray("catalog")));
+                            museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                            museum.setPicFolder(object.getString("picFolder"));
+//                            Log.d("BMOB", museum.getMuseumId());
+                            mMuseumList.add(museum);
+                        }
+                        MuseumLibrary.get().setMuseumList(mMuseumList);
+                        new BmobTask().execute();
+                    }catch (Exception je){
+                        Log.e("JSON Error: ", je.getMessage());
+                        je.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private List<String> getCatalog(JSONArray array) throws JSONException {
+        List<String> list = new ArrayList<>();
+        for(int j = 0; j < array.length(); j++){
+            list.add(array.getString(j));
+        }
+        return list;
+    }
 }

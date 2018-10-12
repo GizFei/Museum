@@ -2,18 +2,15 @@ package com.giz.museum;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -23,12 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.giz.customize.CustomBottomSheet;
-import com.giz.utils.Museum;
-import com.giz.utils.MuseumLib;
+import com.giz.bmob.Museum;
+import com.giz.bmob.MuseumLibrary;
 import com.giz.utils.MuseumPicturePagerAdapter;
-
-import java.util.UUID;
 
 public class MuseumActivity extends AppCompatActivity {
 
@@ -43,7 +37,7 @@ public class MuseumActivity extends AppCompatActivity {
     private NestedScrollView mScrollView;
     private boolean firstEnter = true;
 
-    public static Intent newIntent(Context context, UUID museumId){
+    public static Intent newIntent(Context context, String museumId){
         Intent intent = new Intent(context, MuseumActivity.class);
         intent.putExtra(EXTRA_MUSEUM, museumId);
         return intent;
@@ -54,8 +48,8 @@ public class MuseumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_museum);
 
-        UUID museumId = (UUID)getIntent().getSerializableExtra(EXTRA_MUSEUM);
-        mMuseum = MuseumLib.get(this).getMuseumById(museumId);
+        String museumId = getIntent().getStringExtra(EXTRA_MUSEUM);
+        mMuseum = MuseumLibrary.get().getMuseumById(museumId);
 
         initViews();
         initFragments();

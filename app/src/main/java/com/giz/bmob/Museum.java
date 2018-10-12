@@ -1,32 +1,43 @@
-package com.giz.utils;
+package com.giz.bmob;
+
+import android.graphics.drawable.Drawable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Museum {
+import cn.bmob.v3.BmobObject;
+
+public class Museum extends BmobObject {
     /**
      * 博物馆类，拥有博物馆的所有信息
      */
-
-    private UUID mMuseumId;       // 博物馆ID（唯一，用来传递信息）
+    private String mMuseumId;       // 博物馆ID（唯一，用来传递信息）
     private String mName;     // 博物馆名称
     private List<String> mCatalog;  // 博物馆类别（如：综合）
-    private int mLogo;        // 博物馆Logo（资源id：R.drawable.xxx）
+    private String mLogoUrl;        // 博物馆Logo（资源url）
     private String mPicFolder; // 博物馆图片的文件夹名称（位于assets中）
+    private Drawable mLogo;   // Logo图片
 
     public Museum(){
-        this(UUID.randomUUID());
+        mMuseumId = "";
+        mName = "";
+        mCatalog = new ArrayList<>();
+        mPicFolder = "";
+        mLogoUrl = "";
+        this.setTableName("museum");
     }
 
-    private Museum(UUID uuid){
+    public Museum(String uuid){
         this.mMuseumId = uuid;
         mName = "";
         mCatalog = new ArrayList<>();
-        mLogo = 0;
+        mPicFolder = "";
+        mLogoUrl = "";
+        this.setTableName("museum");
     }
 
-    public UUID getMuseumId() {
+    public String getMuseumId() {
         return mMuseumId;
     }
 
@@ -46,12 +57,12 @@ public class Museum {
         mCatalog = catalog;
     }
 
-    public int getLogo() {
-        return mLogo;
+    public String getLogoUrl() {
+        return mLogoUrl;
     }
 
-    public void setLogo(int logo) {
-        mLogo = logo;
+    public void setLogoUrl(String logo) {
+        mLogoUrl = logo;
     }
 
     public String getPicFolder() {
@@ -60,5 +71,13 @@ public class Museum {
 
     public void setPicFolder(String picFolder) {
         mPicFolder = picFolder;
+    }
+
+    public void setLogo(Drawable logo) {
+        mLogo = logo;
+    }
+
+    public Drawable getLogo() {
+        return mLogo;
     }
 }

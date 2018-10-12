@@ -1,13 +1,13 @@
-package com.giz.utils;
+package com.giz.customize;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.giz.museum.R;
+import com.giz.bmob.Museum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class MuseumLib {
     /**
@@ -41,41 +41,34 @@ public class MuseumLib {
      * 初始化博物馆列表
      */
     private void initMuseumList(){
-        Museum museum = new Museum();
+        Log.d("initMuseumList", "Downloading...");
+        Museum museum = new Museum("ZJ");
         museum.setName("浙江省博物馆");
         museum.setCatalog(Arrays.asList("综合", "人文", "省级"));
-        museum.setLogo(R.drawable.museum_zhejiang);
+//        museum.setLogo(R.drawable.museum_zhejiang);
         museum.setPicFolder("ZJMGS");
         mMuseumList.add(museum);
 
-        Museum museum1 = new Museum();
+        Museum museum1 = new Museum("HML");
         museum1.setName("杭州韩美林艺术馆");
         museum1.setCatalog(Arrays.asList("个人", "艺术"));
-        museum1.setLogo(R.drawable.museum_hml);
+//        museum1.setLogo(R.drawable.museum_hml);
         museum1.setPicFolder("HML");
         mMuseumList.add(museum1);
 
-        Museum museum2 = new Museum();
+        Museum museum2 = new Museum("AC");
         museum2.setName("杭州工艺美术博物馆");
         museum2.setCatalog(Arrays.asList("工艺", "刀剪剑"));
         museum2.setPicFolder("HZACM");
-        museum2.setLogo(R.drawable.museum_ac);
+//        museum2.setLogo(R.drawable.museum_ac);
         mMuseumList.add(museum2);
 
-        Museum museum3 = new Museum();
+        Museum museum3 = new Museum("YX");
         museum3.setName("中国印学博物馆");
         museum3.setCatalog(Arrays.asList("印章", "园林式"));
         museum3.setPicFolder("SLYS");
-        museum3.setLogo(R.drawable.museum_print);
+//        museum3.setLogo(R.drawable.museum_print);
         mMuseumList.add(museum3);
-        mMuseumList.add(museum);
-        mMuseumList.add(museum2);
-        mMuseumList.add(museum3);
-        mMuseumList.add(museum1);
-        mMuseumList.add(museum1);
-        mMuseumList.add(museum1);
-        mMuseumList.add(museum1);
-
     }
 
     /**
@@ -91,7 +84,7 @@ public class MuseumLib {
      * @param museumId 博物馆ID
      * @return 博物馆对象
      */
-    public Museum getMuseumById(UUID museumId){
+    public Museum getMuseumById(String museumId){
         for(Museum museum: mMuseumList){
             if(museum.getMuseumId().equals(museumId)){
                 return museum;
