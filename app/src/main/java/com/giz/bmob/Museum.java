@@ -17,7 +17,9 @@ public class Museum extends BmobObject {
     private List<String> mCatalog;  // 博物馆类别（如：综合）
     private String mLogoUrl;        // 博物馆Logo（资源url）
     private String mPicFolder; // 博物馆图片的文件夹名称（位于assets中）
+    private String mCoverUrl;
     private Drawable mLogo;   // Logo图片
+    private Drawable mCover;  // 用于列表ViewPager的图片
 
     public Museum(){
         mMuseumId = "";
@@ -79,5 +81,21 @@ public class Museum extends BmobObject {
 
     public Drawable getLogo() {
         return mLogo;
+    }
+
+    public Drawable getCover() {
+        return mCover;
+    }
+
+    public void setCover(Drawable cover) {
+        mCover = cover;
+    }
+
+    public String getCoverUrl() {
+        return mCoverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        mCoverUrl = coverUrl;
     }
 }

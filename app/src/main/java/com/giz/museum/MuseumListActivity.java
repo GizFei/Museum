@@ -45,7 +45,9 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -63,7 +65,7 @@ public class MuseumListActivity extends AppCompatActivity {
     private ImageView mSwitchIcon;
     private View mPagerBg;
     private SearchView mSearchView;
-    private List<Drawable> mBgDrawables;
+    private Map<String, Drawable> mBgDrawables; // museumId -> drawable
     private FloatingActionButton mFab;
     private CoverFlowPagerAdapter mPagerAdapter;
     private AppBarLayout mAppBarLayout;
@@ -84,7 +86,7 @@ public class MuseumListActivity extends AppCompatActivity {
         mMuseumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        mMuseumAdapter = new MuseumAdapter(MuseumLib.get(this).getMuseumList());
 //        mMuseumRecyclerView.setAdapter(mMuseumAdapter);
-//        new BmobTask().execute();
+//        new MuseumListTask().execute();
         // 初始化悬浮按钮
         mFab= findViewById(R.id.map_fab);
         // 初始化列表样式转换按钮
@@ -106,7 +108,7 @@ public class MuseumListActivity extends AppCompatActivity {
 //        mMuseumLibrary = new MuseumLibrary();
         mMuseumList = new ArrayList<>();
         downloadMuseumList();
-//        new BmobTask().execute();
+//        new MuseumListTask().execute();
         //
     }
 
@@ -262,7 +264,7 @@ public class MuseumListActivity extends AppCompatActivity {
     private void setMuseumViewPagerBg(int i){
         // 前后图片平滑过渡
         TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{
-                mPagerBg.getBackground(), mBgDrawables.get(i)});
+                mPagerBg.getBackground(), mBgDrawables.get(mMuseumList.get(i).getMuseumId())});
         mPagerBg.setBackground(transitionDrawable);
         transitionDrawable.startTransition(400);
 
@@ -294,7 +296,7 @@ public class MuseumListActivity extends AppCompatActivity {
             mMuseumViewPager.setVisibility(View.VISIBLE);
 //            mPagerBg.setVisibility(View.VISIBLE);
             mMuseumViewPager.setCurrentItem(0, true);
-            mPagerBg.setBackground(mBgDrawables.get(0));
+            mPagerBg.setBackground(mBgDrawables.get(mMuseumList.get(0).getMuseumId()));
 
             // 悬浮球隐藏
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams)mFab.getLayoutParams();
@@ -314,7 +316,7 @@ public class MuseumListActivity extends AppCompatActivity {
             mPagerBg.setBackgroundResource(R.color.light_bg);
 //            mPagerBg.setVisibility(View.GONE);
 
-            //new BmobTask().execute();
+            //new MuseumListTask().execute();
             mMuseumAdapter.setMuseumList(mMuseumList);
             mMuseumAdapter.notifyDataSetChanged();
             mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
@@ -354,6 +356,7 @@ public class MuseumListActivity extends AppCompatActivity {
             int catalogs = museum.getCatalog().size();
             for(int i = 0; i < mMuseumCatalogs.size(); i++){
                 if(i < catalogs){
+                    mMuseumCatalogs.get(i).setVisibility(View.VISIBLE);
                     mMuseumCatalogs.get(i).setText(museum.getCatalog().get(i));
                 }else{
                     mMuseumCatalogs.get(i).setVisibility(View.GONE);
@@ -416,7 +419,7 @@ public class MuseumListActivity extends AppCompatActivity {
 //
 //    }
 
-    private class BmobTask extends AsyncTask<Void, Void, Void>{
+    private class MuseumListTask extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected void onPreExecute() {
@@ -432,6 +435,7 @@ public class MuseumListActivity extends AppCompatActivity {
             for(int i = 0; i < mMuseumList.size(); i++){
                 try{
                     mMuseumList.get(i).setLogo((Drawable.createFromStream(new URL(mMuseumList.get(i).getLogoUrl()).openStream(), "LL")));
+                    mMuseumList.get(i).setCover((Drawable.createFromStream(new URL(mMuseumList.get(i).getCoverUrl()).openStream(), "COVER")));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -441,7 +445,7 @@ public class MuseumListActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void v) {
-            mProgressBar.setVisibility(View.GONE);
+//            mProgressBar.setVisibility(View.GONE);
             Log.d("kkk", "onPostExecute");
             if(mMuseumAdapter == null){
                 mMuseumAdapter = new MuseumAdapter(mMuseumList);
@@ -462,8 +466,9 @@ public class MuseumListActivity extends AppCompatActivity {
             }
 
             // 预先加载好模糊背景
-            mBgDrawables = BlurBackgroundManager.get(MuseumListActivity.this).getBlurBackgrounds();
-            mSwitchIcon.setEnabled(true);
+            setUpBlurBackground();
+//            mBgDrawables = BlurBackgroundManager.get(MuseumListActivity.this).getBlurBackgrounds();
+//            mSwitchIcon.setEnabled(true);
         }
     }
 
@@ -482,12 +487,13 @@ public class MuseumListActivity extends AppCompatActivity {
                             museum.setName(object.getString("name"));
                             museum.setCatalog(getCatalog(object.getJSONArray("catalog")));
                             museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                            museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
                             museum.setPicFolder(object.getString("picFolder"));
 //                            Log.d("BMOB", museum.getMuseumId());
                             mMuseumList.add(museum);
                         }
                         MuseumLibrary.get().setMuseumList(mMuseumList);
-                        new BmobTask().execute();
+                        new MuseumListTask().execute();
                     }catch (Exception je){
                         Log.e("JSON Error: ", je.getMessage());
                         je.printStackTrace();
@@ -503,5 +509,51 @@ public class MuseumListActivity extends AppCompatActivity {
             list.add(array.getString(j));
         }
         return list;
+    }
+
+    private void setUpBlurBackground(){
+        mBgDrawables = new HashMap<>();
+        BmobQuery query = new BmobQuery("picture");
+        query.findObjectsByTable(new QueryListener<JSONArray>() {
+            @Override
+            public void done(JSONArray array, BmobException e) {
+                if(e == null){
+                    try{
+                        List<String> urls = new ArrayList<>();
+                        List<String> ids = new ArrayList<>();
+                        for(int i = 0; i < array.length(); i++){
+                            ids.add(array.getJSONObject(i).getString("museumId"));
+                            urls.add(array.getJSONObject(i).getJSONObject("img0").getString("url"));
+                        }
+                        new BlurBgTask().execute(urls, ids);
+                    }catch (Exception ee){
+                        ee.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private class BlurBgTask extends AsyncTask<List<String>, Void, Void>{
+        @Override
+        protected Void doInBackground(List<String>... lists) {
+            List<String> urls = lists[0];
+            List<String> ids = lists[1];
+            try{
+                for(int i = 0; i < urls.size(); i++){
+                    mBgDrawables.put(ids.get(i), Drawable.createFromStream(new URL(urls.get(i)).openStream(), "BG"));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mSwitchIcon.setEnabled(true);
+            mProgressBar.setVisibility(View.GONE);
+            super.onPostExecute(aVoid);
+        }
     }
 }

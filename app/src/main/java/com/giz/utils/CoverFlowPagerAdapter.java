@@ -2,6 +2,7 @@ package com.giz.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -64,8 +65,9 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
                 mMuseumCatalogs.get(i).setVisibility(View.GONE);
             }
         }
-        PictureManager pm = new PictureManager(mContext, museum.getPicFolder());
-        imageView.setImageDrawable(pm.getDrawable(pm.getPictures()[0]));
+//        PictureManager pm = new PictureManager(mContext, museum.getPicFolder());
+//        imageView.setImageDrawable(pm.getDrawable(pm.getPictures()[0]));
+        imageView.setImageDrawable(mMuseumList.get(position).getCover());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
