@@ -14,16 +14,16 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 
-public class PictureManager {
+public class PictureDownloader {
 
     /**
-     * 图片资源管理类，用于获取assets文件夹中的资源
+     * 图片资源下载类，用于根据图片URL路径下载资源
      */
 
     private AssetManager mAssetManager;
     private String mFolderName;
 
-    public PictureManager(Context context, String folderName){
+    public PictureDownloader(Context context, String folderName){
         mAssetManager = context.getAssets();
         mFolderName = folderName;
     }
@@ -35,7 +35,7 @@ public class PictureManager {
             mPictures = mAssetManager.list(mFolderName);
         }catch (IOException ioe){
             mPictures = null;
-            Log.d("PictureManager", "Couldn't list the folder.", ioe);
+            Log.d("PictureDownloader", "Couldn't list the folder.", ioe);
         }
         return mPictures;
     }
@@ -48,7 +48,7 @@ public class PictureManager {
             drawable = Drawable.createFromStream(is, name.replace(".",""));
             is.close();
         } catch (IOException e) {
-            Log.d("PictureManager", "Couldn't find the file", e);
+            Log.d("PictureDownloader", "Couldn't find the file", e);
         }
         return drawable;
     }

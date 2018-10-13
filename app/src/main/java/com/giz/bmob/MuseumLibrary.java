@@ -30,9 +30,17 @@ import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumLibrary {
 
-    private List<Museum> mMuseumList;
-    private static MuseumLibrary sMuseumLibrary;
+    /**
+     * 用于管理博物馆信息的静态类
+     * 该类全局存在，供不同的活动调用获取博物馆信息
+     */
+    private List<Museum> mMuseumList;   // 博物馆列表，从云端获取后不变
+    private static MuseumLibrary sMuseumLibrary;   // 静态类变量
 
+    /**
+     * 获取该静态量，先判断是否已经建立，为空则调用内部构造函数
+     * @return MuseumLibrary类静态常量
+     */
     public static MuseumLibrary get(){
         if(sMuseumLibrary == null){
             sMuseumLibrary = new MuseumLibrary();
@@ -40,9 +48,11 @@ public class MuseumLibrary {
         return sMuseumLibrary;
     }
 
+    /**
+     * 内部构造函数
+     */
     private MuseumLibrary(){
         mMuseumList = new ArrayList<>();
-        Log.d("kkk", "MLMLMLML");
     }
 
     public List<Museum> getMuseumList() {
@@ -55,8 +65,8 @@ public class MuseumLibrary {
 
     /**
      * 根据词语简单地查询博物馆
-     * @param newText
-     * @return
+     * @param newText 词语
+     * @return 满足条件的博物馆列表
      */
     public List<Museum> queryMuseumsByWord(String newText) {
         List<Museum> museums = new ArrayList<>();
