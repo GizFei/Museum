@@ -2,12 +2,11 @@ package com.giz.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -16,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.giz.bmob.Museum;
 import com.giz.museum.MuseumActivity;
-import com.giz.museum.MuseumListActivity;
 import com.giz.museum.R;
 
 import java.util.ArrayList;
@@ -66,8 +65,9 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
                 mMuseumCatalogs.get(i).setVisibility(View.GONE);
             }
         }
-        PictureManager pm = new PictureManager(mContext, museum.getPicFolder());
-        imageView.setImageDrawable(pm.getDrawable(pm.getPictures()[0]));
+//        PictureManager pm = new PictureManager(mContext, museum.getPicFolder());
+//        imageView.setImageDrawable(pm.getDrawable(pm.getPictures()[0]));
+        imageView.setImageDrawable(mMuseumList.get(position).getCover());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

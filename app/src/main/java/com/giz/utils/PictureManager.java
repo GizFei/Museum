@@ -5,8 +5,14 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import org.json.JSONArray;
+
 import java.io.IOException;
 import java.io.InputStream;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 
 public class PictureManager {
 
@@ -21,6 +27,7 @@ public class PictureManager {
         mAssetManager = context.getAssets();
         mFolderName = folderName;
     }
+
 
     public String[] getPictures(){
         String[] mPictures;

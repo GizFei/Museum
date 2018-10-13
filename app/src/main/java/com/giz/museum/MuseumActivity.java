@@ -2,33 +2,41 @@ package com.giz.museum;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.giz.customize.CustomBottomSheet;
-import com.giz.utils.Museum;
-import com.giz.utils.MuseumLib;
+import com.giz.bmob.Museum;
+import com.giz.bmob.MuseumLibrary;
 import com.giz.utils.MuseumPicturePagerAdapter;
 
-import java.util.UUID;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumActivity extends AppCompatActivity {
 
@@ -43,7 +51,10 @@ public class MuseumActivity extends AppCompatActivity {
     private NestedScrollView mScrollView;
     private boolean firstEnter = true;
 
-    public static Intent newIntent(Context context, UUID museumId){
+    private ViewPager mViewPager;
+    private MuseumPicturePagerAdapter mPagerAdapter;
+
+    public static Intent newIntent(Context context, String museumId){
         Intent intent = new Intent(context, MuseumActivity.class);
         intent.putExtra(EXTRA_MUSEUM, museumId);
         return intent;
@@ -54,8 +65,8 @@ public class MuseumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_museum);
 
-        UUID museumId = (UUID)getIntent().getSerializableExtra(EXTRA_MUSEUM);
-        mMuseum = MuseumLib.get(this).getMuseumById(museumId);
+        String museumId = getIntent().getStringExtra(EXTRA_MUSEUM);
+        mMuseum = MuseumLibrary.get().getMuseumById(museumId);
 
         initViews();
         initFragments();
@@ -81,10 +92,11 @@ public class MuseumActivity extends AppCompatActivity {
         mCoordinatorLayout = findViewById(R.id.coordinator);
         mScrollView = findViewById(R.id.scrollView);
 
-        ViewPager pictures = findViewById(R.id.picture_vp);
-        final MuseumPicturePagerAdapter adapter = new MuseumPicturePagerAdapter(this,
-                mMuseum.getPicFolder());
-        pictures.setAdapter(adapter);
+        mViewPager = findViewById(R.id.picture_vp);
+        setUpPager();
+//        final MuseumPicturePagerAdapter adapter = new MuseumPicturePagerAdapter(this,
+//                mMuseum.getPicFolder());
+//        pictures.setAdapter(adapter);
 
         CollapsingToolbarLayout ctl = findViewById(R.id.ctl);
         ctl.setTitle(mMuseum.getName());
@@ -93,11 +105,11 @@ public class MuseumActivity extends AppCompatActivity {
         ctl.setStatusBarScrimResource(R.color.colorPrimaryDark);
 
         mDotsLinearLayout = findViewById(R.id.dots_ll);
-        for(int i = adapter.getCount(); i < 5; i++){
-            mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
-        }
+//        for(int i = mPagerAdapter.getCount(); i < 5; i++){
+//            mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
+//        }
 
-        pictures.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 
@@ -105,7 +117,7 @@ public class MuseumActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
-                for(int k = 0; k < adapter.getCount(); k++){
+                for(int k = 0; k < mPagerAdapter.getCount(); k++){
                     if(k == i){
                         mDotsLinearLayout.getChildAt(k).
                                 setBackgroundResource(R.drawable.icon_dot_active);
@@ -219,5 +231,57 @@ public class MuseumActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 //        ActivityCompat.finishAfterTransition(this);
+    }
+
+    private void setUpPager(){
+        BmobQuery query = new BmobQuery("picture");
+        query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
+        Log.d("ID", mMuseum.getMuseumId());
+        query.findObjectsByTable(new QueryListener<JSONArray>() {
+            @Override
+            public void done(JSONArray array, BmobException e) {
+                if(e == null && array.length() != 0){
+                    try{
+                        List<String> urls = new ArrayList<>();
+                        JSONObject pics = array.getJSONObject(0);
+                        int num = pics.getInt("num");
+                        for(int i = 0; i < num; i++){
+                            urls.add(pics.getJSONObject("img" + i).getString("url"));
+                        }
+                        new PicturesTask().execute(urls);
+                    }catch (Exception ee){
+                        ee.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private class PicturesTask extends AsyncTask<List<String>, Void, List<Drawable>>{
+
+        @Override
+        protected List<Drawable> doInBackground(List<String>... url) {
+            try {
+                List<String> urls = url[0];
+                List<Drawable> drawables = new ArrayList<>();
+                for(String u : urls){
+                    drawables.add(Drawable.createFromStream(new URL(u).openStream(), "Drawable"));
+                }
+                return drawables;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Drawable> drawables) {
+            mPagerAdapter = new MuseumPicturePagerAdapter(MuseumActivity.this, drawables);
+            mViewPager.setAdapter(mPagerAdapter);
+
+            for(int i = mPagerAdapter.getCount(); i < 5; i++){
+                mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
+            }
+        }
     }
 }

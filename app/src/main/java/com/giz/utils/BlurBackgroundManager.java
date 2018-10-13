@@ -5,7 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.giz.museum.MuseumListActivity;
+import com.giz.bmob.Museum;
+import com.giz.bmob.MuseumLibrary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class BlurBackgroundManager {
 
     private BlurBackgroundManager(Context context){
         mBlurBackgrounds = new ArrayList<>();
-        List<Museum> museums = MuseumLib.get(context).getMuseumList();
+        List<Museum> museums = MuseumLibrary.get().getMuseumList();
         for(Museum museum : museums){
             Drawable drawable = new PictureManager(context, museum.getPicFolder()).getFirstDrawable();
             Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 20, false);
