@@ -15,6 +15,7 @@
         android:descendantFocusability="beforeDescendants"
         app:layout_constraintTop_toTopOf="parent"
         android:focusableInTouchMode="true"
+        android:fitsSystemWindows="true"
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -39,6 +40,17 @@
                     android:background="@color/transparent">
 
                 </android.support.v4.view.ViewPager>
+
+                <android.support.v4.widget.ContentLoadingProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:indeterminateTint="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
                 <LinearLayout
                     android:id="@+id/dots_ll"
@@ -84,7 +96,10 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:titleMarginStart="@dimen/mLarge"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/icon_back"
+                app:contentInsetStartWithNavigation="0dp"
+                app:titleMarginStart="0dp"
                 app:contentInsetStart="0dp" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -97,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/nice_blue"
-        android:src="@drawable/icon_mark"
+        android:src="@drawable/icon_museum_bottom"
         app:rippleColor="@color/light_gray"
         app:borderWidth="0dp"
         app:elevation="@dimen/mSmall"
