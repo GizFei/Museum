@@ -73,6 +73,19 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:indeterminateTint="#16295E"
+                            android:layout_marginEnd="@dimen/normalize_margin"
+                            app:layout_constraintEnd_toStartOf="@id/list_style"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:layout_editor_absoluteX="158dp"
+                            tools:layout_editor_absoluteY="0dp" />
+
                     </android.support.constraint.ConstraintLayout>
 
                 </android.support.v7.widget.Toolbar>
