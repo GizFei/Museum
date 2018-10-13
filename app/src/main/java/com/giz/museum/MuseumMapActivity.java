@@ -19,11 +19,13 @@ import com.amap.api.maps.model.MyLocationStyle;
 public class MuseumMapActivity extends AppCompatActivity {
 
     private MapView mMapView;
-    // 声明AMapLocationClient类对象
+    //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
     public AMapLocationListener mLocationListener;
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
+    //杭州经纬度
+    LatLng centerHZPoint= new LatLng(120.128931,30.270585);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
