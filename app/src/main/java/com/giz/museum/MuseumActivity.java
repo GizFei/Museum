@@ -16,8 +16,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.LinearLayout;
 
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
+import com.giz.customize.CustomBottomSheet;
 import com.giz.utils.MuseumPicturePagerAdapter;
 
 import org.json.JSONArray;
@@ -49,7 +52,7 @@ public class MuseumActivity extends AppCompatActivity {
     private InfoFragment mInfoFragment;
     private PanoramaFragment mPanoramaFragment;
     private NestedScrollView mScrollView;
-    private boolean firstEnter = true;
+    private ContentLoadingProgressBar mProgressBar;
 
     private ViewPager mViewPager;
     private MuseumPicturePagerAdapter mPagerAdapter;
@@ -88,6 +91,8 @@ public class MuseumActivity extends AppCompatActivity {
      * 初始化布局
      */
     private void initViews() {
+
+        mProgressBar = findViewById(R.id.progressBar);
 
         mCoordinatorLayout = findViewById(R.id.coordinator);
         mScrollView = findViewById(R.id.scrollView);
@@ -160,17 +165,26 @@ public class MuseumActivity extends AppCompatActivity {
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BottomSheetDialog dialog = new BottomSheetDialog(MuseumActivity.this);
-                dialog.setContentView(R.layout.bottom_sheet);
+                CustomBottomSheet dialog = new CustomBottomSheet(MuseumActivity.this);
+//                dialog.setContentView(R.layout.bottom_sheet);
                 dialog.show();
             }
         });
 
         mAppBarLayout = findViewById(R.id.myAppBar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     // 收起AppBarLayout和FAB
     private void hideHeaders() {
+        Log.d("MuseumActivity", "HideHeaders");
         // 禁止滑动
         mScrollView.setNestedScrollingEnabled(false);
         // 向上滑动AppBarLayout以隐藏
@@ -181,11 +195,7 @@ public class MuseumActivity extends AppCompatActivity {
     }
 
     private void showHeaders(){
-        // 拦断首次进入的showHeaders()
-        if(firstEnter){
-            firstEnter = false;
-            return;
-        }
+        Log.d("MuseumActivity", "ShowHeaders");
         // 允许滑动
         mScrollView.setNestedScrollingEnabled(true);
         // 向下滑出以显示
@@ -229,6 +239,8 @@ public class MuseumActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        getSupportFragmentManager().beginTransaction().remove(mInfoFragment)
+                .remove(mPanoramaFragment).commit();
         super.onBackPressed();
 //        ActivityCompat.finishAfterTransition(this);
     }
@@ -276,6 +288,7 @@ public class MuseumActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<Drawable> drawables) {
+            mProgressBar.setVisibility(View.GONE);
             mPagerAdapter = new MuseumPicturePagerAdapter(MuseumActivity.this, drawables);
             mViewPager.setAdapter(mPagerAdapter);
 
