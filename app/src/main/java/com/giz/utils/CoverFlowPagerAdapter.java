@@ -65,7 +65,7 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
                 mMuseumCatalogs.get(i).setVisibility(View.GONE);
             }
         }
-//        PictureManager pm = new PictureManager(mContext, museum.getPicFolder());
+//        PictureDownloader pm = new PictureDownloader(mContext, museum.getPicFolder());
 //        imageView.setImageDrawable(pm.getDrawable(pm.getPictures()[0]));
         imageView.setImageDrawable(mMuseumList.get(position).getCover());
 
