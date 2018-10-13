@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetTop="@dimen/normalize_margin">
 
-    <solid
-        android:color="@color/white"/>
-    <corners
-        android:topLeftRadius="@dimen/normalize_margin"
-        android:topRightRadius="@dimen/normalize_margin"/>
+    <shape>
 
-</shape>
+        <solid
+            android:color="@color/white"/>
+        <corners
+            android:topLeftRadius="@dimen/mLarge"
+            android:topRightRadius="@dimen/mLarge"/>
+    </shape>
+
+
+
+</inset>

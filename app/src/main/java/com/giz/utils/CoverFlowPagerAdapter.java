@@ -1,17 +1,22 @@
 package com.giz.utils;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +26,7 @@ import com.giz.museum.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CoverFlowPagerAdapter extends PagerAdapter {
 
@@ -98,5 +104,9 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
 
     public void setMuseumList(List<Museum> museumList) {
         mMuseumList = museumList;
+    }
+
+    public String getMuseumIdByPosition(int i){
+        return mMuseumList.get(i).getMuseumId();
     }
 }
