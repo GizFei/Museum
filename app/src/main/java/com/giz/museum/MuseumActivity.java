@@ -186,7 +186,7 @@ public class MuseumActivity extends AppCompatActivity {
             firstEnter = false;
             return;
         }
-        // 禁止滑动
+        // 允许滑动
         mScrollView.setNestedScrollingEnabled(true);
         // 向下滑出以显示
         CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams()).getBehavior();
