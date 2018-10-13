@@ -27,7 +27,7 @@ public class BlurBackgroundManager {
         mBlurBackgrounds = new ArrayList<>();
         List<Museum> museums = MuseumLibrary.get().getMuseumList();
         for(Museum museum : museums){
-            Drawable drawable = new PictureManager(context, museum.getPicFolder()).getFirstDrawable();
+            Drawable drawable = new PictureDownloader(context, museum.getPicFolder()).getFirstDrawable();
             Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 20, false);
             mBlurBackgrounds.add(new BitmapDrawable(blurBg));
         }
@@ -44,7 +44,7 @@ public class BlurBackgroundManager {
     public void setBlurBackgrounds(Context context, List<Museum> museumList){
         mBlurBackgrounds.clear();
         for(Museum museum : museumList){
-            Drawable drawable = new PictureManager(context, museum.getPicFolder()).getFirstDrawable();
+            Drawable drawable = new PictureDownloader(context, museum.getPicFolder()).getFirstDrawable();
             Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 20, false);
             mBlurBackgrounds.add(new BitmapDrawable(blurBg));
         }
