@@ -1,11 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/normalize_margin"
-    android:layout_marginEnd="@dimen/normalize_margin"
-    android:layout_marginTop="@dimen/mSmall"
-    android:layout_marginBottom="@dimen/mSmall">
+    android:paddingTop="@dimen/normalize_padding"
+    android:paddingBottom="@dimen/normalize_padding"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/light_bg">
 
-</android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/detail_card_bg"
+        android:layout_margin="@dimen/normalize_margin"
+        app:cardCornerRadius="@dimen/normalize_margin"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="概况"
+            android:textSize="18sp"
+            android:lineSpacingExtra="36dp"
+            android:textColor="@color/black"
+            android:background="@drawable/shape_bottom_sheet"
+            android:paddingStart="@dimen/normalize_padding"
+            android:paddingTop="@dimen/pSmall"
+            android:layout_height="36dp" />
+
+        <LinearLayout
+            android:id="@+id/info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginStart="@dimen/normalize_margin"
+            android:layout_marginEnd="@dimen/normalize_margin"
+            android:layout_marginBottom="@dimen/mSmall"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="@dimen/normalize_margin"
+                android:layout_marginBottom="@dimen/normalize_margin"
+                android:drawableStart="@drawable/ic_museum"
+                android:drawablePadding="@dimen/pSmall"
+                android:text="浙江省博物馆武林馆"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_address"
+                android:drawablePadding="@dimen/pSmall"
+                android:layout_marginBottom="@dimen/normalize_margin"
+                android:text="地址：杭州西湖文化广场E区"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_ticket"
+                android:drawablePadding="@dimen/pSmall"
+                android:layout_marginBottom="@dimen/normalize_margin"
+                android:text="门票：免费"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:drawableStart="@drawable/ic_opentime"
+                android:drawablePadding="@dimen/pSmall"
+                android:layout_marginBottom="@dimen/normalize_margin"
+                android:text="开放时间：9:00 ~ 17:00，周一闭馆（法定节假日除外）"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/introduction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/detail_card_bg"
+        android:layout_margin="@dimen/normalize_margin"
+        app:layout_constraintTop_toBottomOf="@id/info"
+        app:cardCornerRadius="@dimen/normalize_margin"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="简介"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:background="@drawable/shape_bottom_sheet"
+            android:paddingStart="@dimen/normalize_padding"
+            android:paddingTop="@dimen/pSmall"
+            android:layout_height="36dp" />
+
+        <com.giz.customize.JustifyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:layout_marginStart="@dimen/normalize_margin"
+            android:layout_marginEnd="@dimen/normalize_margin"
+            android:layout_marginBottom="@dimen/mSmall"
+            android:paddingBottom="@dimen/pSmall"
+            android:lineSpacingExtra="@dimen/mSmall"
+            android:textSize="15sp"
+            android:text="@string/intro_example" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/recent_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/detail_card_bg"
+        android:layout_margin="@dimen/normalize_margin"
+        app:layout_constraintTop_toBottomOf="@id/introduction"
+        app:cardCornerRadius="@dimen/normalize_margin"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="展览先知"
+            android:textSize="18sp"
+            android:lineSpacingExtra="36dp"
+            android:textColor="@color/black"
+            android:background="@drawable/shape_bottom_sheet"
+            android:paddingStart="@dimen/normalize_padding"
+            android:paddingTop="@dimen/pSmall"
+            android:layout_height="36dp" />
+
+        <LinearLayout
+            android:id="@+id/activity_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginStart="@dimen/normalize_margin"
+            android:layout_marginEnd="@dimen/normalize_margin"
+            android:layout_marginBottom="@dimen/mSmall"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/recent_news"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/detail_card_bg"
+        android:layout_margin="@dimen/normalize_margin"
+        app:layout_constraintTop_toBottomOf="@id/recent_activity"
+        app:cardCornerRadius="@dimen/normalize_margin"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="新闻速递"
+            android:textSize="18sp"
+            android:lineSpacingExtra="36dp"
+            android:textColor="@color/black"
+            android:background="@drawable/shape_bottom_sheet"
+            android:paddingStart="@dimen/normalize_padding"
+            android:paddingTop="@dimen/pSmall"
+            android:layout_height="36dp" />
+
+        <LinearLayout
+            android:id="@+id/news_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginStart="@dimen/normalize_margin"
+            android:layout_marginEnd="@dimen/normalize_margin"
+            android:layout_marginBottom="@dimen/mSmall"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
