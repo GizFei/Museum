@@ -165,7 +165,7 @@ public class MuseumActivity extends AppCompatActivity {
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomBottomSheet dialog = new CustomBottomSheet(MuseumActivity.this);
+                CustomBottomSheet dialog = new CustomBottomSheet(MuseumActivity.this, mMuseum.getMuseumId());
 //                dialog.setContentView(R.layout.bottom_sheet);
                 dialog.show();
             }
