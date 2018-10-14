@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetTop="@dimen/normalize_margin">
+<inset xmlns:android="http://schemas.android.com/apk/res/android">
 
     <shape>
 
         <solid
             android:color="@color/white"/>
         <corners
-            android:topLeftRadius="@dimen/mLarge"
-            android:topRightRadius="@dimen/mLarge"/>
+            android:topLeftRadius="@dimen/normalize_margin"
+            android:topRightRadius="@dimen/normalize_margin"/>
     </shape>
 
 

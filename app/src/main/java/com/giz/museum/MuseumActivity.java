@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -260,7 +259,7 @@ public class MuseumActivity extends AppCompatActivity {
                         for(int i = 0; i < num; i++){
                             urls.add(pics.getJSONObject("img" + i).getString("url"));
                         }
-                        new PicturesTask().execute(urls);
+                        new PagerPicTask().execute(urls);
                     }catch (Exception ee){
                         ee.printStackTrace();
                     }
@@ -269,7 +268,7 @@ public class MuseumActivity extends AppCompatActivity {
         });
     }
 
-    private class PicturesTask extends AsyncTask<List<String>, Void, List<Drawable>>{
+    private class PagerPicTask extends AsyncTask<List<String>, Void, List<Drawable>>{
 
         @Override
         protected List<Drawable> doInBackground(List<String>... url) {
