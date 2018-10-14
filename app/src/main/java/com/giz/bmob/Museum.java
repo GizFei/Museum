@@ -20,7 +20,13 @@ public class Museum extends BmobObject {
     private String mCoverUrl;
     private Drawable mLogo;   // Logo图片
     private Drawable mCover;  // 用于列表ViewPager的图片
+
     private double[] mLocation; // 用于定位的经纬度，0是经度，1是纬度
+
+    private String mAddress;  // 博物馆地址
+    private String mTicket;   // 博物馆门票
+    private String mOpenTime; // 博物馆开放时间
+    private String mIntro;   // 简介
 
     public Museum(){
         mMuseumId = "";
@@ -102,11 +108,43 @@ public class Museum extends BmobObject {
         mCoverUrl = coverUrl;
     }
 
+
     public double[] getLocation() {
         return mLocation;
     }
 
     public void setLocation(double[] location) {
         mLocation = location;
+
+    public String getAddress() {
+        return mAddress;
+    }
+
+    public void setAddress(String address) {
+        mAddress = address;
+    }
+
+    public String getTicket() {
+        return mTicket;
+    }
+
+    public void setTicket(String ticket) {
+        mTicket = ticket;
+    }
+
+    public String getOpenTime() {
+        return mOpenTime;
+    }
+
+    public void setOpenTime(String openTime) {
+        mOpenTime = openTime;
+    }
+
+    public String getIntro() {
+        return mIntro;
+    }
+
+    public void setIntro(String intro) {
+        mIntro = intro;
     }
 }
