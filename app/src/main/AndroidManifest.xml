@@ -38,7 +38,7 @@
         </service>
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="ee9eb33e5e95773b08fbfeab71570a7e"/>
+            android:value="f300c3d3a995a347472bfc866320dd03"/>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
@@ -55,6 +55,7 @@
             android:parentActivityName=".MuseumListActivity"/>
         <activity android:name=".MuseumMapActivity" />
         <activity android:name=".MuseumTrackActivity" />
+        <activity android:name=".WebViewActivity"/>
     </application>
     <!-- Bmob密钥：d86d0b43c41c255217e9377f570e3283 -->
 
