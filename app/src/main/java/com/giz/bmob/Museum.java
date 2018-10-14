@@ -115,6 +115,7 @@ public class Museum extends BmobObject {
 
     public void setLocation(double[] location) {
         mLocation = location;
+    }
 
     public String getAddress() {
         return mAddress;
