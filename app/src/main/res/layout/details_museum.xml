@@ -26,7 +26,7 @@
             app:expandedTitleGravity="top"
             app:titleEnabled="true"
             app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"

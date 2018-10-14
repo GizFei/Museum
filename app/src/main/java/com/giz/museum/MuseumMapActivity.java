@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.AMapLocationClientOption;
@@ -17,13 +18,14 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
 
 public class MuseumMapActivity extends AppCompatActivity {
 
     private MapView mMapView;
     //声明AMapLocationClient类对象
-    public AMapLocationListener locationListener;
+//    public AMapLocationListener locationListener;
     private AMapLocationClient locationClient = null;
     private AMapLocationClientOption locationOption = null;
 
@@ -71,9 +73,12 @@ public class MuseumMapActivity extends AppCompatActivity {
                  *
                  *
                  */
-                String a = marker.getTitle();
-                Toast t = Toast.makeText(getApplicationContext(), a, Toast.LENGTH_LONG);
-                t.show();
+//                String a = marker.getTitle();
+//                Toast t = Toast.makeText(getApplicationContext(), a, Toast.LENGTH_LONG);
+//                t.show();
+                String id = MuseumLibrary.get().queryMuseumsByWord(marker.getTitle()).get(0).getMuseumId();
+                startActivity(MuseumActivity.newIntent(MuseumMapActivity.this, id));
+                finish();
             }
         };
         aMap.setOnInfoWindowClickListener(infoListener);
@@ -85,7 +90,12 @@ public class MuseumMapActivity extends AppCompatActivity {
         locationClient = new AMapLocationClient(this.getApplicationContext());
         locationOption = getDefaultOption();
         //设置定位监听
-        locationClient.setLocationListener(locationListener);
+        locationClient.setLocationListener(new AMapLocationListener() {
+            @Override
+            public void onLocationChanged(AMapLocation aMapLocation) {
+                return;
+            }
+        });
     }
 
     private AMapLocationClientOption getDefaultOption() {

@@ -1,5 +1,7 @@
 package com.giz.museum;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,6 +31,9 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 
+/**
+ * getActivity为空：回退的时候，Fragment被销毁，但是异步进程还在运行，导致异步进程中的getActivity方法错误
+ */
 public class InfoFragment extends Fragment {
 
     private static final String ARGS_ID = "bundle_id";
@@ -40,6 +45,8 @@ public class InfoFragment extends Fragment {
     private CardView mActivityCard;
     private CardView mNewsCard;
 
+    private ActivityOrShowTask mActivityOrShowTask;
+    private NewsTask mNewsTask;
     /**
      * 创建InfoFragment，传入博物馆的ID
      * @param museumId 博物馆ID
@@ -82,6 +89,8 @@ public class InfoFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mActivityOrShowTask.cancel(true);
+        mNewsTask.cancel(true);
     }
 
     @Override
@@ -108,8 +117,10 @@ public class InfoFragment extends Fragment {
 
     private void initActivityCard(List<MuseumAOrS> museumAOrs){
         LinearLayout activityContainer = mActivityCard.findViewById(R.id.activity_container);
+        if(museumAOrs == null)
+            return;
         for(int i = 0; i < museumAOrs.size(); i++){
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.card_item_activity, null);
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.card_item_activity, null);
             MuseumAOrS aOrS = museumAOrs.get(i);
             ((ImageView)view.findViewById(R.id.pic_activity)).setImageDrawable(aOrS.thumbDrawable);
             ((TextView)view.findViewById(R.id.title_activity)).setText(aOrS.title);
@@ -129,15 +140,24 @@ public class InfoFragment extends Fragment {
 
     private void initNewsCard(List<MuseumNews> museumNews){
         LinearLayout newsContainer = mNewsCard.findViewById(R.id.news_container);
+        if(museumNews == null)
+            return;
         for(int i = 0; i < museumNews.size(); i++){
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.card_item_news, null);
-            MuseumNews news = museumNews.get(i);
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.card_item_news, null);
+            final MuseumNews news = museumNews.get(i);
             ((ImageView)view.findViewById(R.id.pic_news)).setImageDrawable(news.thumbDrawable);
             ((TextView)view.findViewById(R.id.title_news)).setText(news.title);
             ((TextView)view.findViewById(R.id.date_news)).setText(news.date);
             ((TextView)view.findViewById(R.id.url_news)).setText(news.url);
             if(i == museumNews.size()-1)
                 view.findViewById(R.id.divider).setVisibility(View.GONE);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = WebViewActivity.newIntent(getActivity(), news.url);
+                    startActivity(intent);
+                }
+            });
             newsContainer.addView(view);
         }
     }
@@ -157,8 +177,10 @@ public class InfoFragment extends Fragment {
                         mMuseum.setIntro(object.getString("intro"));
                         initInfoCard();
                         initIntroCard();
-                        new ActivityOrShowTask().execute(object.getJSONArray("activities"));
-                        new NewsTask().execute(object.getJSONArray("news"));
+                        mActivityOrShowTask = new ActivityOrShowTask();
+                        mActivityOrShowTask.execute(object.getJSONArray("activities"));
+                        mNewsTask = new NewsTask();
+                        mNewsTask.execute(object.getJSONArray("news"));
                     }catch (Exception ee){
                         ee.printStackTrace();
                     }
