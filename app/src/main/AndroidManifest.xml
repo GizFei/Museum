@@ -54,6 +54,7 @@
         <activity android:name=".MuseumActivity"
             android:parentActivityName=".MuseumListActivity"/>
         <activity android:name=".MuseumMapActivity" />
+        <activity android:name=".MuseumTrackActivity" />
     </application>
     <!-- Bmob密钥：d86d0b43c41c255217e9377f570e3283 -->
 
