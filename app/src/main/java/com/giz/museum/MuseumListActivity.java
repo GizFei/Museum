@@ -464,6 +464,7 @@ public class MuseumListActivity extends AppCompatActivity {
         }
     }
 
+    // 从云端下载博物馆列表
     private void downloadMuseumList(){
         Log.d("kkk", "download");
         BmobQuery query = new BmobQuery("museum");
@@ -481,6 +482,8 @@ public class MuseumListActivity extends AppCompatActivity {
                             museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
                             museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
                             museum.setPicFolder(object.getString("picFolder"));
+                            museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
+                                object.getJSONArray("location").getDouble(1)});
 //                            Log.d("BMOB", museum.getMuseumId());
                             mMuseumList.add(museum);
                         }
