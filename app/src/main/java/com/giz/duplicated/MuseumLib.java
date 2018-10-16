@@ -1,4 +1,4 @@
-package com.giz.customize;
+package com.giz.duplicated;
 
 import android.content.Context;
 import android.util.Log;
