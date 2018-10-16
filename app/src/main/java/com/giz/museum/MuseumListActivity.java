@@ -284,8 +284,10 @@ public class MuseumListActivity extends AppCompatActivity {
      * 切换列表显示样式
      */
     private void switchRecyclerView() {
-        mSearchView.setQuery("", false);
-        mSearchView.clearFocus();
+        if(mSearchView.isFocused()){
+            mSearchView.setQuery("", false);
+            mSearchView.clearFocus();
+        }
         if(isListStyle){
             AnimatedVectorDrawableCompat listToGridAnim = AnimatedVectorDrawableCompat.create(this,
                     R.drawable.av_list_to_pager);
@@ -371,8 +373,10 @@ public class MuseumListActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            mSearchView.setQuery("", false);
-            mSearchView.clearFocus();
+            if(mSearchView.isFocused()){
+                mSearchView.setQuery("", false);
+                mSearchView.clearFocus();
+            }
             Intent intent = MuseumActivity.newIntent(MuseumListActivity.this,
                     mMuseum.getMuseumId());
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
@@ -558,5 +562,13 @@ public class MuseumListActivity extends AppCompatActivity {
             mProgressBar.setVisibility(View.GONE);
             super.onPostExecute(aVoid);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
 }
