@@ -141,6 +141,7 @@
             android:layout_marginStart="@dimen/normalize_margin"
             android:layout_marginEnd="@dimen/normalize_margin"
             android:layout_marginBottom="@dimen/mSmall"
+            android:paddingTop="@dimen/pSmall"
             android:orientation="vertical">
 
         </LinearLayout>

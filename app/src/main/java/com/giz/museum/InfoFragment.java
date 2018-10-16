@@ -69,6 +69,8 @@ public class InfoFragment extends Fragment {
         Log.d(TAG, id);
 
         mMuseum = MuseumLibrary.get().getMuseumById(id);
+        mActivityOrShowTask = new ActivityOrShowTask();
+        mNewsTask = new NewsTask();
     }
 
     @Nullable
@@ -89,8 +91,12 @@ public class InfoFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mActivityOrShowTask.cancel(true);
-        mNewsTask.cancel(true);
+        if(mActivityOrShowTask != null){
+            mActivityOrShowTask.cancel(true);
+        }
+        if(mNewsTask != null){
+            mNewsTask.cancel(true);
+        }
     }
 
     @Override
@@ -177,9 +183,7 @@ public class InfoFragment extends Fragment {
                         mMuseum.setIntro(object.getString("intro"));
                         initInfoCard();
                         initIntroCard();
-                        mActivityOrShowTask = new ActivityOrShowTask();
                         mActivityOrShowTask.execute(object.getJSONArray("activities"));
-                        mNewsTask = new NewsTask();
                         mNewsTask.execute(object.getJSONArray("news"));
                     }catch (Exception ee){
                         ee.printStackTrace();
