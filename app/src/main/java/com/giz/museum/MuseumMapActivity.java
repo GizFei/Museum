@@ -88,7 +88,6 @@ public class MuseumMapActivity extends AppCompatActivity {
         locationClient.setLocationListener(new AMapLocationListener() {
             @Override
             public void onLocationChanged(AMapLocation aMapLocation) {
-                return;
             }
         });
     }
