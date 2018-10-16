@@ -21,11 +21,16 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
 
+/*
+    To_Do_List:
+    1.镜头动态过渡效果
+    2.博物馆卡片中信息的完善
+    3.个性化InfoWindow
+ */
+
 public class MuseumMapActivity extends AppCompatActivity {
 
     private MapView mMapView;
-    //声明AMapLocationClient类对象
-//    public AMapLocationListener locationListener;
     private AMapLocationClient locationClient = null;
     private AMapLocationClientOption locationOption = null;
 
@@ -66,16 +71,6 @@ public class MuseumMapActivity extends AppCompatActivity {
         AMap.OnInfoWindowClickListener infoListener = new AMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                /*
-                 *
-                 *
-                 * 点击后的事件，下面是测试
-                 *
-                 *
-                 */
-//                String a = marker.getTitle();
-//                Toast t = Toast.makeText(getApplicationContext(), a, Toast.LENGTH_LONG);
-//                t.show();
                 String id = MuseumLibrary.get().queryMuseumsByWord(marker.getTitle()).get(0).getMuseumId();
                 startActivity(MuseumActivity.newIntent(MuseumMapActivity.this, id));
                 finish();

@@ -21,11 +21,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-//    sourceSets{
-//        main{
-//            jniLibs.srcDirs = ['libs']
-//        }
-//    }
+    sourceSets{
+        main{
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -39,10 +39,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-    //Bmob
-    implementation 'cn.bmob.android:bmob-sdk:3.6.6'
-
     //2D地图
     api 'com.amap.api:map2d:latest.integration'
     //3D地图so及jar
@@ -51,5 +47,5 @@ dependencies {
     api 'com.amap.api:location:latest.integration'
     //搜索功能
     api 'com.amap.api:search:latest.integration'
-
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

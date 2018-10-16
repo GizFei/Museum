@@ -1,4 +1,4 @@
-package com.giz.customize;
+package com.giz.duplicated;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
