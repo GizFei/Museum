@@ -26,6 +26,7 @@ import com.giz.bmob.MuseumLibrary;
     1.镜头动态过渡效果
     2.博物馆卡片中信息的完善
     3.个性化InfoWindow
+    4.个性化地图icon
  */
 
 public class MuseumMapActivity extends AppCompatActivity {
