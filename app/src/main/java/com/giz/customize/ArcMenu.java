@@ -326,6 +326,8 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
             view.setVisibility(GONE);
         }
 
+        if(isOpen())
+            rotateCButton(mCButton, -180f, 0f, 300);
         toggleMenu(300);
 //        changeStatus();
     }
