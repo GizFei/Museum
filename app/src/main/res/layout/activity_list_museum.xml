@@ -27,7 +27,7 @@
             android:layout_height="120dp"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/colorPrimary"
             app:elevation="0dp"
             android:background="@color/white">
 
@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:minHeight="68dp"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -151,16 +151,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="@dimen/mLarge"
             android:scaleType="center"
             android:src="@drawable/icon_map"
             android:backgroundTint="@color/colorAccent"
             app:pressedTranslationZ="@dimen/normalize_margin"
+            app:layout_behavior="com.giz.utils.MapFabBehavior"
             app:rippleColor="@color/light_gray"
             app:fabSize="normal"
             app:borderWidth="0dp"
             app:elevation="@dimen/mSmall"
-            app:layout_behavior="com.giz.utils.MapFabBehavior"/>
+            app:layout_anchor="@id/bottom_app_bar"/>
+
+        <android.support.design.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingTop="@dimen/normalize_padding"
+            android:paddingBottom="@dimen/normalize_padding"
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/colorPrimary"
+            app:fabAlignmentMode="end"
+            app:fabCradleMargin="@dimen/normalize_margin"
+            app:hideOnScroll="true"
+            app:fabCradleVerticalOffset="@dimen/normalize_padding" />
 
     </android.support.design.widget.CoordinatorLayout>
 

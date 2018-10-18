@@ -61,7 +61,7 @@
                 android:layout_marginBottom="@dimen/normalize_margin"
                 android:drawableStart="@drawable/ic_museum"
                 android:drawablePadding="@dimen/pSmall"
-                android:text="浙江省博物馆武林馆"/>
+                android:text="博物馆名称"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                 android:drawableStart="@drawable/ic_address"
                 android:drawablePadding="@dimen/pSmall"
                 android:layout_marginBottom="@dimen/normalize_margin"
-                android:text="地址：杭州西湖文化广场E区"/>
+                android:text="博物馆地址"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
                 android:drawableStart="@drawable/ic_ticket"
                 android:drawablePadding="@dimen/pSmall"
                 android:layout_marginBottom="@dimen/normalize_margin"
-                android:text="门票：免费"/>
+                android:text="博物馆门票"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                 android:drawableStart="@drawable/ic_opentime"
                 android:drawablePadding="@dimen/pSmall"
                 android:layout_marginBottom="@dimen/normalize_margin"
-                android:text="开放时间：9:00 ~ 17:00，周一闭馆（法定节假日除外）"/>
+                android:text="博物馆开放时间"/>
 
         </LinearLayout>
 
@@ -137,7 +137,7 @@
             android:lineSpacingExtra="@dimen/mSmall"
             android:textSize="15sp"
             android:textColor="@color/black"
-            android:text="@string/intro_example" />
+            android:text="博物馆简介" />
 
     </android.support.v7.widget.CardView>
 
