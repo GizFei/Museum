@@ -74,11 +74,13 @@ public class CustomBottomSheet extends BottomSheetDialog implements View.OnClick
                 getContext().startActivity(Intent.createChooser(sendIntent, "分享到"));
                 */
                 //分享图像
+                /*
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uriToImage);
                 shareIntent.setType("image/jpeg");
                 getContext().startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+                */
                 break;
             }
             case R.id.action_collect:
