@@ -2,9 +2,18 @@ package com.giz.museum;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -18,11 +27,16 @@ import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
@@ -32,6 +46,7 @@ import com.giz.utils.MuseumPicturePagerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +76,48 @@ public class MuseumActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MUSEUM, museumId);
         return intent;
     }
+
+    /*
+    //Drawable转化为Bitmap
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        //取 drawable 的长宽
+        int w = drawable.getIntrinsicWidth();
+        int h = drawable.getIntrinsicHeight();
+        //取 drawable 的颜色格式
+        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                : Bitmap.Config.RGB_565;
+        //建立对应 bitmap
+        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+        //建立对应 bitmap 的画布
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, w, h);
+        //把 drawable 内容画到画布中
+        drawable.draw(canvas);
+        return bitmap;
+    }
+    //Bitmap转化为byte[]
+    public byte[] Bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+    //Text文本转化为Bitmap
+    //需要规定所有的简介不能很长
+    public Bitmap StringtoBitmap(String s) {
+        Bitmap bmp = Bitmap.createBitmap(256, 300, Bitmap.Config.ARGB_4444);
+        Canvas canvasTemp = new Canvas(bmp);
+        canvasTemp.drawColor(Color.WHITE);
+        TextPaint p = new TextPaint();
+        p.setAntiAlias(true);
+        p.setTextSize(16.0F);
+        //第三个参数自动换行
+        StaticLayout staticLayout = new StaticLayout(s, p, bmp.getWidth()-8,
+                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        canvasTemp.translate(6, 20);
+        staticLayout.draw(canvasTemp);
+        return bmp;
+    }
+    */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,6 +218,7 @@ public class MuseumActivity extends AppCompatActivity {
             public void onClick(View view, int pos) {
                 switch(pos){
                     case 0: // 分享
+                        share();
                         break;
                     case 1: // 导航
                         Intent intent = MuseumTrackActivity.newIntent(MuseumActivity.this, mMuseum.getMuseumId());
@@ -311,5 +369,48 @@ public class MuseumActivity extends AppCompatActivity {
                 mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
             }
         }
+    }
+
+    //Textview转化为Bitmap
+    private Bitmap textViewToBitmap(TextView t) {
+        t.setDrawingCacheEnabled(true);
+        t.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        t.layout(0, 0, t.getMeasuredWidth(), t.getMeasuredHeight());
+        Bitmap bitmap = Bitmap.createBitmap(t.getDrawingCache());
+        //千万别忘最后一步
+        t.destroyDrawingCache();
+        return bitmap;
+    }
+
+    private void share() {
+        //只是用到了Android自带的分享，如果有更高需求可以使用shareSDK包
+        TextView textView = new TextView(getApplicationContext());
+        textView.setBackgroundResource(R.color.white);
+        textView.setMaxWidth(2048);
+        textView.setTextSize(18);
+        textView.setPadding(20, 20,20,20);
+        textView.setText(mMuseum.getName()+"\n"+"地址："+mMuseum.getAddress()+"\n"
+                         +"门票："+mMuseum.getTicket()+"\n"+"开放时间："+mMuseum.getOpenTime()+"\n"
+                         +"\n"+"\t\t\t\t"+mMuseum.getIntro());
+
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        ArrayList<Uri> imageUris = new ArrayList<>();
+        Drawable img = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getCover();
+        //强制转换Drawable/Textview为Bitmap
+        //Bitmap bitmap1 = drawableToBitmap(img);
+        Bitmap bitmap1 = ((BitmapDrawable)img).getBitmap();
+        //Bitmap bitmap1 = drawableToBitmap(img);
+        Bitmap bitmap2 = textViewToBitmap(textView);
+        //Bitmap转化为Uri
+        Uri uri1 = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap1, null,null));
+        Uri uri2 = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap2, null,null));
+        imageUris.add(uri1);
+        imageUris.add(uri2);
+
+        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+        shareIntent.setType("image/*");
+        startActivity(Intent.createChooser(shareIntent, "分享到"));
     }
 }
