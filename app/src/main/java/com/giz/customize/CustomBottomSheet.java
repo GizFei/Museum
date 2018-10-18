@@ -3,6 +3,7 @@ package com.giz.customize;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,8 @@ public class CustomBottomSheet extends BottomSheetDialog implements View.OnClick
     private ImageView mRecordIcon;   // 记录
     private Museum mMuseum;
 
+    private Bitmap bitmap;
+
     public CustomBottomSheet(@NonNull Context context, String museumId) {
         super(context);
         setContentView(R.layout.bottom_sheet);
@@ -55,8 +58,29 @@ public class CustomBottomSheet extends BottomSheetDialog implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.action_share:
+            case R.id.action_share: {
+                //只是用到了Android自带的分享，如果有更高需求可以使用shareSDK包
+                /*
+                //分享文字
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                String name = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getName();
+                String address = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getAddress();
+                String ticket = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getTicket();
+                String opentime = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getOpenTime();
+                String intro  = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getIntro();
+                sendIntent.putExtra(Intent.EXTRA_TEXT,name+"\n"+address+"\n"+ticket+"\n"+opentime+"\n"+intro);
+                sendIntent.setType("text/plain");
+                getContext().startActivity(Intent.createChooser(sendIntent, "分享到"));
+                */
+                //分享图像
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uriToImage);
+                shareIntent.setType("image/jpeg");
+                getContext().startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
                 break;
+            }
             case R.id.action_collect:
                 break;
             case R.id.action_mark:
