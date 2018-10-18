@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giz.bmob.MuseumLibrary;
+import com.giz.customize.PopupMenu;
 import com.giz.utils.BlurBackgroundManager;
 import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
@@ -85,6 +86,7 @@ public class MuseumListActivity extends AppCompatActivity {
     private AppBarLayout mAppBarLayout;
     private ProgressBar mProgressBar;
     private BottomAppBar mBottomAppBar;
+    private PopupMenu mPopupMenu;
 
     private List<Museum> mMuseumList;
 
@@ -98,7 +100,7 @@ public class MuseumListActivity extends AppCompatActivity {
         // 初始化布局控件
         mAppBarLayout = findViewById(R.id.myAppBar);
         mBottomAppBar = findViewById(R.id.bottom_app_bar);
-        mBottomAppBar.replaceMenu(R.menu.menu_bottom);
+//        mBottomAppBar.replaceMenu(R.menu.menu_bottom);
         // 初始化列表
         mMuseumRecyclerView = findViewById(R.id.list_museum);
         mMuseumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -115,8 +117,10 @@ public class MuseumListActivity extends AppCompatActivity {
         // 初始化ViewPager
         mMuseumViewPager = findViewById(R.id.pager_museum);
         mPagerBg = findViewById(R.id.pager_bg);
-        //
+        // 进度条
         mProgressBar = findViewById(R.id.progressBar);
+        // 弹出菜单
+        mPopupMenu = findViewById(R.id.popup_menu);
         // 初始化事件
         initEvents();
 
@@ -180,20 +184,40 @@ public class MuseumListActivity extends AppCompatActivity {
             }
         });
 
-        mBottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//        mBottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem menuItem) {
+//                switch (menuItem.getItemId()){
+//                    case R.id.item_bottom_star: // 收藏夹
+//                        Snackbar.make(mBottomAppBar, "Star", Snackbar.LENGTH_SHORT).show();
+//                        Toast.makeText(MuseumListActivity.this, "KKK", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case R.id.item_bottom_mark: //打卡记录
+//                        Snackbar.make(mBottomAppBar, "Mark", Snackbar.LENGTH_SHORT).show();
+//                        Toast.makeText(MuseumListActivity.this, "KKK", Toast.LENGTH_SHORT).show();
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+        mBottomAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.item_bottom_star: // 收藏夹
-                        Snackbar.make(mBottomAppBar, "Star", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                mPopupMenu.toggle();
+            }
+        });
+
+        mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.popup_collection: // 收藏夹
                         Toast.makeText(MuseumListActivity.this, "KKK", Toast.LENGTH_SHORT).show();
                         break;
-                    case R.id.item_bottom_mark: //打卡记录
-                        Snackbar.make(mBottomAppBar, "Mark", Snackbar.LENGTH_SHORT).show();
-                        Toast.makeText(MuseumListActivity.this, "KKK", Toast.LENGTH_SHORT).show();
+                    case R.id.popup_record: // 记录集
+                        Toast.makeText(MuseumListActivity.this, "ddd2", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                return true;
             }
         });
 

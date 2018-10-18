@@ -7,9 +7,13 @@
         <enum name="right_bottom" value="4"/>
         <enum name="right_center" value="5" />
     </attr>
+    <attr name="distanceBetweenView" format="dimension" />
     <attr name="radius" format="dimension"/>
     <declare-styleable name="ArcMenu">
         <attr name="position"/>
         <attr name="radius"/>
+    </declare-styleable>
+    <declare-styleable name="PopupMenu">
+        <attr name="distanceBetweenView" />
     </declare-styleable>
 </resources>
