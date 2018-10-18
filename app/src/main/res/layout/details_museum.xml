@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:transitionName="@string/image_trans"
-                    android:background="@color/gray">
+                    android:background="@color/light_gray">
 
                 </android.support.v4.view.ViewPager>
 
@@ -110,7 +110,6 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginEnd="32dp"
-        android:src="@drawable/icon_museum_bottom"
         android:translationZ="32dp"
         android:clipToPadding="false"
         app:radius="80dp"
