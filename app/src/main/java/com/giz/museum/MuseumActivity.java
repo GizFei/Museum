@@ -11,7 +11,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -22,11 +21,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
-import com.giz.customize.CustomBottomSheet;
+import com.giz.customize.ArcMenu;
 import com.giz.utils.MuseumPicturePagerAdapter;
 
 import org.json.JSONArray;
@@ -98,9 +98,6 @@ public class MuseumActivity extends AppCompatActivity {
 
         mViewPager = findViewById(R.id.picture_vp);
         setUpPager();
-//        final MuseumPicturePagerAdapter adapter = new MuseumPicturePagerAdapter(this,
-//                mMuseum.getPicFolder());
-//        pictures.setAdapter(adapter);
 
         CollapsingToolbarLayout ctl = findViewById(R.id.ctl);
         ctl.setTitle(mMuseum.getName());
@@ -109,9 +106,6 @@ public class MuseumActivity extends AppCompatActivity {
         ctl.setStatusBarScrimResource(R.color.colorPrimaryDark);
 
         mDotsLinearLayout = findViewById(R.id.dots_ll);
-//        for(int i = mPagerAdapter.getCount(); i < 5; i++){
-//            mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
-//        }
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -160,17 +154,40 @@ public class MuseumActivity extends AppCompatActivity {
         });
         bottomNavigationView.setOnNavigationItemReselectedListener(null);
 
-        FloatingActionButton mFAB = findViewById(R.id.action_fab);
-        mFAB.setOnClickListener(new View.OnClickListener() {
+        final ArcMenu menu = findViewById(R.id.action_arcmenu);
+        final ImageView arcMain = findViewById(R.id.arc_main);
+        menu.setMenuItemClickListener(new ArcMenu.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                CustomBottomSheet dialog = new CustomBottomSheet(MuseumActivity.this, mMuseum.getMuseumId());
-//                dialog.setContentView(R.layout.bottom_sheet);
-                dialog.show();
+            public void onClick(View view, int pos) {
+                switch(pos){
+                    case 0: // 分享
+                        break;
+                    case 1: // 导航
+                        Intent intent = MuseumTrackActivity.newIntent(MuseumActivity.this, mMuseum.getMuseumId());
+                        startActivity(intent);
+                        break;
+                    case 2: // 收藏
+                        break;
+                    case 3: // 记录
+                        break;
+                    case 4: // 打卡
+                        break;
+                }
             }
         });
 
         mAppBarLayout = findViewById(R.id.myAppBar);
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                if(i != 0 && menu.isOpen())
+                    menu.fold();
+                float factor = 1.0f - (-(float)i) / appBarLayout.getTotalScrollRange();
+                menu.setAlpha(factor);
+                arcMain.setScaleX(factor);
+                arcMain.setScaleY(factor);
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -198,10 +215,10 @@ public class MuseumActivity extends AppCompatActivity {
         // 允许滑动
         mScrollView.setNestedScrollingEnabled(true);
         // 向下滑出以显示
-        CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams()).getBehavior();
+        CoordinatorLayout.LayoutParams params = ((CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams());
+        CoordinatorLayout.Behavior behavior = params.getBehavior();
         behavior.onNestedPreScroll(mCoordinatorLayout, mAppBarLayout, mScrollView, 0,
-                -mAppBarLayout.getTotalScrollRange(), new int[]{0, 0}, 0);
-
+                0, new int[]{0,0}, 0);
     }
 
     /**
@@ -241,7 +258,6 @@ public class MuseumActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().remove(mInfoFragment)
                 .remove(mPanoramaFragment).commit();
         super.onBackPressed();
-//        ActivityCompat.finishAfterTransition(this);
     }
 
     private void setUpPager(){

@@ -26,7 +26,7 @@
             app:expandedTitleGravity="top"
             app:titleEnabled="true"
             app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
+            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed|enterAlwaysCollapsed">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -37,14 +37,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:transitionName="@string/image_trans"
-                    android:background="@color/transparent">
+                    android:background="@color/gray">
 
                 </android.support.v4.view.ViewPager>
 
                 <android.support.v4.widget.ContentLoadingProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyle"
-                    android:indeterminateTint="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -106,19 +105,54 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/action_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.giz.customize.ArcMenu
+        android:id="@+id/action_arcmenu"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/nice_blue"
         android:src="@drawable/icon_museum_bottom"
+        android:translationZ="32dp"
+        android:clipToPadding="false"
+        app:radius="80dp"
+        app:position="right_center"
         app:rippleColor="@color/light_gray"
-        app:borderWidth="0dp"
-        app:elevation="@dimen/mSmall"
-        app:fabCustomSize="48dp"
         app:layout_anchor="@+id/myAppBar"
-        app:layout_anchorGravity="right|bottom" />
+        app:layout_anchorGravity="right|bottom">
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/ic_arc_share" />
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_arc_nav"
+            android:contentDescription="@string/image_description" />
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_arc_star"
+            android:contentDescription="@string/image_description" />
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_arc_record"
+            android:contentDescription="@string/image_description" />
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_arc_mark"
+            android:contentDescription="@string/image_description" />
+        <ImageView
+            android:id="@+id/arc_main"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/ic_arc_museum"
+            app:elevation="16dp" />
+
+    </com.giz.customize.ArcMenu>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
@@ -146,7 +180,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/white"
         android:layoutAnimation="@anim/layout_from_bottom_navbottom"
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         app:elevation="@dimen/pSmall"

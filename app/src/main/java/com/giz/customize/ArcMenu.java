@@ -21,6 +21,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
     private static final int POS_LEFT_BOTTOM = 2;
     private static final int POS_RIGHT_TOP = 3;
     private static final int POS_RIGHT_BOTTOM = 4;
+    private static final int POS_RIGHT_CENTER = 5;
 
     private Position mPosition = Position.RIGHT_BOTTOM;
     private int mRadius;
@@ -38,7 +39,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
     }
     // 菜单的位置枚举类
     public enum Position{
-        LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM
+        LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM, RIGHT_CENTER
     }
 
     public ArcMenu(Context context) {
@@ -76,6 +77,8 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 break;
             case POS_RIGHT_BOTTOM:
                 mPosition = Position.RIGHT_BOTTOM;
+            case POS_RIGHT_CENTER:
+                mPosition = Position.RIGHT_CENTER;
                 break;
         }
         mRadius = (int)a.getDimension(R.styleable.ArcMenu_radius,
@@ -92,7 +95,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
         if(changed){
             layoutCButton();
 
-            double angle = 90.0 / (mSubBtnCount - 1);
+            double angle = 180.0 / (mSubBtnCount - 1);
             for(int i = 0; i < mSubBtnCount; i++)
                 layoutSubButton(angle, i);
         }
@@ -130,7 +133,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
         int width = mCButton.getMeasuredWidth();
         int height = mCButton.getMeasuredHeight();
 
-        switch (mPosition){
+        switch (mPosition) {
             case LEFT_TOP:
                 l = 0;
                 t = 0;
@@ -146,6 +149,10 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
             case RIGHT_BOTTOM:
                 l = getMeasuredWidth() - width;
                 t = getMeasuredHeight() - height;
+                break;
+            case RIGHT_CENTER:
+                l = getMeasuredWidth() - width;
+                t = getMeasuredHeight() / 2 - height / 2;
                 break;
         }
 
@@ -180,13 +187,19 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 l = getMeasuredWidth() - (int)(mRadius * Math.sin(mAngle)) - width;
                 t = getMeasuredHeight() - (int)(mRadius * Math.cos(mAngle)) - height;
                 break;
+            case RIGHT_CENTER:
+                l = getMeasuredWidth() - (int)(mRadius * Math.sin(mAngle)) - width;
+                if(index <= mSubBtnCount/2){
+                    t = getMeasuredHeight()/2 - (int)(mRadius * Math.cos(mAngle)) - height/2;
+                }else{
+                    t = getMeasuredHeight()/2 - (int)(mRadius * Math.cos(mAngle)) - height/2;
+                }
+                break;
         }
 
-
-        subButton.layout(l, t, l + width,
-                t + height);
+        l -= 10;
+        subButton.layout(l, t, l + width, t + height);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -194,7 +207,10 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
 //        if(mCButton == null){
 //            mCButton = getChildAt(0);
 //        }
-        rotateCButton(v, 0f, 360f, 300);
+        if(isOpen())
+            rotateCButton(v, -180f, 0f, 300);
+        else
+            rotateCButton(v, 0f, -180f, 300);
 
         toggleMenu(300);
     }
@@ -202,7 +218,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
     // 切换菜单
     public void toggleMenu(int duration){
         // 为menuItem添加平移动画和旋转动画
-        double angele = Math.PI / 2 /(mSubBtnCount - 1);
+        double angele = Math.PI /(mSubBtnCount - 1);
         for(int i = 0; i < mSubBtnCount; i++) {
             final View childView = getChildAt(i);
             childView.setVisibility(VISIBLE);
@@ -218,6 +234,14 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 cl = (int) (mRadius * Math.sin(angele * i));
                 ct = (int) (mRadius * Math.cos(angele * i));
             }
+//            if(mPosition == Position.RIGHT_CENTER){
+//                cl = (int) (mRadius * Math.sin(angele * i));
+//                if(i < mSubBtnCount/2){
+//                    ct = (int) (mRadius * Math.cos(angele * i));
+//                }else{
+//                    ct = (int) (mRadius * Math.cos(angele * i));
+//                }
+//            }
 
             int xflag = 1;
             int yflag = 1;
@@ -226,6 +250,10 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 xflag = -1;
             if (mPosition == Position.LEFT_TOP || mPosition == Position.RIGHT_TOP)
                 yflag = -1;
+            if(mPosition == Position.RIGHT_CENTER){
+                xflag = 1;
+                yflag = 1;
+            }
 
             AnimationSet animSet = new AnimationSet(true);
             Animation tranAnim = null;
@@ -298,7 +326,8 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
             view.setVisibility(GONE);
         }
 
-        changeStatus();
+        toggleMenu(300);
+//        changeStatus();
     }
 
     public boolean isOpen(){
