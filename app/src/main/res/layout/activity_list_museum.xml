@@ -14,8 +14,8 @@
         android:contentDescription="@string/image_description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_bg"
-        tools:background="@color/light_bg"/>
+        android:background="@color/gray"
+        tools:background="@color/gray"/>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -154,7 +154,7 @@
             android:layout_marginBottom="@dimen/mLarge"
             android:scaleType="center"
             android:src="@drawable/icon_map"
-            android:backgroundTint="@color/nice_blue"
+            android:backgroundTint="@color/colorAccent"
             app:pressedTranslationZ="@dimen/normalize_margin"
             app:rippleColor="@color/light_gray"
             app:fabSize="normal"

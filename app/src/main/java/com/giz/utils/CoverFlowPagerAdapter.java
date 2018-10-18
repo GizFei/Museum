@@ -61,8 +61,10 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
         mMuseumCatalogs.add((TextView) view.findViewById(R.id.museum_catalog1));
         mMuseumCatalogs.add((TextView) view.findViewById(R.id.museum_catalog2));
         mMuseumCatalogs.add((TextView) view.findViewById(R.id.museum_catalog3));
+        TextView mMuseumAddr = view.findViewById(R.id.address_museum);
 
         mMuseumName.setText(museum.getName());
+        mMuseumAddr.setText(museum.getAddress());
         int catalogs = museum.getCatalog().size();
         for (int i = 0; i < mMuseumCatalogs.size(); i++) {
             if (i < catalogs) {
@@ -71,8 +73,7 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
                 mMuseumCatalogs.get(i).setVisibility(View.GONE);
             }
         }
-//        PictureDownloader pm = new PictureDownloader(mContext, museum.getPicFolder());
-//        imageView.setImageDrawable(pm.getDrawable(pm.getPictures()[0]));
+
         imageView.setImageDrawable(mMuseumList.get(position).getCover());
 
         view.setOnClickListener(new View.OnClickListener() {

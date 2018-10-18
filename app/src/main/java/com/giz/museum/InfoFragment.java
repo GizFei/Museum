@@ -15,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
+import com.giz.customize.JustifyTextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class InfoFragment extends Fragment {
     private CardView mIntroCard;
     private CardView mActivityCard;
     private CardView mNewsCard;
+    private ProgressBar mMuseumProgress;
 
     private ActivityOrShowTask mActivityOrShowTask;
     private NewsTask mNewsTask;
@@ -82,6 +85,7 @@ public class InfoFragment extends Fragment {
         mIntroCard = view.findViewById(R.id.introduction);
         mActivityCard = view.findViewById(R.id.recent_activity);
         mNewsCard = view.findViewById(R.id.recent_news);
+        mMuseumProgress = view.findViewById(R.id.progress_museum);
 
         initDetails();
 
@@ -118,7 +122,7 @@ public class InfoFragment extends Fragment {
     }
 
     private void initIntroCard(){
-        ((TextView)mIntroCard.getChildAt(1)).setText(mMuseum.getIntro());
+        ((JustifyTextView)mIntroCard.findViewById(R.id.museum_intro)).setText(mMuseum.getIntro());
     }
 
     private void initActivityCard(List<MuseumAOrS> museumAOrs){
@@ -166,6 +170,7 @@ public class InfoFragment extends Fragment {
             });
             newsContainer.addView(view);
         }
+        mMuseumProgress.setVisibility(View.GONE);
     }
 
     private void initDetails(){
@@ -187,6 +192,7 @@ public class InfoFragment extends Fragment {
                         mNewsTask.execute(object.getJSONArray("news"));
                     }catch (Exception ee){
                         ee.printStackTrace();
+                        mMuseumProgress.setVisibility(View.GONE);
                     }
                 }
             }
@@ -212,6 +218,7 @@ public class InfoFragment extends Fragment {
                 }
                 return museumAOrs;
             }catch (Exception e){
+                mMuseumProgress.setVisibility(View.GONE);
                 e.printStackTrace();
             }
             return null;
@@ -239,6 +246,7 @@ public class InfoFragment extends Fragment {
                 }
                 return museumNews;
             }catch (Exception e){
+                mMuseumProgress.setVisibility(View.GONE);
                 e.printStackTrace();
             }
             return null;
