@@ -89,6 +89,10 @@ public class PopupMenu extends ViewGroup {
         });
     }
 
+    public boolean isMenuOpen(){
+        return isOpen;
+    }
+
     public void toggle(){
         if(isOpen)
             fold();
@@ -112,7 +116,7 @@ public class PopupMenu extends ViewGroup {
             AnimationSet animationSet = new AnimationSet(true);
             animationSet.addAnimation(translateAnimation);
             animationSet.addAnimation(alphaAnimation);
-            animationSet.setDuration(300);
+            animationSet.setDuration(240);
             animationSet.setFillAfter(true);
             animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
@@ -135,7 +139,7 @@ public class PopupMenu extends ViewGroup {
             AnimationSet animationSet = new AnimationSet(true);
             animationSet.addAnimation(translateAnimation);
             animationSet.addAnimation(alphaAnimation);
-            animationSet.setDuration(400);
+            animationSet.setDuration(240);
             animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
             view.startAnimation(animationSet);

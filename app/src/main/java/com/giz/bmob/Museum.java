@@ -16,7 +16,6 @@ public class Museum extends BmobObject {
     private String mName;     // 博物馆名称
     private List<String> mCatalog;  // 博物馆类别（如：综合）
     private String mLogoUrl;        // 博物馆Logo（资源url）
-    private String mPicFolder; // 博物馆图片的文件夹名称（位于assets中）
     private String mCoverUrl;
     private Drawable mLogo;   // Logo图片
     private Drawable mCover;  // 用于列表ViewPager的图片
@@ -32,7 +31,6 @@ public class Museum extends BmobObject {
         mMuseumId = "";
         mName = "";
         mCatalog = new ArrayList<>();
-        mPicFolder = "";
         mLogoUrl = "";
         mLocation = new double[2];
         this.setTableName("museum");
@@ -42,7 +40,6 @@ public class Museum extends BmobObject {
         this.mMuseumId = uuid;
         mName = "";
         mCatalog = new ArrayList<>();
-        mPicFolder = "";
         mLogoUrl = "";
         mLocation = new double[2];
         this.setTableName("museum");
@@ -76,14 +73,6 @@ public class Museum extends BmobObject {
         mLogoUrl = logo;
     }
 
-    public String getPicFolder() {
-        return mPicFolder;
-    }
-
-    public void setPicFolder(String picFolder) {
-        mPicFolder = picFolder;
-    }
-
     public void setLogo(Drawable logo) {
         mLogo = logo;
     }
@@ -107,7 +96,6 @@ public class Museum extends BmobObject {
     public void setCoverUrl(String coverUrl) {
         mCoverUrl = coverUrl;
     }
-
 
     public double[] getLocation() {
         return mLocation;

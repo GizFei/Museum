@@ -173,7 +173,7 @@
             app:fabAlignmentMode="end"
             app:fabCradleMargin="@dimen/normalize_margin"
             app:hideOnScroll="true"
-            app:navigationIcon="@drawable/ic_menu_bottom_bar"
+            app:navigationIcon="@drawable/av_menu_to_up"
             app:fabCradleVerticalOffset="@dimen/normalize_padding" />
 
     </android.support.design.widget.CoordinatorLayout>
@@ -190,6 +190,7 @@
             android:id="@+id/popup_collection"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:elevation="@dimen/normalize_margin"
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_bottom_collection"/>
 
@@ -197,6 +198,7 @@
             android:id="@+id/popup_record"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:elevation="@dimen/normalize_margin"
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_bottom_record"/>
 
