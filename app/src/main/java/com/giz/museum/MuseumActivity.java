@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.giz.bmob.CollectionDB;
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
 import com.giz.customize.ArcMenu;
@@ -67,57 +68,18 @@ public class MuseumActivity extends AppCompatActivity {
     private PanoramaFragment mPanoramaFragment;
     private NestedScrollView mScrollView;
     private ContentLoadingProgressBar mProgressBar;
+    private ImageView mStarImgView;
 
     private ViewPager mViewPager;
     private MuseumPicturePagerAdapter mPagerAdapter;
+
+    private boolean mHasStarred;
 
     public static Intent newIntent(Context context, String museumId){
         Intent intent = new Intent(context, MuseumActivity.class);
         intent.putExtra(EXTRA_MUSEUM, museumId);
         return intent;
     }
-
-    /*
-    //Drawable转化为Bitmap
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        //取 drawable 的长宽
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-        //取 drawable 的颜色格式
-        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                : Bitmap.Config.RGB_565;
-        //建立对应 bitmap
-        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
-        //建立对应 bitmap 的画布
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, w, h);
-        //把 drawable 内容画到画布中
-        drawable.draw(canvas);
-        return bitmap;
-    }
-    //Bitmap转化为byte[]
-    public byte[] Bitmap2Bytes(Bitmap bm) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
-    //Text文本转化为Bitmap
-    //需要规定所有的简介不能很长
-    public Bitmap StringtoBitmap(String s) {
-        Bitmap bmp = Bitmap.createBitmap(256, 300, Bitmap.Config.ARGB_4444);
-        Canvas canvasTemp = new Canvas(bmp);
-        canvasTemp.drawColor(Color.WHITE);
-        TextPaint p = new TextPaint();
-        p.setAntiAlias(true);
-        p.setTextSize(16.0F);
-        //第三个参数自动换行
-        StaticLayout staticLayout = new StaticLayout(s, p, bmp.getWidth()-8,
-                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-        canvasTemp.translate(6, 20);
-        staticLayout.draw(canvasTemp);
-        return bmp;
-    }
-    */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,6 +109,12 @@ public class MuseumActivity extends AppCompatActivity {
      * 初始化布局
      */
     private void initViews() {
+
+        mStarImgView = findViewById(R.id.arc_img_star);
+        mHasStarred = CollectionDB.get(this).hasStarred(mMuseum.getMuseumId());
+        if(mHasStarred){
+            mStarImgView.setImageResource(R.drawable.ic_arc_starred);
+        }
 
         mProgressBar = findViewById(R.id.progressBar);
 
@@ -225,6 +193,14 @@ public class MuseumActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case 2: // 收藏
+                        if(mHasStarred){
+                            CollectionDB.get(MuseumActivity.this).removeStarMuseum(mMuseum.getMuseumId());
+                            mStarImgView.setImageResource(R.drawable.ic_arc_star);
+                        }else{
+                            CollectionDB.get(MuseumActivity.this).addStarMuseum(mMuseum);
+                            mStarImgView.setImageResource(R.drawable.ic_arc_starred);
+                        }
+                        mHasStarred = !mHasStarred;
                         break;
                     case 3: // 记录
                         break;
@@ -413,4 +389,46 @@ public class MuseumActivity extends AppCompatActivity {
         shareIntent.setType("image/*");
         startActivity(Intent.createChooser(shareIntent, "分享到"));
     }
+
+    /*
+    //Drawable转化为Bitmap
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        //取 drawable 的长宽
+        int w = drawable.getIntrinsicWidth();
+        int h = drawable.getIntrinsicHeight();
+        //取 drawable 的颜色格式
+        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                : Bitmap.Config.RGB_565;
+        //建立对应 bitmap
+        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+        //建立对应 bitmap 的画布
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, w, h);
+        //把 drawable 内容画到画布中
+        drawable.draw(canvas);
+        return bitmap;
+    }
+    //Bitmap转化为byte[]
+    public byte[] Bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+    //Text文本转化为Bitmap
+    //需要规定所有的简介不能很长
+    public Bitmap StringtoBitmap(String s) {
+        Bitmap bmp = Bitmap.createBitmap(256, 300, Bitmap.Config.ARGB_4444);
+        Canvas canvasTemp = new Canvas(bmp);
+        canvasTemp.drawColor(Color.WHITE);
+        TextPaint p = new TextPaint();
+        p.setAntiAlias(true);
+        p.setTextSize(16.0F);
+        //第三个参数自动换行
+        StaticLayout staticLayout = new StaticLayout(s, p, bmp.getWidth()-8,
+                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        canvasTemp.translate(6, 20);
+        staticLayout.draw(canvasTemp);
+        return bmp;
+    }
+    */
 }

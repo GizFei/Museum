@@ -28,9 +28,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
@@ -42,6 +42,7 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,12 +51,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".MuseumListActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".MuseumActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MuseumListActivity"/>
-        <activity android:name=".MuseumMapActivity" />
-        <activity android:name=".MuseumTrackActivity" />
-        <activity android:name=".WebViewActivity"/>
+        <activity android:name=".MuseumMapActivity"/>
+        <activity android:name=".MuseumTrackActivity"/>
+        <activity android:name=".WebViewActivity"
+            android:screenOrientation="portrait"/>
     </application>
     <!-- Bmob密钥：d86d0b43c41c255217e9377f570e3283 -->
 
