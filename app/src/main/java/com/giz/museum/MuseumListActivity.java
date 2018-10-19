@@ -135,8 +135,13 @@ public class MuseumListActivity extends AppCompatActivity {
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
 //                Log.d("APPBAR", String.valueOf(appBarLayout.getTotalScrollRange()));
 //                Log.d("APPBAR", String.valueOf(i));
-                if(mPopupMenu.isMenuOpen())
+                if(mPopupMenu.isMenuOpen()){
                     mPopupMenu.toggle();
+                    AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
+                            MuseumListActivity.this, R.drawable.av_up_to_menu);
+                    mBottomAppBar.setNavigationIcon(drawableCompat);
+                    ((Animatable)mBottomAppBar.getNavigationIcon()).start();
+                }
                 if(i == 0){
                     cardView.setBackgroundTintList(ColorStateList.valueOf(getResources().
                             getColor(R.color.light_gray)));
@@ -164,7 +169,11 @@ public class MuseumListActivity extends AppCompatActivity {
         mSwitchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchRecyclerView();
+                if(mPagerAdapter == null){
+                    Toast.makeText(MuseumListActivity.this, "还未加载完成", Toast.LENGTH_SHORT).show();
+                }else{
+                    switchRecyclerView();
+                }
             }
         });
 
@@ -216,7 +225,6 @@ public class MuseumListActivity extends AppCompatActivity {
                 switch (view.getId()){
                     case R.id.popup_collection: // 收藏夹
                         new CollectionBottomSheetFragment().show(getSupportFragmentManager(), "Collection");
-                        Toast.makeText(MuseumListActivity.this, "KKK", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.popup_record: // 记录集
                         Toast.makeText(MuseumListActivity.this, "ddd2", Toast.LENGTH_SHORT).show();
@@ -496,8 +504,9 @@ public class MuseumListActivity extends AppCompatActivity {
 
     // 从云端下载博物馆列表
     private void downloadMuseumList(){
-        // 防止误点击
-        mSwitchIcon.setEnabled(false);
+//        // 防止误点击
+//        mSwitchIcon.setEnabled(false);
+
         Log.d("kkk", "download");
         BmobQuery query = new BmobQuery("museum");
         query.findObjectsByTable(new QueryListener<JSONArray>() {
@@ -550,7 +559,7 @@ public class MuseumListActivity extends AppCompatActivity {
             mMuseumViewPager.setAdapter(mPagerAdapter);
         }
 
-        mSwitchIcon.setEnabled(true);
+//        mSwitchIcon.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
     }
 

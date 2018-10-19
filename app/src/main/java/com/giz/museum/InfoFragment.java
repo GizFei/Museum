@@ -150,8 +150,10 @@ public class InfoFragment extends Fragment {
 
     private void initNewsCard(List<MuseumNews> museumNews){
         LinearLayout newsContainer = mNewsCard.findViewById(R.id.news_container);
-        if(museumNews == null)
+        if(museumNews == null){
+            mMuseumProgress.setVisibility(View.GONE);
             return;
+        }
         for(int i = 0; i < museumNews.size(); i++){
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.card_item_news, null);
             final MuseumNews news = museumNews.get(i);
@@ -218,7 +220,6 @@ public class InfoFragment extends Fragment {
                 }
                 return museumAOrs;
             }catch (Exception e){
-                mMuseumProgress.setVisibility(View.GONE);
                 e.printStackTrace();
             }
             return null;
@@ -246,7 +247,6 @@ public class InfoFragment extends Fragment {
                 }
                 return museumNews;
             }catch (Exception e){
-                mMuseumProgress.setVisibility(View.GONE);
                 e.printStackTrace();
             }
             return null;

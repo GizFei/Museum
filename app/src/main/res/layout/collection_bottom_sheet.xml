@@ -14,6 +14,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/image_description"
         android:scaleType="centerCrop"
+        android:alpha="0.4"
         android:src="@drawable/splash_bg"/>
 
     <ImageView
@@ -39,11 +40,24 @@
         app:layout_constraintTop_toTopOf="@id/collection_img"
         app:layout_constraintBottom_toBottomOf="@id/collection_img"/>
 
+    <TextView
+        android:id="@+id/collection_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/normalize_margin"
+        android:text="10"
+        android:layout_marginEnd="@dimen/normalize_margin"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="@id/collection_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/collection_img"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/normalize_margin"
         android:layout_marginStart="@dimen/normalize_margin"
         android:layout_marginEnd="@dimen/normalize_margin"
         app:layout_constraintTop_toBottomOf="@id/collection_img"/>
@@ -55,7 +69,7 @@
         android:layout_marginTop="@dimen/normalize_margin"
         android:layout_marginStart="@dimen/normalize_margin"
         android:paddingTop="@dimen/normalize_padding"
-        android:paddingBottom="@dimen/normalize_padding"
+        android:paddingBottom="40dp"
         android:layout_marginEnd="@dimen/normalize_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
