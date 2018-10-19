@@ -311,6 +311,8 @@ public class MuseumActivity extends AppCompatActivity {
                         }
                         new PagerPicTask().execute(urls);
                     }catch (Exception ee){
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(MuseumActivity.this, "未找到图片数据", Toast.LENGTH_SHORT).show();
                         ee.printStackTrace();
                     }
                 }
@@ -331,18 +333,23 @@ public class MuseumActivity extends AppCompatActivity {
                 return drawables;
             }catch (Exception e){
                 e.printStackTrace();
+                return null;
             }
-            return null;
         }
 
         @Override
         protected void onPostExecute(List<Drawable> drawables) {
             mProgressBar.setVisibility(View.GONE);
-            mPagerAdapter = new MuseumPicturePagerAdapter(MuseumActivity.this, drawables);
-            mViewPager.setAdapter(mPagerAdapter);
+            if(drawables == null){
+                mProgressBar.setVisibility(View.GONE);
+                Toast.makeText(MuseumActivity.this, "未找到图片数据", Toast.LENGTH_SHORT).show();
+            }else{
+                mPagerAdapter = new MuseumPicturePagerAdapter(MuseumActivity.this, drawables);
+                mViewPager.setAdapter(mPagerAdapter);
 
-            for(int i = mPagerAdapter.getCount(); i < 5; i++){
-                mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
+                for(int i = mPagerAdapter.getCount(); i < 5; i++){
+                    mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
+                }
             }
         }
     }

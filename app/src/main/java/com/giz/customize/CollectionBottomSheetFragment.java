@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.giz.bmob.CollectionDB;
 import com.giz.bmob.MuseumLibrary;
@@ -77,8 +78,9 @@ public class CollectionBottomSheetFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.collection_bottom_sheet, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.collection_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        TextView sum = view.findViewById(R.id.collection_num);
         CollectionAdapter adapter = new CollectionAdapter(getContext(),
-                CollectionDB.get(getContext()).getStarredMuseums());
+                CollectionDB.get(getContext()).getStarredMuseums(), sum);
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -110,11 +112,15 @@ public class CollectionBottomSheetFragment extends BottomSheetDialogFragment {
         }
 
         private void bind(StarMuseum museum){
-            mMuseumId = museum.getMuseumId();
-            mLogo.setImageDrawable(MuseumLibrary.get().getMuseumById(museum.getMuseumId()).getLogo());
-            mName.setText(museum.getName());
-            mAddress.setText(museum.getAddress());
-            mDate.setText(museum.getCollectionDate());
+            try{
+                mMuseumId = museum.getMuseumId();
+                mLogo.setImageDrawable(MuseumLibrary.get().getMuseumById(museum.getMuseumId()).getLogo());
+                mName.setText(museum.getName());
+                mAddress.setText(museum.getAddress());
+                mDate.setText(museum.getCollectionDate());
+            }catch(Exception e){
+                Toast.makeText(getContext(), "还未加载完成", Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
@@ -130,9 +136,10 @@ public class CollectionBottomSheetFragment extends BottomSheetDialogFragment {
         private List<StarMuseum> mStarMuseumList;
         private Context mContext;
 
-        private CollectionAdapter(Context context, List<StarMuseum> museums){
+        private CollectionAdapter(Context context, List<StarMuseum> museums, TextView view){
             mStarMuseumList = museums;
             mContext = context;
+            view.setText(String.valueOf(museums.size()));
         }
 
         @NonNull

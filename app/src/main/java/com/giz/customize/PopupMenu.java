@@ -82,9 +82,10 @@ public class PopupMenu extends ViewGroup {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mMenuItemClickListener != null)
+                if(mMenuItemClickListener != null && v.getVisibility() == VISIBLE){
                     mMenuItemClickListener.onClick(v);
-                toggle();
+                    toggle();
+                }
             }
         });
     }
@@ -122,12 +123,14 @@ public class PopupMenu extends ViewGroup {
 
             view.startAnimation(animationSet);
         }
+        this.setVisibility(GONE);
     }
 
     /**
      * 展开
      */
     private void unfold(){
+        this.setVisibility(VISIBLE);
         for(int i = 0; i < getChildCount(); i++){
             View view = getChildAt(i);
             view.setVisibility(VISIBLE);
