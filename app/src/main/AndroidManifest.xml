@@ -59,7 +59,7 @@
 
         <activity android:name=".MuseumMapActivity" />
         <activity android:name=".MuseumTrackActivity" />
-	<activity android:name=".WebViewActivity"
+	    <activity android:name=".WebViewActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".MarkActivity"
             android:screenOrientation="landscape"/>
