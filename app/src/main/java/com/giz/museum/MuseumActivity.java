@@ -41,7 +41,9 @@ import android.widget.Toast;
 import com.giz.bmob.CollectionDB;
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
+import com.giz.bmob.RecordDB;
 import com.giz.customize.ArcMenu;
+import com.giz.customize.CustomToast;
 import com.giz.utils.MuseumPicturePagerAdapter;
 
 import org.json.JSONArray;
@@ -203,6 +205,13 @@ public class MuseumActivity extends AppCompatActivity {
                         mHasStarred = !mHasStarred;
                         break;
                     case 3: // 记录
+                        if(!RecordDB.get(MuseumActivity.this).isMuseumRecordFull(mMuseum.getMuseumId())){
+                            Intent intent1 = WriteRecordActivity.newIntent(MuseumActivity.this, mMuseum.getMuseumId());
+                            startActivity(intent1);
+                        }else{
+                            CustomToast.make(MuseumActivity.this, "记录已满5条").show();
+//                            Toast.makeText(MuseumActivity.this, "记录已满5条", Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case 4: // 打卡
                         break;
