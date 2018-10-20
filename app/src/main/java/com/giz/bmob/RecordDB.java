@@ -66,7 +66,7 @@ public class RecordDB {
                 null,
                 null);
         cursor.moveToFirst();
-        boolean full = cursor.getCount() > MAX_RECORDS_OF_ONE;
+        boolean full = cursor.getCount() >= MAX_RECORDS_OF_ONE;
         cursor.close();
         return full;
     }
@@ -76,9 +76,9 @@ public class RecordDB {
                 getContentValuesFromMuseumRecord(museum));
     }
 
-    public void removeMuseumRecord(String id){
-        mDatabase.delete(RecordDBSchema.TABLE_NAME, RecordDBSchema.Cols.ID + "=?",
-                new String[]{id});
+    public void removeMuseumRecord(String date){
+        mDatabase.delete(RecordDBSchema.TABLE_NAME, RecordDBSchema.Cols.DATE + "=?",
+                new String[]{date});
     }
 
     private String formatDate(Date date){
@@ -103,7 +103,7 @@ public class RecordDB {
         values.put(RecordDBSchema.Cols.ID, museum.getMuseumId());
         values.put(RecordDBSchema.Cols.NAME, museum.getName());
         values.put(RecordDBSchema.Cols.CONTENT, museum.getContent());
-        values.put(RecordDBSchema.Cols.DATE, formatDate(new Date()));
+        values.put(RecordDBSchema.Cols.DATE, museum.getRecordDate());
         values.put(RecordDBSchema.Cols.PICTURE, museum.getPicturePath());
 
         return values;

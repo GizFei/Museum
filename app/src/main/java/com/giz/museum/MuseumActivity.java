@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -306,6 +307,12 @@ public class MuseumActivity extends AppCompatActivity {
     }
 
     private void setUpPager(){
+        if(!isNetWorkAvailableAndConnected()){
+            mProgressBar.setVisibility(View.GONE);
+            mDotsLinearLayout.setVisibility(View.GONE);
+            findViewById(R.id.detail_tip_no_net).setVisibility(View.VISIBLE);
+            return;
+        }
         BmobQuery query = new BmobQuery("picture");
         query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
         Log.d("ID", mMuseum.getMuseumId());
@@ -449,4 +456,8 @@ public class MuseumActivity extends AppCompatActivity {
         return bmp;
     }
     */
+    private boolean isNetWorkAvailableAndConnected(){
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+    }
 }

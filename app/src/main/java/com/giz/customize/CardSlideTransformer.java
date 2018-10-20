@@ -6,6 +6,7 @@ import android.view.View;
 
 public class CardSlideTransformer implements ViewPager.PageTransformer {
 
+    // TODO: 2018/10/20 修复前一页残留的错误
     @Override
     public void transformPage(@NonNull View view, float v) {
         view.setAlpha(1f);
