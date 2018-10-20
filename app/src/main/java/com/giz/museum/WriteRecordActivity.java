@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -55,6 +56,7 @@ public class WriteRecordActivity extends AppCompatActivity {
     private ImageButton mTakePhoto;
     private Button mSaveBtn;
     private TextView mTitle;
+    private ImageView mDeletePhoto;
 
     public static Intent newIntent(Context context, String museumId){
         Intent intent = new Intent(context, WriteRecordActivity.class);
@@ -73,9 +75,9 @@ public class WriteRecordActivity extends AppCompatActivity {
         mTakePhoto = findViewById(R.id.wr_camera);
         mSaveBtn = findViewById(R.id.wr_save);
         mTitle = findViewById(R.id.wr_title);
+        mDeletePhoto = findViewById(R.id.wr_delete_photo);
 
         mTakePhoto.setEnabled(false);
-        mSaveBtn.setEnabled(false);
         initEvents();
 
         mMuseumId = getIntent().getStringExtra(EXTRA_ID);
@@ -120,6 +122,19 @@ public class WriteRecordActivity extends AppCompatActivity {
         mSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mPhoto.getDrawable() == null){
+                    new AlertDialog.Builder(WriteRecordActivity.this)
+                            .setTitle("还没拍照片呢").setPositiveButton("去拍", null)
+                            .show();
+                    return;
+                }
+                Log.d("MSAVE", mContent.getText().toString());
+                if(mContent.getText().toString().equals("") || mContent.getText() == null){
+                    new AlertDialog.Builder(WriteRecordActivity.this)
+                            .setTitle("还没写点东西呢").setPositiveButton("去写", null)
+                            .show();
+                    return;
+                }
                 Museum museum = MuseumLibrary.get().getMuseumById(mMuseumId);
                 MuseumRecord record = new MuseumRecord();
                 record.setMuseumId(mMuseumId);
@@ -133,21 +148,27 @@ public class WriteRecordActivity extends AppCompatActivity {
             }
         });
 
-        mContent.addTextChangedListener(new TextWatcher() {
+        mDeletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d("beforetextchanged", s.toString());
+            public void onClick(View v) {
+                new AlertDialog.Builder(WriteRecordActivity.this)
+                        .setTitle("删除该照片吗？")
+                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPhoto.setImageDrawable(null);
+                                mTakePhoto.setEnabled(true);
+                                mDeletePhoto.setVisibility(View.GONE);
+                            }
+                        }).setNegativeButton("取消", null).show();
             }
+        });
 
+        // TODO: 2018/10/20 添加点击图片放大查看的功能
+        mPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("textchanged", s.toString());
-                mSaveBtn.setEnabled(true);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d("aftertextchanged", s.toString());
+            public void onClick(View v) {
+                PhotoDetailFragment.newInstance(mPhotoFile.getPath()).show(getSupportFragmentManager(), "LookAtPhoto");
             }
         });
     }
@@ -188,9 +209,11 @@ public class WriteRecordActivity extends AppCompatActivity {
         if(mPhotoFile == null || !mPhotoFile.exists()){
             mPhoto.setImageDrawable(null);
         }else{
-            Bitmap bitmap = BitmapUtils.halfBitmap(mPhotoFile.getPath());
+            Bitmap bitmap = BitmapUtils.getBitmapFromPath(mPhotoFile.getPath());
+            Log.d("WRA", String.valueOf(bitmap.getHeight()));
             mPhoto.setImageBitmap(bitmap);
             mTakePhoto.setEnabled(false);
+            mDeletePhoto.setVisibility(View.VISIBLE);
         }
     }
 
@@ -200,7 +223,8 @@ public class WriteRecordActivity extends AppCompatActivity {
     }
 
     private String formatDateForRecord(Date date){
-        String format = "yyyy-MM-dd hh:mm";
+        String format = "yyyy-MM-dd hh:mm:ss a";
+        Log.d("FORMAT", DateFormat.format(format, date).toString());
         return DateFormat.format(format, date).toString();
     }
 
@@ -236,14 +260,14 @@ public class WriteRecordActivity extends AppCompatActivity {
 
     private void back(boolean backDirectly){
         if(backDirectly)
-            onBackPressed();
+            super.onBackPressed();
         else{
             new AlertDialog.Builder(WriteRecordActivity.this)
                     .setTitle("不保存该记录吗？")
                     .setPositiveButton("退出", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            onBackPressed();
+                            WriteRecordActivity.super.onBackPressed();
                         }
                     }).setNegativeButton("取消", null)
                     .show();
@@ -252,6 +276,6 @@ public class WriteRecordActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        back(false);
     }
 }

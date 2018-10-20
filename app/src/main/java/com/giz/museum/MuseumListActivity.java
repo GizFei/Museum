@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -187,12 +188,14 @@ public class MuseumListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(isListStyle){
-                    mMuseumAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
-                    mMuseumAdapter.notifyDataSetChanged();
-                }else{
-                    mPagerAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
-                    mMuseumViewPager.setAdapter(mPagerAdapter);
+                if(mMuseumAdapter != null){
+                    if(isListStyle){
+                        mMuseumAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
+                        mMuseumAdapter.notifyDataSetChanged();
+                    }else{
+                        mPagerAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
+                        mMuseumViewPager.setAdapter(mPagerAdapter);
+                    }
                 }
                 return true;
             }
@@ -230,7 +233,7 @@ public class MuseumListActivity extends AppCompatActivity {
                     case R.id.popup_record: // 记录集
                         Intent intent = new Intent(MuseumListActivity.this, RecordActivity.class);
                         startActivity(intent);
-                        CustomToast.make(MuseumListActivity.this, "ddd2").show();
+//                        CustomToast.make(MuseumListActivity.this, "ddd2").show();
                         break;
                 }
             }
@@ -505,10 +508,18 @@ public class MuseumListActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: 2018/10/20 新建一个广播监听网络变化
+    // TODO: 2018/10/20 列表下拉刷新
     // 从云端下载博物馆列表
     private void downloadMuseumList(){
 //        // 防止误点击
 //        mSwitchIcon.setEnabled(false);
+        if(!isNetWorkAvailableAndConnected()){
+            mProgressBar.setVisibility(View.GONE);
+            mPagerBg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            mPagerBg.setImageResource(R.drawable.tip_no_internet);
+            return;
+        }
 
         Log.d("kkk", "download");
         BmobQuery query = new BmobQuery("museum");
@@ -572,5 +583,10 @@ public class MuseumListActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
+    }
+
+    private boolean isNetWorkAvailableAndConnected(){
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
     }
 }
