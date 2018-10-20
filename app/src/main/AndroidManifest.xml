@@ -25,6 +25,8 @@
     <!--用于申请获取蓝牙信息进行室内定位-->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- 允许拍照 -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -61,8 +63,24 @@
         <activity android:name=".MuseumTrackActivity" />
 	    <activity android:name=".WebViewActivity"
             android:screenOrientation="portrait"/>
+
         <activity android:name=".MarkActivity"
             android:screenOrientation="landscape"/>
+
+
+        <activity android:name=".RecordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".WriteRecordActivity"
+            android:screenOrientation="portrait"/>
+        <provider
+            android:authorities="com.giz.museum.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files" />
+        </provider>
 
     </application>
     <!-- Bmob密钥：d86d0b43c41c255217e9377f570e3283 -->

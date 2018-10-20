@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 
@@ -107,8 +108,7 @@ public class PopupMenu extends ViewGroup {
      */
     private void fold(){
         for(int i = 0; i < getChildCount(); i++){
-            View view = getChildAt(i);
-            view.setVisibility(GONE);
+            final View view = getChildAt(i);
 
             TranslateAnimation translateAnimation = new TranslateAnimation(0, 0,
                     0 ,view.getMeasuredHeight()*(i+1)+mDistanceBetweenView*i);
@@ -120,21 +120,38 @@ public class PopupMenu extends ViewGroup {
             animationSet.setDuration(240);
             animationSet.setFillAfter(true);
             animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
+            animationSet.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    view.setClickable(false);
+                    view.setVisibility(GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
 
             view.startAnimation(animationSet);
         }
-        this.setVisibility(GONE);
+//        this.setVisibility(GONE);
     }
 
     /**
      * 展开
      */
     private void unfold(){
-        this.setVisibility(VISIBLE);
+//        this.setVisibility(VISIBLE);
         for(int i = 0; i < getChildCount(); i++){
             View view = getChildAt(i);
             view.setVisibility(VISIBLE);
-
+            view.setClickable(true);
             TranslateAnimation translateAnimation = new TranslateAnimation(0, 0,
                     view.getMeasuredHeight()*(i+1)+mDistanceBetweenView*i ,0);
             AlphaAnimation alphaAnimation = new AlphaAnimation(0.5f, 1);
