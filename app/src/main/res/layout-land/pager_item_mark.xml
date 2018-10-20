@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_mark_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/logo1"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:clickable="false"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintBottom_toTopOf="@+id/logo4"
+        app:layout_constraintEnd_toStartOf="@+id/logo2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/logo2"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="30dp"
+        android:clickable="false"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintBottom_toTopOf="@+id/logo5"
+        app:layout_constraintEnd_toStartOf="@+id/logo3"
+        app:layout_constraintStart_toEndOf="@+id/logo1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/logo3"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="30dp"
+        android:clickable="false"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintBottom_toTopOf="@+id/logo6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logo2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/logo4"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:clickable="false"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/logo5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo1" />
+
+    <ImageView
+        android:id="@+id/logo5"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:clickable="false"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/logo6"
+        app:layout_constraintStart_toEndOf="@+id/logo4"
+        app:layout_constraintTop_toBottomOf="@+id/logo2" />
+
+    <ImageView
+        android:id="@+id/logo6"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:clickable="false"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logo5"
+        app:layout_constraintTop_toBottomOf="@+id/logo3" />
+
+    <ImageView
+        android:id="@+id/stamp1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stamp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/logo1"
+        app:layout_constraintEnd_toEndOf="@id/logo1"
+        app:layout_constraintStart_toStartOf="@id/logo1"
+        app:layout_constraintTop_toTopOf="@id/logo1" />
+
+    <ImageView
+        android:id="@+id/stamp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stamp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/logo2"
+        app:layout_constraintEnd_toEndOf="@id/logo2"
+        app:layout_constraintStart_toStartOf="@id/logo2"
+        app:layout_constraintTop_toTopOf="@id/logo2" />
+
+    <ImageView
+        android:id="@+id/stamp3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stamp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/logo3"
+        app:layout_constraintEnd_toEndOf="@id/logo3"
+        app:layout_constraintStart_toStartOf="@id/logo3"
+        app:layout_constraintTop_toTopOf="@id/logo3" />
+
+    <ImageView
+        android:id="@+id/stamp4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stamp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/logo4"
+        app:layout_constraintEnd_toEndOf="@id/logo4"
+        app:layout_constraintStart_toStartOf="@id/logo4"
+        app:layout_constraintTop_toTopOf="@id/logo4" />
+
+    <ImageView
+        android:id="@+id/stamp5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stamp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/logo5"
+        app:layout_constraintEnd_toEndOf="@id/logo5"
+        app:layout_constraintStart_toStartOf="@id/logo5"
+        app:layout_constraintTop_toTopOf="@id/logo5" />
+
+    <ImageView
+        android:id="@+id/stamp6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stamp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/logo6"
+        app:layout_constraintEnd_toEndOf="@id/logo6"
+        app:layout_constraintStart_toStartOf="@id/logo6"
+        app:layout_constraintTop_toTopOf="@id/logo6" />
+
+</android.support.constraint.ConstraintLayout>
