@@ -165,7 +165,7 @@
         <android.support.design.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:paddingTop="@dimen/normalize_padding"
             android:paddingBottom="@dimen/normalize_padding"
             android:layout_gravity="bottom"
@@ -173,8 +173,35 @@
             app:fabAlignmentMode="end"
             app:fabCradleMargin="@dimen/normalize_margin"
             app:hideOnScroll="true"
+            app:navigationIcon="@drawable/av_menu_to_up"
             app:fabCradleVerticalOffset="@dimen/normalize_padding" />
 
     </android.support.design.widget.CoordinatorLayout>
+
+    <com.giz.customize.PopupMenu
+        android:id="@+id/popup_menu"
+        android:layout_width="64dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="44dp"
+        app:distanceBetweenView="@dimen/normalize_margin"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/popup_collection"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:elevation="@dimen/normalize_margin"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/ic_bottom_collection"/>
+
+        <ImageView
+            android:id="@+id/popup_record"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:elevation="@dimen/normalize_margin"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/ic_bottom_record"/>
+
+    </com.giz.customize.PopupMenu>
 
 </android.support.constraint.ConstraintLayout>

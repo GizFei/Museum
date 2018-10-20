@@ -8,21 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.giz.duplicated.PictureDownloader;
+
 import java.util.List;
 
 public class MuseumPicturePagerAdapter extends PagerAdapter {
 
     private Context mContext;
-    private String[] mPictures;
-    private PictureDownloader mPictureManager;
+//    private String[] mPictures;
+//    private PictureDownloader mPictureManager;
 
     private List<Drawable> mDrawables;
 
-    public MuseumPicturePagerAdapter(Context context, String folderName){
-        mContext = context;
-        mPictureManager = new PictureDownloader(context, folderName);
-        mPictures = mPictureManager.getPictures();
-    }
+//    public MuseumPicturePagerAdapter(Context context, String folderName){
+//        mContext = context;
+//        mPictureManager = new PictureDownloader(context, folderName);
+//        mPictures = mPictureManager.getPictures();
+//    }
 
     public MuseumPicturePagerAdapter(Context context, List<Drawable> drawables){
         mContext = context;
