@@ -56,6 +56,8 @@
         <activity android:name=".MuseumMapActivity" />
         <activity android:name=".MuseumTrackActivity" />
         <activity android:name=".WebViewActivity"/>
+        <activity android:name=".MarkActivity"
+            android:screenOrientation="landscape"/>
     </application>
     <!-- Bmob密钥：d86d0b43c41c255217e9377f570e3283 -->
 
