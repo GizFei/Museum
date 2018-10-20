@@ -221,14 +221,16 @@ public class MuseumActivity extends AppCompatActivity {
                         share();
                         break;
                     case 1: // 导航
-                        Intent intent = MuseumTrackActivity.newIntent(MuseumActivity.this, mMuseum.getMuseumId());
-                        startActivity(intent);
+                        Intent locateIntent = MuseumTrackActivity.newIntent(MuseumActivity.this, mMuseum.getMuseumId());
+                        startActivity(locateIntent);
                         break;
                     case 2: // 收藏
                         break;
                     case 3: // 记录
                         break;
                     case 4: // 打卡
+                        Intent markIntent = MarkActivity.newIntent(MuseumActivity.this, mMuseum.getMuseumId());
+                        startActivity(markIntent);
                         break;
                 }
             }

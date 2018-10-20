@@ -493,7 +493,6 @@ public class MuseumListActivity extends AppCompatActivity {
                             museum.setCatalog(getCatalog(object.getJSONArray("catalog")));
                             museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
                             museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
-                            museum.setPicFolder(object.getString("picFolder"));
                             museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
                                 object.getJSONArray("location").getDouble(1)});
 //                            Log.d("BMOB", museum.getMuseumId());
