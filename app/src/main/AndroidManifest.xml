@@ -58,10 +58,16 @@
         <activity android:name=".MuseumActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MuseumListActivity"/>
-        <activity android:name=".MuseumMapActivity"/>
-        <activity android:name=".MuseumTrackActivity"/>
-        <activity android:name=".WebViewActivity"
+
+        <activity android:name=".MuseumMapActivity" />
+        <activity android:name=".MuseumTrackActivity" />
+	    <activity android:name=".WebViewActivity"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".MarkActivity"
+            android:screenOrientation="landscape"/>
+
+
         <activity android:name=".RecordActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".WriteRecordActivity"
@@ -75,6 +81,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/files" />
         </provider>
+
     </application>
     <!-- Bmob密钥：d86d0b43c41c255217e9377f570e3283 -->
 
