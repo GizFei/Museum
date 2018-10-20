@@ -3,18 +3,16 @@ package com.giz.museum;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -22,25 +20,34 @@ import android.widget.Toast;
 
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
+import com.giz.bmob.MarkDB;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    To_Do_List:
+    1.点击Logo的Button效果
+    2.左右滑动提示功能
+    3.加载完成再进行打卡(否则会Logo不完整)
+    4.个性化Toast
+ */
+
 public class MarkActivity extends AppCompatActivity {
 
+    private MarkDB mMarkDB;
     private int museumNum;
     private Museum mMuseum;
     private static final String KEY_ID = "museumId";
     private String museumId;
     private int int_museumId;                   //Museum在MuseumList中的序号
-    private ImageView curStamp;
 
+    private ImageView curLogo;
+    private ImageView curStamp;
     private int tempInt;
     private int tempPage;
 
-    private Animation stampAni;
     private List<Drawable> mImageViews;
-
     private ViewPager mViewPager;
     List<List<Drawable>> mPages;
 
@@ -55,6 +62,7 @@ public class MarkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark);
         museumId = getIntent().getStringExtra(KEY_ID);
+        mMarkDB = MarkDB.get(this);
         mMuseum = MuseumLibrary.get().getMuseumById(museumId);
         museumNum = MuseumLibrary.get().getMuseumList().size();
 
@@ -65,22 +73,32 @@ public class MarkActivity extends AppCompatActivity {
                 break;
             }
         }
-        tempInt = int_museumId % 6 + 1;
+        tempInt = int_museumId % 6;
         tempPage = int_museumId / 6;
 
         initView();
     }
 
-    private void playAnim_before() {
+    private void playAnim_logoHover(ImageView img) {
+        Animation hoverAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_hover);
+        img.startAnimation(hoverAnim);
+    }
+
+    private void playAnim_stampHover(ImageView img) {
+        Animation hoverAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.stamp_hover);
+        img.startAnimation(hoverAnim);
+    }
+
+    private void playAnim_before(ImageView curStamp) {
         curStamp.setVisibility(ImageView.VISIBLE);
-        stampAni = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.stamp_anim);
+        Animation stampAni = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.stamp_anim);
         curStamp.startAnimation(stampAni);
     }
 
-    private void playAnim_after() {
-        stampAni = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.stamp_anim);
+    private void playAnim_after(final ImageView curStamp) {
+        curStamp.setVisibility(ImageView.VISIBLE);
+        Animation stampAni = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.stamp_anim_jump);
         curStamp.startAnimation(stampAni);
-//        curStamp.setVisibility(ImageView.VISIBLE);
     }
 
     private void initView() {
@@ -112,7 +130,38 @@ public class MarkActivity extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
     }
 
-    private class MarkAdapter extends PagerAdapter{
+    private class MarkAdapter extends PagerAdapter {
+
+        class stampListener implements View.OnClickListener {
+            private ImageView curStamp;
+            private int i;
+            private int position;
+
+            private stampListener(ImageView curStamp, int i, int position) {
+                this.curStamp = curStamp;
+                this.i = i;
+                this.position = position;
+            }
+
+            @Override
+            public void onClick(View view) {
+                if(i == tempInt && position == tempPage && !mMarkDB.hasMarked(museumId)) {
+                    playAnim_before(curStamp);
+                    mMarkDB.addMarkMuseum(mMuseum);
+                }
+                else if(mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())) {
+                    Toast t = Toast.makeText(getApplicationContext(), "已打卡", Toast.LENGTH_SHORT);
+                    t.setGravity(Gravity.CENTER, 0, 0);
+                    t.show();
+                }
+                else if(!mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())) {
+                    Toast t = Toast.makeText(getApplicationContext(), "请到对应博物馆页面进行打卡", Toast.LENGTH_SHORT);
+                    t.setGravity(Gravity.CENTER, 0, 0);
+                    t.show();
+                }
+            }
+        }
+
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -124,10 +173,27 @@ public class MarkActivity extends AppCompatActivity {
 
             for(int i = 0; i < 6; i++) {
                 if(i < drawables.size()) {
-                    ((ImageView)view.findViewById(ids[i])).setImageDrawable(mPages.get(position).get(i));
-                    curStamp = ((ImageView)view.findViewById(ids_stamp[i]));
-                    if(i+1 == tempInt && position == tempPage)
-                        playAnim_before();
+                    ImageView tempLogo = ((ImageView)view.findViewById(ids[i]));
+                    tempLogo.setImageDrawable(mPages.get(position).get(i));
+                    ImageView tempStamp = ((ImageView)view.findViewById(ids_stamp[i]));
+                    //加动画特效
+                    if(mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())
+                            && int_museumId != 6*position+i)
+                        playAnim_after(tempStamp);
+                    else if(mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())
+                            && int_museumId == 6*position+i) {
+                        curLogo = tempLogo;
+                        curStamp = tempStamp;
+                        playAnim_stampHover(curStamp);
+                        playAnim_logoHover(curLogo);
+                    }
+                    else if(!mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())
+                            && int_museumId == 6*position+i) {
+                        curLogo = tempLogo;
+                        playAnim_logoHover(curLogo);
+                    }
+
+                    tempLogo.setOnClickListener(new stampListener(tempStamp, i, position));
                 }
                 else {
                     ((ImageView)view.findViewById(ids[i])).setVisibility(ImageView.INVISIBLE);
