@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import com.giz.bmob.MuseumLibrary;
 import com.giz.customize.CollectionBottomSheetFragment;
+import com.giz.customize.CustomToast;
 import com.giz.customize.PopupMenu;
 import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
@@ -227,7 +228,9 @@ public class MuseumListActivity extends AppCompatActivity {
                         new CollectionBottomSheetFragment().show(getSupportFragmentManager(), "Collection");
                         break;
                     case R.id.popup_record: // 记录集
-                        Toast.makeText(MuseumListActivity.this, "ddd2", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MuseumListActivity.this, RecordActivity.class);
+                        startActivity(intent);
+                        CustomToast.make(MuseumListActivity.this, "ddd2").show();
                         break;
                 }
             }
