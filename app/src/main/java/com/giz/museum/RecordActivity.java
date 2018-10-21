@@ -123,10 +123,14 @@ public class RecordActivity extends AppCompatActivity {
             (view.findViewById(R.id.record_share_icon)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    view.findViewById(R.id.record_share_icon).setVisibility(View.GONE);
+                    view.findViewById(R.id.record_delete_icon).setVisibility(View.GONE);
                     view.setDrawingCacheEnabled(true);
                     view.buildDrawingCache();
                     Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
                     view.setDrawingCacheEnabled(false);
+                    view.findViewById(R.id.record_share_icon).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.record_delete_icon).setVisibility(View.VISIBLE);
                     Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null, null));
 
                     Intent shareIntent = new Intent();

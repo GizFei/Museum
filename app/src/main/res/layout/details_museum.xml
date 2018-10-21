@@ -133,33 +133,39 @@
         <ImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:foreground="@drawable/image_ripple"
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_arc_share" />
         <ImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:foreground="@drawable/image_ripple"
             android:src="@drawable/ic_arc_nav"
             android:contentDescription="@string/image_description" />
         <ImageView
             android:id="@+id/arc_img_star"
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:foreground="@drawable/image_ripple"
             android:src="@drawable/ic_arc_star"
             android:contentDescription="@string/image_description" />
         <ImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:foreground="@drawable/image_ripple"
             android:src="@drawable/ic_arc_record"
             android:contentDescription="@string/image_description" />
         <ImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:foreground="@drawable/image_ripple"
             android:src="@drawable/ic_arc_mark"
             android:contentDescription="@string/image_description" />
         <ImageView
             android:id="@+id/arc_main"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:foreground="@drawable/image_ripple"
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_arc_museum"
             app:elevation="16dp" />

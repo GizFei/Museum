@@ -4,7 +4,11 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/gray"
-    android:padding="@dimen/pLarge"
+    android:paddingTop="@dimen/pLarge"
+    android:paddingStart="32dp"
+    android:paddingEnd="@dimen/pLarge"
+    android:paddingBottom="@dimen/pLarge"
+    android:clipToPadding="true"
     android:clipChildren="false">
 
     <TextView
@@ -27,7 +31,6 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_record_title"
         android:text="我的记录集"
-        android:layout_marginStart="@dimen/mLarge"
         android:layout_marginEnd="@dimen/mLarge"
         android:drawablePadding="@dimen/normalize_margin"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,16 +43,18 @@
         android:contentDescription="@string/image_description"
         android:src="@drawable/ic_record_close"
         android:layout_marginEnd="@dimen/mLarge"
+        android:background="@drawable/image_ripple"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/record_pager"
-        android:layout_marginStart="@dimen/mLarge"
         android:layout_marginEnd="@dimen/mLarge"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/mLarge"
+        app:layout_constraintStart_toStartOf="@id/record_title"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/record_title"
         app:layout_constraintBottom_toBottomOf="parent">
 

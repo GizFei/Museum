@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
 import com.giz.bmob.MarkDB;
+import com.giz.customize.CustomToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,12 +151,18 @@ public class MarkActivity extends AppCompatActivity {
                     mMarkDB.addMarkMuseum(mMuseum);
                 }
                 else if(mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())) {
-                    Toast t = Toast.makeText(getApplicationContext(), "已打卡", Toast.LENGTH_SHORT);
+//                    Toast t = Toast.makeText(getApplicationContext(), "已打卡", Toast.LENGTH_SHORT);
+//                    t.setGravity(Gravity.CENTER, 0, 0);
+//                    t.show();
+                    CustomToast t = CustomToast.make(getApplicationContext(), "已打卡");
                     t.setGravity(Gravity.CENTER, 0, 0);
                     t.show();
                 }
                 else if(!mMarkDB.hasMarked(MuseumLibrary.get().getMuseumList().get(6*position+i).getMuseumId())) {
-                    Toast t = Toast.makeText(getApplicationContext(), "请到对应博物馆页面进行打卡", Toast.LENGTH_SHORT);
+//                    Toast t = Toast.makeText(getApplicationContext(), "请到对应博物馆页面进行打卡", Toast.LENGTH_SHORT);
+//                    t.setGravity(Gravity.CENTER, 0, 0);
+//                    t.show();
+                    CustomToast t = CustomToast.make(getApplicationContext(), "请到对应博物馆页面进行打卡");
                     t.setGravity(Gravity.CENTER, 0, 0);
                     t.show();
                 }
