@@ -35,6 +35,7 @@ import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
 import com.giz.bmob.MuseumRecord;
 import com.giz.bmob.RecordDB;
+import com.giz.customize.CustomToast;
 import com.giz.utils.BitmapUtils;
 
 import java.io.File;
@@ -143,7 +144,7 @@ public class WriteRecordActivity extends AppCompatActivity {
                 record.setPicturePath(mPhotoFile.getPath());
                 record.setRecordDate(formatDateForRecord(new Date()));
                 RecordDB.get(WriteRecordActivity.this).addMuseumRecord(record);
-                Toast.makeText(WriteRecordActivity.this, "添加成功！", Toast.LENGTH_SHORT).show();
+                CustomToast.make(WriteRecordActivity.this, "添加成功！").show();
                 back(true);
             }
         });
@@ -164,11 +165,11 @@ public class WriteRecordActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: 2018/10/20 添加点击图片放大查看的功能
         mPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PhotoDetailFragment.newInstance(mPhotoFile.getPath()).show(getSupportFragmentManager(), "LookAtPhoto");
+                if(mPhotoFile != null && mPhotoFile.exists())
+                    PhotoDetailFragment.newInstance(mPhotoFile.getPath()).show(getSupportFragmentManager(), "LookAtPhoto");
             }
         });
     }

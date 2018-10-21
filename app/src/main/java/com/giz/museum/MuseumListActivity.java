@@ -54,6 +54,10 @@ import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
 import com.giz.bmob.Museum;
 import com.giz.utils.FastBlur;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,6 +94,7 @@ public class MuseumListActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private BottomAppBar mBottomAppBar;
     private PopupMenu mPopupMenu;
+    private SmartRefreshLayout mRefreshLayout;
 
     private List<Museum> mMuseumList;
 
@@ -123,6 +128,9 @@ public class MuseumListActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressBar);
         // 弹出菜单
         mPopupMenu = findViewById(R.id.popup_menu);
+        // 初始化下拉刷新布局
+        mRefreshLayout = findViewById(R.id.refresh_layout);
+        mRefreshLayout.setRefreshHeader(new BezierRadarHeader(this).setEnableHorizontalDrag(true));
         // 初始化事件
         initEvents();
 
@@ -172,7 +180,7 @@ public class MuseumListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(mPagerAdapter == null){
-                    Toast.makeText(MuseumListActivity.this, "还未加载完成", Toast.LENGTH_SHORT).show();
+                    CustomToast.make(MuseumListActivity.this, "还未加载完成").show();
                 }else{
                     switchRecyclerView();
                 }
@@ -233,9 +241,17 @@ public class MuseumListActivity extends AppCompatActivity {
                     case R.id.popup_record: // 记录集
                         Intent intent = new Intent(MuseumListActivity.this, RecordActivity.class);
                         startActivity(intent);
-//                        CustomToast.make(MuseumListActivity.this, "ddd2").show();
                         break;
                 }
+            }
+        });
+
+        // 下拉刷新事件
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                downloadMuseumList();
+                Log.d("MLA", "refresh");
             }
         });
 
@@ -508,8 +524,6 @@ public class MuseumListActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: 2018/10/20 新建一个广播监听网络变化
-    // TODO: 2018/10/20 列表下拉刷新
     // 从云端下载博物馆列表
     private void downloadMuseumList(){
 //        // 防止误点击
@@ -518,6 +532,11 @@ public class MuseumListActivity extends AppCompatActivity {
             mProgressBar.setVisibility(View.GONE);
             mPagerBg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             mPagerBg.setImageResource(R.drawable.tip_no_internet);
+            return;
+        }
+        // 不重复请求
+        if(mPagerAdapter != null){
+            mRefreshLayout.finishRefresh();
             return;
         }
 
@@ -575,6 +594,7 @@ public class MuseumListActivity extends AppCompatActivity {
 
 //        mSwitchIcon.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
+        mRefreshLayout.finishRefresh();
     }
 
     @Override

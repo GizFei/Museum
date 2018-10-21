@@ -31,6 +31,8 @@ import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
 
 import com.amap.api.services.core.AMapException;
+import com.giz.customize.CustomToast;
+
 import overlay.WalkRouteOverlay;
 
 /*
@@ -127,7 +129,7 @@ public class MuseumTrackActivity extends AppCompatActivity {
                     }
                 }
                 else
-                    Toast.makeText(getApplicationContext(), "无法定位", Toast.LENGTH_LONG).show();
+                    CustomToast.make(getApplicationContext(), "无法定位", Toast.LENGTH_LONG).show();
             }
         };
         //声明定位回调监听器
