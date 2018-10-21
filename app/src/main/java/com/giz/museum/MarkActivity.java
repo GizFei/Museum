@@ -31,6 +31,8 @@ import java.util.List;
     2.左右滑动提示功能
     3.加载完成再进行打卡(否则会Logo不完整)
     4.个性化Toast
+    5.隐藏状态栏和虚拟键
+    6.盖章以后的BUG(不一起hover)
  */
 
 public class MarkActivity extends AppCompatActivity {
