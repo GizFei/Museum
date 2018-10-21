@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +46,8 @@ import com.giz.bmob.RecordDB;
 import com.giz.customize.ArcMenu;
 import com.giz.customize.CustomToast;
 import com.giz.utils.MuseumPicturePagerAdapter;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,14 +69,14 @@ public class MuseumActivity extends AppCompatActivity {
     private AppBarLayout mAppBarLayout;
     private LinearLayout mDotsLinearLayout;
     private CoordinatorLayout mCoordinatorLayout;
-    private InfoFragment mInfoFragment;
-    private PanoramaFragment mPanoramaFragment;
     private NestedScrollView mScrollView;
     private ContentLoadingProgressBar mProgressBar;
     private ImageView mStarImgView;
-
     private ViewPager mViewPager;
     private MuseumPicturePagerAdapter mPagerAdapter;
+
+    private InfoFragment mInfoFragment;
+    private PanoramaFragment mPanoramaFragment;
 
     private boolean mHasStarred;
 
@@ -124,7 +127,6 @@ public class MuseumActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.scrollView);
 
         mViewPager = findViewById(R.id.picture_vp);
-        setUpPager();
 
         CollapsingToolbarLayout ctl = findViewById(R.id.ctl);
         ctl.setTitle(mMuseum.getName());
@@ -210,7 +212,6 @@ public class MuseumActivity extends AppCompatActivity {
                             startActivity(intent1);
                         }else{
                             CustomToast.make(MuseumActivity.this, "记录已满5条").show();
-//                            Toast.makeText(MuseumActivity.this, "记录已满5条", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 4: // 打卡
@@ -241,6 +242,8 @@ public class MuseumActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        setUpPager();
     }
 
     // 收起AppBarLayout和FAB
@@ -306,6 +309,15 @@ public class MuseumActivity extends AppCompatActivity {
     }
 
     private void setUpPager(){
+        if(!isNetWorkAvailableAndConnected()){
+            mProgressBar.setVisibility(View.GONE);
+            mDotsLinearLayout.setVisibility(View.GONE);
+            findViewById(R.id.detail_tip_no_net).setVisibility(View.VISIBLE);
+            return;
+        }
+        mDotsLinearLayout.setVisibility(View.VISIBLE);
+        findViewById(R.id.detail_tip_no_net).setVisibility(View.GONE);
+
         BmobQuery query = new BmobQuery("picture");
         query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
         Log.d("ID", mMuseum.getMuseumId());
@@ -323,7 +335,7 @@ public class MuseumActivity extends AppCompatActivity {
                         new PagerPicTask().execute(urls);
                     }catch (Exception ee){
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(MuseumActivity.this, "未找到图片数据", Toast.LENGTH_SHORT).show();
+                        CustomToast.make(MuseumActivity.this, "未找到图片数据").show();
                         ee.printStackTrace();
                     }
                 }
@@ -353,7 +365,7 @@ public class MuseumActivity extends AppCompatActivity {
             mProgressBar.setVisibility(View.GONE);
             if(drawables == null){
                 mProgressBar.setVisibility(View.GONE);
-                Toast.makeText(MuseumActivity.this, "未找到图片数据", Toast.LENGTH_SHORT).show();
+                CustomToast.make(MuseumActivity.this, "未找到图片数据").show();
             }else{
                 mPagerAdapter = new MuseumPicturePagerAdapter(MuseumActivity.this, drawables);
                 mViewPager.setAdapter(mPagerAdapter);
@@ -449,4 +461,8 @@ public class MuseumActivity extends AppCompatActivity {
         return bmp;
     }
     */
+    private boolean isNetWorkAvailableAndConnected(){
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+    }
 }

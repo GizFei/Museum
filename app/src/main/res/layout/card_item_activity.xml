@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/normalize_padding"
+    android:foreground="@drawable/image_ripple"
     android:layout_marginTop="@dimen/mSmall">
 
     <ImageView

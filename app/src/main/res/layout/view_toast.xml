@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:background="@color/colorPrimary"
-    android:backgroundTint="@color/colorPrimary"
+    android:background="#AA00bcd4"
+    android:backgroundTint="#AA00bcd4"
     android:layout_height="wrap_content">
 
     <TextView
