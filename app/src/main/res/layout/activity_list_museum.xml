@@ -69,6 +69,7 @@
                             android:layout_gravity="center"
                             android:src="@drawable/av_list_to_pager"
                             android:layout_marginEnd="@dimen/normalize_margin"
+                            android:background="@drawable/image_ripple"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -120,15 +121,22 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list_museum"
+            <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                android:id="@+id/refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/pSmall"
-                android:clipToPadding="false"
-                android:layoutAnimation="@anim/layout_anim_from_bottom">
+                android:layout_height="match_parent" >
 
-            </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_museum"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pSmall"
+                    android:clipToPadding="false"
+                    android:layoutAnimation="@anim/layout_anim_from_bottom">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager_museum"
@@ -192,6 +200,7 @@
             android:layout_height="48dp"
             android:elevation="@dimen/normalize_margin"
             android:contentDescription="@string/image_description"
+            android:foreground="@drawable/image_ripple"
             android:src="@drawable/ic_bottom_collection"/>
 
         <ImageView
@@ -199,6 +208,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:elevation="@dimen/normalize_margin"
+            android:foreground="@drawable/image_ripple"
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_bottom_record"/>
 

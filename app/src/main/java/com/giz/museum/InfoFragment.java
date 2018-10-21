@@ -3,6 +3,7 @@ package com.giz.museum;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,8 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 /**
  * getActivity为空：回退的时候，Fragment被销毁，但是异步进程还在运行，导致异步进程中的getActivity方法错误
@@ -71,9 +74,13 @@ public class InfoFragment extends Fragment {
         String id = getArguments().getString(ARGS_ID);
         Log.d(TAG, id);
 
-        mMuseum = MuseumLibrary.get().getMuseumById(id);
-        mActivityOrShowTask = new ActivityOrShowTask();
-        mNewsTask = new NewsTask();
+        if(!isNetWorkAvailableAndConnected()){
+            mMuseumProgress.setVisibility(View.GONE);
+        }else{
+            mMuseum = MuseumLibrary.get().getMuseumById(id);
+            mActivityOrShowTask = new ActivityOrShowTask();
+            mNewsTask = new NewsTask();
+        }
     }
 
     @Nullable
@@ -275,5 +282,10 @@ public class InfoFragment extends Fragment {
         Drawable thumbDrawable;
         String date;
         String url;
+    }
+
+    private boolean isNetWorkAvailableAndConnected(){
+        ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(CONNECTIVITY_SERVICE);
+        return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
     }
 }

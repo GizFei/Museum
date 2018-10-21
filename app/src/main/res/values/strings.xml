@@ -7,6 +7,7 @@
     <string name="search_museum">搜索博物馆</string>
     <string name="image_description">An Image</string>
     <string name="image_trans">transitionImg</string>
+    <string name="photo_trans">transitionPhoto</string>
 
     <string name="intro_example">建筑面积20991平方米，陈列面积7600多平方米，2009年12月22日正式开放。
         目前设有“越地长歌——浙江历史文化陈列”、“钱江潮——浙江现代革命历史陈列”、“非凡的心声——世界非物质文化遗产中
