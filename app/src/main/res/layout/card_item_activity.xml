@@ -5,9 +5,9 @@
     android:id="@+id/detail_activity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/normalize_padding"
+    android:paddingBottom="@dimen/small"
     android:foreground="@drawable/image_ripple"
-    android:layout_marginTop="@dimen/mSmall">
+    android:layout_marginTop="@dimen/tiny">
 
     <ImageView
         android:id="@+id/pic_activity"
@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         app:layout_constraintHorizontal_weight="1"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mSmall"
+        android:layout_marginStart="@dimen/tiny"
         android:layout_marginTop="3dp"
         android:textSize="14sp"
         android:textColor="@color/black"
@@ -45,7 +45,7 @@
         android:id="@+id/date_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mSmall"
+        android:layout_marginStart="@dimen/tiny"
         android:text="2018-10-16"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/tag_activity"
@@ -55,7 +55,7 @@
         android:id="@+id/people_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/normalize_margin"
+        android:layout_marginStart="@dimen/small"
         android:text="老年人"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/date_activity"
@@ -65,7 +65,7 @@
         android:id="@+id/place_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mSmall"
+        android:layout_marginStart="@dimen/tiny"
         android:text="孤山馆区文澜阁罗汉堂"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/pic_activity"
@@ -77,9 +77,9 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray"
-        android:layout_marginStart="@dimen/normalize_margin"
-        android:layout_marginEnd="@dimen/normalize_margin"
-        android:layout_marginTop="@dimen/normalize_margin"
+        android:layout_marginStart="@dimen/small"
+        android:layout_marginEnd="@dimen/small"
+        android:layout_marginTop="@dimen/small"
         app:layout_constraintTop_toBottomOf="@id/place_activity"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

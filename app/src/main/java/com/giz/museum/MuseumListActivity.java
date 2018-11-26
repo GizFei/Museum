@@ -583,7 +583,7 @@ public class MuseumListActivity extends AppCompatActivity {
         mBgDrawables = new HashMap<>();
         for(Museum museum: mMuseumList){
             Drawable drawable = museum.getCover();
-            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 10, false);
+            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 64, false);
             mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(blurBg));
         }
         if(mPagerAdapter == null){
@@ -599,10 +599,7 @@ public class MuseumListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        startActivity(intent);
+        super.onBackPressed();
     }
 
     private boolean isNetWorkAvailableAndConnected(){

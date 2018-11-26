@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/small"
+    app:cardElevation="@dimen/small">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_margin="@dimen/normal">
+
+        <ImageView
+            android:id="@+id/index_image"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/panorama"/>
+
+        <com.alespero.expandablecardview.ExpandableCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingTop="@dimen/tiny"
+            app:title="@string/app_name"
+            app:icon="@drawable/ic_star_half_filled_color"
+            app:expandOnClick="true"
+            app:animationDuration="400"
+            app:startExpanded="false"
+            app:inner_view="@layout/list_museum_item"
+            app:layout_constraintTop_toBottomOf="@id/index_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0">
+
+        </com.alespero.expandablecardview.ExpandableCardView>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

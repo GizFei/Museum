@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:background="#AA00bcd4"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="#AA00bcd4"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/small"
+    app:cardElevation="@dimen/small">
 
     <TextView
         android:id="@+id/toast_text"
@@ -14,6 +15,6 @@
         tools:hint="这是一条Toast"
         tools:textColorHint="@color/white"
         android:textColor="@color/white"
-        android:padding="@dimen/normalize_padding"/>
+        android:padding="@dimen/small"/>
 
 </android.support.v7.widget.CardView>

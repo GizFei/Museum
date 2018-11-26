@@ -16,4 +16,13 @@
     <declare-styleable name="PopupMenu">
         <attr name="distanceBetweenView" />
     </declare-styleable>
+
+    <!-- 圆形图片 -->
+    <declare-styleable name="RoundedImageView">
+        <attr name="type" format="enum">
+            <enum name="circle" value="1" />
+            <enum name="corner" value="2" />
+        </attr>
+        <attr name="radius"/>
+    </declare-styleable>
 </resources>
