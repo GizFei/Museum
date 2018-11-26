@@ -4,17 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/mLarge"
-    android:padding="@dimen/normalize_padding" >
+    android:layout_marginBottom="@dimen/small"
+    android:padding="@dimen/small">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/mSmall"
+        android:layout_marginStart="@dimen/tiny"
+        android:layout_marginEnd="@dimen/tiny"
+        android:layout_marginBottom="@dimen/normal"
+        android:layout_marginTop="@dimen/tiny"
         android:background="@color/transparent"
         android:backgroundTint="@color/transparent"
-        app:cardElevation="@dimen/pSmall"
-        app:cardCornerRadius="@dimen/normalize_padding">
+        app:cardElevation="@dimen/tiny"
+        app:cardCornerRadius="@dimen/small">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/CL"
@@ -35,86 +38,150 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/mask"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:background="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:orientation="vertical"
+                <!-- 博物馆名称 -->
+                <TextView
+                    android:id="@+id/museum_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/tiny"
+                    android:paddingStart="@dimen/small"
+                    android:paddingEnd="@dimen/small"
+                    android:paddingTop="@dimen/tiny"
+                    android:paddingBottom="@dimen/small"
+                    android:textColor="@color/anim_icon"
+                    android:textSize="18sp"
+                    tools:hint="Museum Name"
+                    tools:textColorHint="@color/black"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    />
+                
+                <!-- 推荐指数 -->
+                <LinearLayout
+                    android:id="@+id/commend_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginEnd="@dimen/small"
+                    android:layout_marginTop="@dimen/small"
+                    app:layout_constraintStart_toEndOf="@id/museum_name"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/museum_name">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@string/image_description"
+                        android:src="@drawable/icon_star_color"/>
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@string/image_description"
+                        android:src="@drawable/icon_star_color"/>
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@string/image_description"
+                        android:src="@drawable/icon_star_color"/>
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@string/image_description"
+                        android:src="@drawable/ic_star_half_filled_color"/>
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@string/image_description"
+                        android:src="@drawable/ic_star_filled_gray"/>
+
+                </LinearLayout>
+                
+                <!-- 标签 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/museum_name"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/museum_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/mSmall"
-                        android:padding="@dimen/normalize_padding"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:hint="Museum Name"
-                        tools:textColorHint="@color/black" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/museum_catalog1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginEnd="@dimen/mSmall"
-                            android:background="@drawable/bg_catalog_grid"
-                            android:padding="@dimen/mSmall"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            tools:hint="Catalog"
-                            tools:textColorHint="@color/black" />
-
-                        <TextView
-                            android:id="@+id/museum_catalog2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/mSmall"
-                            android:layout_marginEnd="@dimen/mSmall"
-                            android:background="@drawable/bg_catalog_grid"
-                            android:padding="@dimen/mSmall"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            tools:hint="Catalog"
-                            tools:textColorHint="@color/black" />
-
-                        <TextView
-                            android:id="@+id/museum_catalog3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/mSmall"
-                            android:background="@drawable/bg_catalog_grid"
-                            android:padding="@dimen/mSmall"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            tools:hint="Catalog"
-                            tools:textColorHint="@color/black" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/address_museum"
+                        android:id="@+id/museum_catalog1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginTop="@dimen/normalize_margin"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        tools:text="博物馆地址"/>
+                        android:layout_marginEnd="@dimen/tiny"
+                        android:background="@drawable/bg_catalog"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:paddingStart="@dimen/tiny"
+                        android:paddingEnd="@dimen/tiny"
+                        android:textColor="@color/colorAccent_old"
+                        android:textSize="12sp"
+                        tools:hint="Catalog"
+                        tools:textColorHint="@color/colorAccent_old" />
+
+                    <TextView
+                        android:id="@+id/museum_catalog2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tiny"
+                        android:layout_marginEnd="@dimen/tiny"
+                        android:background="@drawable/bg_catalog"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:paddingStart="@dimen/tiny"
+                        android:paddingEnd="@dimen/tiny"
+                        android:textColor="@color/colorAccent_old"
+                        android:textSize="12sp"
+                        tools:hint="Catalog"
+                        tools:textColorHint="@color/colorAccent_old" />
+
+                    <TextView
+                        android:id="@+id/museum_catalog3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tiny"
+                        android:background="@drawable/bg_catalog"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:paddingStart="@dimen/tiny"
+                        android:paddingEnd="@dimen/tiny"
+                        android:textColor="@color/colorAccent_old"
+                        android:textSize="12sp"
+                        tools:hint="Catalog"
+                        tools:textColorHint="@color/colorAccent_old" />
 
                 </LinearLayout>
+                
+                <TextView
+                    android:id="@+id/address_museum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/small"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    tools:text="博物馆地址"/>
+                
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@string/image_description"
+                    android:src="@drawable/icon_map_blue"
+                    android:background="@drawable/image_ripple"
+                    android:layout_marginEnd="@dimen/small"
+                    app:layout_constraintTop_toBottomOf="@id/commend_index"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintVertical_bias="0.4"
+                    />
 
             </android.support.constraint.ConstraintLayout>
 

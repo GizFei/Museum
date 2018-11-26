@@ -1,6 +1,5 @@
 package com.giz.museum;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -8,8 +7,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +26,9 @@ import android.widget.TextView;
 
 import com.giz.bmob.Museum;
 import com.giz.bmob.MuseumLibrary;
+import com.giz.customize.CustomToast;
 import com.giz.customize.JustifyTextView;
+import com.giz.utils.MuseumPicturePagerAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,15 +51,25 @@ public class InfoFragment extends Fragment {
     private static final String ARGS_ID = "bundle_id";
     private static final String TAG = "InfoFragment";
 
-    private Museum mMuseum;
-    private CardView mInfoCard;
-    private CardView mIntroCard;
-    private CardView mActivityCard;
-    private CardView mNewsCard;
-    private ProgressBar mMuseumProgress;
+    private Museum mMuseum;                 // 博物馆
+    private CardView mInfoCard;             // 信息卡片
+    private CardView mIntroCard;            // 博物馆介绍卡片
+    private CardView mActivityCard;         // 活动卡片
+    private CardView mNewsCard;             // 新闻卡片
+    private ProgressBar mMuseumProgress;    // 博物馆信息加载进度条
+
+    //private AppBarLayout mAppBarLayout;                 // 工具栏
+    private LinearLayout mDotsLinearLayout;             // 轮播圆点提示
+    private CoordinatorLayout mCoordinatorLayout;       // 坐标布局
+    private NestedScrollView mScrollView;               // 嵌套滚动视图
+    private ContentLoadingProgressBar mImagesProgressBar;  // 轮播图片加载进度条
+    private ViewPager mViewPager;                       // 轮播视图
+    private MuseumPicturePagerAdapter mPagerAdapter;    // 轮播视图适配器
 
     private ActivityOrShowTask mActivityOrShowTask;
     private NewsTask mNewsTask;
+    private boolean mHasStarred;
+
     /**
      * 创建InfoFragment，传入博物馆的ID
      * @param museumId 博物馆ID
@@ -71,16 +88,10 @@ public class InfoFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 获得博物馆信息
         String id = getArguments().getString(ARGS_ID);
         Log.d(TAG, id);
-
-        if(!isNetWorkAvailableAndConnected()){
-            mMuseumProgress.setVisibility(View.GONE);
-        }else{
-            mMuseum = MuseumLibrary.get().getMuseumById(id);
-            mActivityOrShowTask = new ActivityOrShowTask();
-            mNewsTask = new NewsTask();
-        }
+        mMuseum = MuseumLibrary.get().getMuseumById(id);
     }
 
     @Nullable
@@ -93,7 +104,68 @@ public class InfoFragment extends Fragment {
         mActivityCard = view.findViewById(R.id.recent_activity);
         mNewsCard = view.findViewById(R.id.recent_news);
         mMuseumProgress = view.findViewById(R.id.progress_museum);
+        mImagesProgressBar = view.findViewById(R.id.progressBar);
+        mCoordinatorLayout = view.findViewById(R.id.coordinator);
+        mScrollView = view.findViewById(R.id.scrollView);
+        mViewPager = view.findViewById(R.id.picture_vp);
 
+        // 折叠布局
+        CollapsingToolbarLayout ctl = view.findViewById(R.id.ctl);
+        ctl.setTitle(mMuseum.getName());
+        ctl.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        ctl.setExpandedTitleColor(getResources().getColor(R.color.transparent));
+        ctl.setStatusBarScrimResource(R.color.colorPrimaryDark);
+
+        mDotsLinearLayout = view.findViewById(R.id.dots_ll);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                for(int k = 0; k < mPagerAdapter.getCount(); k++){
+                    if(k == i){
+                        mDotsLinearLayout.getChildAt(k).
+                                setBackgroundResource(R.drawable.icon_dot_active);
+                    }else{
+                        mDotsLinearLayout.getChildAt(k).setBackgroundResource(R.drawable.icon_dot);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+//        mAppBarLayout = view.findViewById(R.id.myAppBar);
+//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+//                if(i != 0 && menu.isOpen())
+//                    menu.fold();
+//                float factor = 1.0f - (-(float)i) / appBarLayout.getTotalScrollRange();
+//                menu.setAlpha(factor);
+//                arcMain.setScaleX(factor);
+//                arcMain.setScaleY(factor);
+//            }
+//        });
+
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        // 初始化轮播视图
+        setUpPager();
+        // 初始化博物馆信息
         initDetails();
 
         return view;
@@ -102,6 +174,7 @@ public class InfoFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // 结束后台任务
         if(mActivityOrShowTask != null){
             mActivityOrShowTask.cancel(true);
         }
@@ -118,6 +191,41 @@ public class InfoFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    private void setUpPager(){
+        if(!isNetWorkAvailableAndConnected()){
+            mImagesProgressBar.setVisibility(View.GONE);
+            mDotsLinearLayout.setVisibility(View.GONE);
+            //getView().findViewById(R.id.detail_tip_no_net).setVisibility(View.VISIBLE);
+            return;
+        }
+        mDotsLinearLayout.setVisibility(View.VISIBLE);
+        //getView().findViewById(R.id.detail_tip_no_net).setVisibility(View.GONE);
+
+        BmobQuery query = new BmobQuery("picture");
+        query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
+        Log.d("ID", mMuseum.getMuseumId());
+        query.findObjectsByTable(new QueryListener<JSONArray>() {
+            @Override
+            public void done(JSONArray array, BmobException e) {
+                if(e == null && array.length() != 0){
+                    try{
+                        List<String> urls = new ArrayList<>();
+                        JSONObject pics = array.getJSONObject(0);
+                        int num = pics.getInt("num");
+                        for(int i = 0; i < num; i++){
+                            urls.add(pics.getJSONObject("img" + i).getString("url"));
+                        }
+                        new PagerPicTask().execute(urls);
+                    }catch (Exception ee){
+                        mImagesProgressBar.setVisibility(View.GONE);
+                        CustomToast.make(getContext(), "未找到图片数据").show();
+                        ee.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void initInfoCard(){
@@ -183,29 +291,36 @@ public class InfoFragment extends Fragment {
     }
 
     private void initDetails(){
-        BmobQuery query = new BmobQuery("detail");
-        query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
-        query.findObjectsByTable(new QueryListener<JSONArray>() {
-            @Override
-            public void done(JSONArray array, BmobException e) {
-                if(e == null){
-                    try{
-                        JSONObject object = array.getJSONObject(0);
-                        mMuseum.setAddress(object.getString("address"));
-                        mMuseum.setTicket(object.getString("ticket"));
-                        mMuseum.setOpenTime(object.getString("opentime"));
-                        mMuseum.setIntro(object.getString("intro"));
-                        initInfoCard();
-                        initIntroCard();
-                        mActivityOrShowTask.execute(object.getJSONArray("activities"));
-                        mNewsTask.execute(object.getJSONArray("news"));
-                    }catch (Exception ee){
-                        ee.printStackTrace();
-                        mMuseumProgress.setVisibility(View.GONE);
+        if(!isNetWorkAvailableAndConnected()){
+            mMuseumProgress.setVisibility(View.GONE);
+        }else{
+            BmobQuery query = new BmobQuery("detail");
+            query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
+            query.findObjectsByTable(new QueryListener<JSONArray>() {
+                @Override
+                public void done(JSONArray array, BmobException e) {
+                    if(e == null){
+                        try{
+                            JSONObject object = array.getJSONObject(0);
+                            mMuseum.setAddress(object.getString("address"));
+                            mMuseum.setTicket(object.getString("ticket"));
+                            mMuseum.setOpenTime(object.getString("opentime"));
+                            mMuseum.setIntro(object.getString("intro"));
+                            initInfoCard();
+                            initIntroCard();
+                            mActivityOrShowTask.execute(object.getJSONArray("activities"));
+                            mNewsTask.execute(object.getJSONArray("news"));
+                        }catch (Exception ee){
+                            ee.printStackTrace();
+                            mMuseumProgress.setVisibility(View.GONE);
+                        }
                     }
                 }
-            }
-        });
+            });
+
+            mActivityOrShowTask = new ActivityOrShowTask();
+            mNewsTask = new NewsTask();
+        }
     }
 
     private class ActivityOrShowTask extends AsyncTask<JSONArray, Void, List<MuseumAOrS>>{
@@ -265,6 +380,40 @@ public class InfoFragment extends Fragment {
         }
     }
 
+    private class PagerPicTask extends AsyncTask<List<String>, Void, List<Drawable>>{
+
+        @Override
+        protected List<Drawable> doInBackground(List<String>... url) {
+            try {
+                List<String> urls = url[0];
+                List<Drawable> drawables = new ArrayList<>();
+                for(String u : urls){
+                    drawables.add(Drawable.createFromStream(new URL(u).openStream(), "Drawable"));
+                }
+                return drawables;
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Drawable> drawables) {
+            mImagesProgressBar.setVisibility(View.GONE);
+            if(drawables == null){
+                mImagesProgressBar.setVisibility(View.GONE);
+                CustomToast.make(getContext(), "未找到图片数据").show();
+            }else{
+                mPagerAdapter = new MuseumPicturePagerAdapter(getContext(), drawables);
+                mViewPager.setAdapter(mPagerAdapter);
+
+                for(int i = mPagerAdapter.getCount(); i < 5; i++){
+                    mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
     /**
      * 博物馆活动或展览类
      */
@@ -288,4 +437,16 @@ public class InfoFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(CONNECTIVITY_SERVICE);
         return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
     }
+
+    // 收起AppBarLayout
+//    private void hideHeaders() {
+//        Log.d("MuseumActivity", "HideHeaders");
+//        // 禁止滑动
+//        mScrollView.setNestedScrollingEnabled(false);
+//        // 向上滑动AppBarLayout以隐藏
+//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams();
+//        CoordinatorLayout.Behavior behavior = params.getBehavior();
+//        behavior.onNestedPreScroll(mCoordinatorLayout, mAppBarLayout, mScrollView, 0,
+//                mAppBarLayout.getTotalScrollRange(), new int[]{0, 0}, 0);
+//    }
 }
