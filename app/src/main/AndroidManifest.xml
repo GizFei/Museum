@@ -52,28 +52,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".IndexActivity"
+        <activity android:name=".DrawerActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".MuseumListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+        <activity android:name=".MuseumListActivityNew"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".MuseumActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MuseumListActivity"/>
-
         <activity android:name=".MuseumMapActivity" />
         <activity android:name=".MuseumTrackActivity" />
 	    <activity android:name=".WebViewActivity"
             android:screenOrientation="portrait"/>
-
         <activity android:name=".MarkActivity"
             android:screenOrientation="landscape"/>
-
-
         <activity android:name=".RecordActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".WriteRecordActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ImageDetailActivity"
+            android:theme="@style/TransparentTheme"/>
         <provider
             android:authorities="com.giz.museum.fileprovider"
             android:name="android.support.v4.content.FileProvider"

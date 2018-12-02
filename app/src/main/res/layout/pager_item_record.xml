@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/small"
             android:layout_marginEnd="@dimen/small"
             android:contentDescription="@string/image_description"
-            android:src="@drawable/ic_record_share"
+            android:src="@drawable/record_ic_share"
             app:layout_constraintEnd_toEndOf="@id/record_picture"
             app:layout_constraintTop_toTopOf="@id/record_picture"/>
 
@@ -40,7 +40,7 @@
             android:layout_marginEnd="@dimen/small"
             android:contentDescription="@string/image_description"
             android:background="@drawable/image_ripple"
-            android:src="@drawable/ic_record_delete"
+            android:src="@drawable/record_icon_delete"
             app:layout_constraintEnd_toEndOf="@id/record_picture"
             app:layout_constraintTop_toBottomOf="@id/record_share_icon"/>
 
@@ -73,7 +73,7 @@
                 android:drawablePadding="@dimen/tiny"
                 android:textSize="16sp"
                 android:textColor="@color/light_gray"
-                android:drawableStart="@drawable/icon_record_map" />
+                android:drawableStart="@drawable/record_ic_map" />
 
         </LinearLayout>
 

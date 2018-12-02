@@ -3,7 +3,6 @@
     android:id="@+id/coordinator"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:background="@color/light_gray"
     android:layout_width="match_parent">
@@ -25,44 +24,54 @@
         app:rippleColor="@color/light_gray">
 
         <android.support.design.widget.FloatingActionButton
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:foreground="@drawable/image_ripple"
             android:contentDescription="@string/image_description"
-            android:src="@drawable/ic_share" />
+            android:src="@drawable/arc_ic_share"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="42dp"/>
         <android.support.design.widget.FloatingActionButton
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:foreground="@drawable/image_ripple"
-            android:src="@drawable/ic_arc_nav"
-            android:contentDescription="@string/image_description" />
+            android:src="@drawable/arc_ic_nav"
+            android:contentDescription="@string/image_description"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="42dp"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/arc_img_star"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:foreground="@drawable/image_ripple"
             android:src="@drawable/ic_star_filled_white"
-            android:contentDescription="@string/image_description" />
+            android:contentDescription="@string/image_description"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="42dp"/>
         <android.support.design.widget.FloatingActionButton
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:foreground="@drawable/image_ripple"
-            android:src="@drawable/ic_record"
-            android:contentDescription="@string/image_description" />
+            android:src="@drawable/arc_ic_record"
+            android:contentDescription="@string/image_description"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="42dp"/>
         <android.support.design.widget.FloatingActionButton
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:foreground="@drawable/image_ripple"
-            android:src="@drawable/ic_mark"
+            android:src="@drawable/arc_ic_mark"
             android:elevation="@dimen/tiny"
-            android:contentDescription="@string/image_description" />
+            android:contentDescription="@string/image_description"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="42dp"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/arc_main"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:foreground="@drawable/image_ripple"
             android:contentDescription="@string/image_description"
-            android:src="@drawable/ic_museum_xml"
+            android:src="@drawable/arc_ic_museum"
             app:backgroundTint="@color/colorAccent"
             app:fabSize="normal"
             app:elevation="16dp" />
@@ -86,9 +95,8 @@
         android:layout_marginEnd="0dp"
         android:background="@color/white"
         android:layoutAnimation="@anim/layout_from_bottom_navbottom"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         app:elevation="@dimen/tiny"
-        app:menu="@menu/navigation"
+        app:menu="@menu/menu_bottom_nav"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

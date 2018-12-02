@@ -16,6 +16,7 @@
         android:layout_marginTop="@dimen/tiny"
         android:background="@color/transparent"
         android:backgroundTint="@color/transparent"
+        android:foreground="@drawable/ripple_effect_gray"
         app:cardElevation="@dimen/tiny"
         app:cardCornerRadius="@dimen/small">
 
@@ -44,7 +45,7 @@
 
                 <!-- 博物馆名称 -->
                 <TextView
-                    android:id="@+id/museum_name"
+                    android:id="@+id/index_museum_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/tiny"
@@ -69,10 +70,10 @@
                     android:gravity="end"
                     android:layout_marginEnd="@dimen/small"
                     android:layout_marginTop="@dimen/small"
-                    app:layout_constraintStart_toEndOf="@id/museum_name"
+                    app:layout_constraintStart_toEndOf="@id/index_museum_name"
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/museum_name">
+                    app:layout_constraintTop_toTopOf="@id/index_museum_name">
 
                     <ImageView
                         android:layout_width="18dp"
@@ -107,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@id/museum_name"
+                    app:layout_constraintTop_toBottomOf="@id/index_museum_name"
                     app:layout_constraintStart_toStartOf="parent">
 
                     <TextView

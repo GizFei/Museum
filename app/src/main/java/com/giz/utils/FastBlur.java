@@ -253,4 +253,10 @@ public class FastBlur {
         output.copyTo(original);
         return original;
     }
+
+    // 将图片变小后进行模糊再放大的策略
+    public static Bitmap scaleGaussianBlur(RenderScript renderScript, Bitmap bm, int radius){
+        Bitmap smallBm = BitmapUtils.resizeBitmap(bm, bm.getWidth()/4, bm.getHeight()/4, false);
+        return BitmapUtils.resizeBitmap(gaussianBlur(renderScript, Math.round(radius), smallBm), bm.getWidth(), bm.getHeight(), true);
+    }
 }
