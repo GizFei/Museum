@@ -184,8 +184,8 @@
                         android:textColor="@color/black"
                         android:layout_marginTop="@dimen/small"
                         android:layout_marginBottom="@dimen/small"
-                        android:drawableStart="@drawable/ic_museum"
-                        android:drawablePadding="@dimen/tiny"
+                        android:drawableStart="@drawable/info_ic_museum"
+                        android:drawablePadding="@dimen/small"
                         android:text="博物馆名称"/>
 
                     <TextView
@@ -193,8 +193,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:textColor="@color/black"
-                        android:drawableStart="@drawable/ic_address"
-                        android:drawablePadding="@dimen/tiny"
+                        android:drawableStart="@drawable/info_ic_address"
+                        android:drawablePadding="@dimen/small"
                         android:layout_marginBottom="@dimen/small"
                         android:text="博物馆地址"/>
 
@@ -203,8 +203,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:textColor="@color/black"
-                        android:drawableStart="@drawable/ic_ticket"
-                        android:drawablePadding="@dimen/tiny"
+                        android:drawableStart="@drawable/info_ic_ticket"
+                        android:drawablePadding="@dimen/small"
                         android:layout_marginBottom="@dimen/small"
                         android:text="博物馆门票"/>
 
@@ -213,8 +213,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
                         android:textColor="@color/black"
-                        android:drawableStart="@drawable/ic_opentime"
-                        android:drawablePadding="@dimen/tiny"
+                        android:drawableStart="@drawable/info_ic_opentime"
+                        android:drawablePadding="@dimen/small"
                         android:layout_marginBottom="@dimen/small"
                         android:text="博物馆开放时间"/>
 
@@ -294,7 +294,7 @@
                     android:layout_marginTop="36dp"
                     android:layout_marginStart="@dimen/small"
                     android:layout_marginEnd="@dimen/small"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/gray"
                     android:layout_height="1dp"/>
 
                 <LinearLayout
@@ -339,7 +339,7 @@
                     android:layout_marginTop="36dp"
                     android:layout_marginStart="@dimen/small"
                     android:layout_marginEnd="@dimen/small"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/gray"
                     android:layout_height="1dp"/>
 
                 <LinearLayout

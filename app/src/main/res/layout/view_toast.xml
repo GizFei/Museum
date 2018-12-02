@@ -6,7 +6,7 @@
     android:backgroundTint="#AA00bcd4"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/small"
-    app:cardElevation="@dimen/small">
+    app:cardElevation="0dp">
 
     <TextView
         android:id="@+id/toast_text"

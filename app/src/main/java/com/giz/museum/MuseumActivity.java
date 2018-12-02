@@ -20,10 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.giz.bmob.CollectionDB;
-import com.giz.bmob.Museum;
-import com.giz.bmob.MuseumLibrary;
-import com.giz.bmob.RecordDB;
+import com.giz.database.CollectionDB;
+import com.giz.database.Museum;
+import com.giz.database.MuseumLibrary;
+import com.giz.database.RecordDB;
 import com.giz.customize.ArcMenu;
 import com.giz.customize.CustomToast;
 
@@ -39,8 +39,10 @@ public class MuseumActivity extends AppCompatActivity {
     private InfoFragment mInfoFragment;
     private PanoramaFragment mPanoramaFragment;
     private AnFragment mAnFragment;
+    private TreasureFragment mTreasureFragment;
 
     private FloatingActionButton mStarImgView;
+    private FloatingActionButton mArcMainBtn;
 
     private boolean mHasStarred;
 
@@ -63,11 +65,9 @@ public class MuseumActivity extends AppCompatActivity {
         initViews();
         // 初始化Fragment
         initFragments();
-        // 添加Fragment
+        // 添加信息Fragment
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.fragment_container, mInfoFragment)
-                .add(R.id.fragment_container, mPanoramaFragment)
-                .add(R.id.fragment_container, mAnFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, mInfoFragment).commit();
         setFragment(1);
     }
 
@@ -75,15 +75,14 @@ public class MuseumActivity extends AppCompatActivity {
      * 初始化Fragment
      */
     private void initFragments() {
-        mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId());
-        mPanoramaFragment = PanoramaFragment.newInstance();
-        mAnFragment = AnFragment.newInstance(mMuseum.getMuseumId());
+        mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId(), mArcMainBtn);
     }
 
     /**
      * 初始化布局
      */
     private void initViews() {
+        mArcMainBtn = findViewById(R.id.arc_main);
         // 底部导航条
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -135,7 +134,7 @@ public class MuseumActivity extends AppCompatActivity {
                             mStarImgView.setImageResource(R.drawable.ic_star_filled_white);
                         }else{
                             CollectionDB.get(MuseumActivity.this).addStarMuseum(mMuseum);
-                            mStarImgView.setImageResource(R.drawable.ic_arc_star_yellow);
+                            mStarImgView.setImageResource(R.drawable.arc_ic_star_yellow);
                         }
                         mHasStarred = !mHasStarred;
                         break;
@@ -159,7 +158,7 @@ public class MuseumActivity extends AppCompatActivity {
         mStarImgView = findViewById(R.id.arc_img_star);
         mHasStarred = CollectionDB.get(MuseumActivity.this).hasStarred(mMuseum.getMuseumId());
         if(mHasStarred){
-            mStarImgView.setImageResource(R.drawable.ic_arc_star_yellow);
+            mStarImgView.setImageResource(R.drawable.arc_ic_star_yellow);
         }
     }
 
@@ -184,13 +183,36 @@ public class MuseumActivity extends AppCompatActivity {
         hideFragments(transaction);
         switch (i){
             case 1:
-                transaction.show(mInfoFragment);
+                if(mInfoFragment == null){
+                    mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId(), mArcMainBtn);
+                    transaction.add(R.id.fragment_container, mInfoFragment);
+                }else{
+                    transaction.show(mInfoFragment);
+                }
                 break;
             case 2:
-                transaction.show(mAnFragment);
+                if(mAnFragment == null){
+                    mAnFragment = AnFragment.newInstance(mMuseum.getMuseumId());
+                    transaction.add(R.id.fragment_container, mAnFragment);
+                }else{
+                    transaction.show(mAnFragment);
+                }
+                break;
+            case 3:
+                if(mTreasureFragment == null){
+                    mTreasureFragment = TreasureFragment.newInstance(mMuseum.getMuseumId());
+                    transaction.add(R.id.fragment_container, mTreasureFragment);
+                }else{
+                    transaction.show(mTreasureFragment);
+                }
                 break;
             case 5:
-                transaction.show(mPanoramaFragment);
+                if(mPanoramaFragment == null){
+                    mPanoramaFragment = PanoramaFragment.newInstance();
+                    transaction.add(R.id.fragment_container, mPanoramaFragment);
+                }else{
+                    transaction.show(mPanoramaFragment);
+                }
                 break;
         }
         transaction.commit();
@@ -209,12 +231,27 @@ public class MuseumActivity extends AppCompatActivity {
         if(mAnFragment != null){
             transaction.hide(mAnFragment);
         }
+        if(mTreasureFragment != null){
+            transaction.hide(mTreasureFragment);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        getSupportFragmentManager().beginTransaction().remove(mInfoFragment)
-                .remove(mPanoramaFragment).commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(mInfoFragment != null){
+            transaction.remove(mInfoFragment);
+        }
+        if(mAnFragment != null){
+            transaction.remove(mAnFragment);
+        }
+        if(mPanoramaFragment != null){
+            transaction.remove(mPanoramaFragment);
+        }
+        if(mTreasureFragment != null){
+            transaction.remove(mTreasureFragment);
+        }
+        transaction.commit();
         super.onBackPressed();
     }
 

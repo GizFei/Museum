@@ -1,5 +1,6 @@
 package com.giz.museum;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -7,8 +8,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -24,8 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.giz.bmob.Museum;
-import com.giz.bmob.MuseumLibrary;
+import com.giz.database.Museum;
+import com.giz.database.MuseumLibrary;
 import com.giz.customize.CustomToast;
 import com.giz.customize.JustifyTextView;
 import com.giz.utils.MuseumPicturePagerAdapter;
@@ -51,16 +54,17 @@ public class InfoFragment extends Fragment {
     private static final String ARGS_ID = "bundle_id";
     private static final String TAG = "InfoFragment";
 
+    private MuseumActivity mActivity;       // 属于的活动
     private Museum mMuseum;                 // 博物馆
     private CardView mInfoCard;             // 信息卡片
     private CardView mIntroCard;            // 博物馆介绍卡片
     private CardView mActivityCard;         // 活动卡片
     private CardView mNewsCard;             // 新闻卡片
     private ProgressBar mMuseumProgress;    // 博物馆信息加载进度条
+    private Toolbar mToolbar;               // 工具栏
 
-    //private AppBarLayout mAppBarLayout;                 // 工具栏
+    private AppBarLayout mAppBarLayout;                 // 工具栏
     private LinearLayout mDotsLinearLayout;             // 轮播圆点提示
-    private CoordinatorLayout mCoordinatorLayout;       // 坐标布局
     private NestedScrollView mScrollView;               // 嵌套滚动视图
     private ContentLoadingProgressBar mImagesProgressBar;  // 轮播图片加载进度条
     private ViewPager mViewPager;                       // 轮播视图
@@ -69,19 +73,27 @@ public class InfoFragment extends Fragment {
     private ActivityOrShowTask mActivityOrShowTask;
     private NewsTask mNewsTask;
     private boolean mHasStarred;
+    private FloatingActionButton mArcMainBtn;
 
     /**
      * 创建InfoFragment，传入博物馆的ID
      * @param museumId 博物馆ID
      * @return InfoFragment实例
      */
-    public static InfoFragment newInstance(String museumId){
+    public static InfoFragment newInstance(String museumId, FloatingActionButton arcMain){
         InfoFragment fragment = new InfoFragment();
         Bundle bundle = new Bundle();
 
+        fragment.mArcMainBtn = arcMain;
         bundle.putString(ARGS_ID, museumId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (MuseumActivity)context;
     }
 
     @Override
@@ -105,9 +117,11 @@ public class InfoFragment extends Fragment {
         mNewsCard = view.findViewById(R.id.recent_news);
         mMuseumProgress = view.findViewById(R.id.progress_museum);
         mImagesProgressBar = view.findViewById(R.id.progressBar);
-        mCoordinatorLayout = view.findViewById(R.id.coordinator);
+        mAppBarLayout = view.findViewById(R.id.myAppBar);
+        mDotsLinearLayout = view.findViewById(R.id.dots_ll);
         mScrollView = view.findViewById(R.id.scrollView);
         mViewPager = view.findViewById(R.id.picture_vp);
+        mToolbar = view.findViewById(R.id.toolbar);
 
         // 折叠布局
         CollapsingToolbarLayout ctl = view.findViewById(R.id.ctl);
@@ -115,8 +129,6 @@ public class InfoFragment extends Fragment {
         ctl.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         ctl.setExpandedTitleColor(getResources().getColor(R.color.transparent));
         ctl.setStatusBarScrimResource(R.color.colorPrimaryDark);
-
-        mDotsLinearLayout = view.findViewById(R.id.dots_ll);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -142,31 +154,24 @@ public class InfoFragment extends Fragment {
             }
         });
 
-//        mAppBarLayout = view.findViewById(R.id.myAppBar);
-//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-//                if(i != 0 && menu.isOpen())
-//                    menu.fold();
-//                float factor = 1.0f - (-(float)i) / appBarLayout.getTotalScrollRange();
-//                menu.setAlpha(factor);
-//                arcMain.setScaleX(factor);
-//                arcMain.setScaleY(factor);
-//            }
-//        });
-
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
+            public void onScrollChange(NestedScrollView nestedScrollView, int i, int i1, int i2, int i3) {
+                Log.d(TAG, "Scroll");
+                mArcMainBtn.animate().scaleX(0).scaleY(0).alpha(0).setDuration(1000).start();
             }
         });
 
-        // 初始化轮播视图
-        setUpPager();
-        // 初始化博物馆信息
-        initDetails();
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                if(-i == appBarLayout.getTotalScrollRange()){
+                    mArcMainBtn.animate().scaleY(0).scaleX(0).setDuration(400).alpha(0.2f).start();
+                }else if(i == 0){
+                    mArcMainBtn.animate().scaleY(1).scaleX(1).setDuration(400).alpha(1f).start();
+                }
+            }
+        });
 
         return view;
     }
@@ -181,6 +186,37 @@ public class InfoFragment extends Fragment {
         if(mNewsTask != null){
             mNewsTask.cancel(true);
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // 初始化视图中的内容
+
+//        mAppBarLayout = view.findViewById(R.id.myAppBar);
+//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+//                if(i != 0 && menu.isOpen())
+//                    menu.fold();
+//                float factor = 1.0f - (-(float)i) / appBarLayout.getTotalScrollRange();
+//                menu.setAlpha(factor);
+//                arcMain.setScaleX(factor);
+//                arcMain.setScaleY(factor);
+//            }
+//        });
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.onBackPressed();
+            }
+        });
+
+        // 初始化轮播视图
+        setUpPager();
+        // 初始化博物馆信息
+        initDetails();
     }
 
     @Override
@@ -434,19 +470,7 @@ public class InfoFragment extends Fragment {
     }
 
     private boolean isNetWorkAvailableAndConnected(){
-        ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager)mActivity.getSystemService(CONNECTIVITY_SERVICE);
         return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
     }
-
-    // 收起AppBarLayout
-//    private void hideHeaders() {
-//        Log.d("MuseumActivity", "HideHeaders");
-//        // 禁止滑动
-//        mScrollView.setNestedScrollingEnabled(false);
-//        // 向上滑动AppBarLayout以隐藏
-//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams();
-//        CoordinatorLayout.Behavior behavior = params.getBehavior();
-//        behavior.onNestedPreScroll(mCoordinatorLayout, mAppBarLayout, mScrollView, 0,
-//                mAppBarLayout.getTotalScrollRange(), new int[]{0, 0}, 0);
-//    }
 }

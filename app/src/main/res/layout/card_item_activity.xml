@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/small"
-    android:foreground="@drawable/image_ripple"
+    android:foreground="@drawable/ripple_effect_gray"
     android:layout_marginTop="@dimen/tiny">
 
     <ImageView

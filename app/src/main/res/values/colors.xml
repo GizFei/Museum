@@ -13,6 +13,7 @@
     <color name="black">#222</color>
     <color name="gray">#EEE</color>
 
+    <color name="dark_gray">#DDD</color>
     <color name="light_gray">#F1F2F3</color>
     <color name="anim_icon">#0C1736</color>
     <color name="detail_card_bg">#ebf4f7</color>

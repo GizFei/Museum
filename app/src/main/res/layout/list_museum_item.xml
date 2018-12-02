@@ -14,6 +14,7 @@
         android:layout_marginBottom="@dimen/tiny"
         android:layout_marginStart="@dimen/tiny"
         android:layout_marginEnd="@dimen/tiny"
+        android:foreground="@drawable/ripple_effect_gray"
         app:cardCornerRadius="@dimen/tiny"
         app:cardElevation="0dp">
 
@@ -35,7 +36,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/CL"/>
 
             <TextView
-                android:id="@+id/museum_name"
+                android:id="@+id/index_museum_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
@@ -60,7 +61,7 @@
                 android:paddingEnd="@dimen/tiny"
                 android:background="@drawable/bg_catalog"
                 app:layout_constraintStart_toEndOf="@id/museum_logo"
-                app:layout_constraintTop_toBottomOf="@id/museum_name"
+                app:layout_constraintTop_toBottomOf="@id/index_museum_name"
                 app:layout_constraintBottom_toBottomOf="@id/CL"
                 tools:textColorHint="@color/colorAccent_old"
                 tools:hint="Catalog"/>
@@ -78,7 +79,7 @@
                 android:paddingEnd="@dimen/tiny"
                 android:background="@drawable/bg_catalog"
                 app:layout_constraintStart_toEndOf="@id/museum_catalog1"
-                app:layout_constraintTop_toBottomOf="@id/museum_name"
+                app:layout_constraintTop_toBottomOf="@id/index_museum_name"
                 app:layout_constraintBottom_toBottomOf="@id/CL"
                 tools:textColorHint="@color/colorAccent_old"
                 tools:hint="Catalog"/>
@@ -96,7 +97,7 @@
                 android:textColor="@color/colorAccent_old"
                 android:background="@drawable/bg_catalog"
                 app:layout_constraintStart_toEndOf="@id/museum_catalog2"
-                app:layout_constraintTop_toBottomOf="@id/museum_name"
+                app:layout_constraintTop_toBottomOf="@id/index_museum_name"
                 app:layout_constraintBottom_toBottomOf="@id/CL"
                 tools:textColorHint="@color/colorAccent_old"
                 tools:hint="Catalog"/>
@@ -110,7 +111,7 @@
                 android:layout_marginEnd="@dimen/tiny"
                 android:layout_marginTop="@dimen/tiny"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/museum_name">
+                app:layout_constraintTop_toTopOf="@id/index_museum_name">
 
                 <ImageView
                     android:layout_width="18dp"
