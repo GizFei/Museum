@@ -1,6 +1,10 @@
 package com.giz.utils;
 
 import android.graphics.Bitmap;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 public class FastBlur {
 
@@ -237,5 +241,22 @@ public class FastBlur {
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
         return (bitmap);
+    }
+
+    public static Bitmap gaussianBlur(RenderScript mRenderScript, int radius, Bitmap original) {
+        Allocation input = Allocation.createFromBitmap(mRenderScript, original);
+        Allocation output = Allocation.createTyped(mRenderScript, input.getType());
+        ScriptIntrinsicBlur scriptIntrinsicBlur = ScriptIntrinsicBlur.create(mRenderScript, Element.U8_4(mRenderScript));
+        scriptIntrinsicBlur.setRadius(radius);
+        scriptIntrinsicBlur.setInput(input);
+        scriptIntrinsicBlur.forEach(output);
+        output.copyTo(original);
+        return original;
+    }
+
+    // 将图片变小后进行模糊再放大的策略
+    public static Bitmap scaleGaussianBlur(RenderScript renderScript, Bitmap bm, int radius){
+        Bitmap smallBm = BitmapUtils.resizeBitmap(bm, bm.getWidth()/4, bm.getHeight()/4, false);
+        return BitmapUtils.resizeBitmap(gaussianBlur(renderScript, Math.round(radius), smallBm), bm.getWidth(), bm.getHeight(), true);
     }
 }

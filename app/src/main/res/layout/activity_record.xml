@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/gray"
-    android:paddingTop="@dimen/pLarge"
+    android:paddingTop="@dimen/normal"
     android:paddingStart="32dp"
-    android:paddingEnd="@dimen/pLarge"
-    android:paddingBottom="@dimen/pLarge"
+    android:paddingEnd="@dimen/normal"
+    android:paddingBottom="@dimen/normal"
     android:clipToPadding="true"
     android:clipChildren="false">
 
@@ -29,10 +29,10 @@
         android:id="@+id/record_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_record_title"
+        android:drawableStart="@drawable/record_icon_title"
         android:text="我的记录集"
-        android:layout_marginEnd="@dimen/mLarge"
-        android:drawablePadding="@dimen/normalize_margin"
+        android:layout_marginEnd="@dimen/normal"
+        android:drawablePadding="@dimen/small"
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="20sp"/>
 
@@ -41,18 +41,18 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:contentDescription="@string/image_description"
-        android:src="@drawable/ic_record_close"
-        android:layout_marginEnd="@dimen/mLarge"
+        android:src="@drawable/record_icon_close"
+        android:layout_marginEnd="@dimen/normal"
         android:background="@drawable/image_ripple"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/record_pager"
-        android:layout_marginEnd="@dimen/mLarge"
+        android:layout_marginEnd="@dimen/normal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/mLarge"
+        android:layout_marginTop="@dimen/normal"
         app:layout_constraintStart_toStartOf="@id/record_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/record_title"

@@ -1,18 +1,14 @@
 package com.giz.customize;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.giz.bmob.CollectionDB;
-import com.giz.bmob.MuseumLibrary;
-import com.giz.bmob.StarMuseum;
+import com.giz.database.CollectionDB;
+import com.giz.database.MuseumLibrary;
+import com.giz.database.StarMuseum;
 import com.giz.museum.MuseumActivity;
 import com.giz.museum.R;
-
-import org.apache.http.cookie.SM;
 
 import java.util.List;
 
@@ -38,7 +32,7 @@ public class CollectionBottomSheetFragment extends BottomSheetDialogFragment {
 //    @NonNull
 //    public Dialog onCreateDialog(Bundle savedInstanceState) {
 //        BottomSheetDialog dialog = (BottomSheetDialog)super.onCreateDialog(savedInstanceState);
-//        View view = View.inflate(getContext(), R.layout.collection_bottom_sheet, null);
+//        View view = View.inflate(getContext(), R.layout.fragment_collection, null);
 //        dialog.setContentView(view);
 //        mBehavior = BottomSheetBehavior.from((View)view.getParent());
 //        mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -75,12 +69,12 @@ public class CollectionBottomSheetFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.collection_bottom_sheet, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.collection_list);
+        View view = inflater.inflate(R.layout.fragment_collection, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.collection_list_museum);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TextView sum = view.findViewById(R.id.collection_num);
+//        TextView sum = view.findViewById(R.id.collection_num);
         CollectionAdapter adapter = new CollectionAdapter(getContext(),
-                CollectionDB.get(getContext()).getStarredMuseums(), sum);
+                CollectionDB.get(getContext()).getStarredMuseums()); // , sum);
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -136,10 +130,15 @@ public class CollectionBottomSheetFragment extends BottomSheetDialogFragment {
         private List<StarMuseum> mStarMuseumList;
         private Context mContext;
 
-        private CollectionAdapter(Context context, List<StarMuseum> museums, TextView view){
+//        private CollectionAdapter(Context context, List<StarMuseum> museums, TextView view){
+//            mStarMuseumList = museums;
+//            mContext = context;
+//            view.setText(String.valueOf(museums.size()));
+//        }
+
+        private CollectionAdapter(Context context, List<StarMuseum> museums){
             mStarMuseumList = museums;
             mContext = context;
-            view.setText(String.valueOf(museums.size()));
         }
 
         @NonNull

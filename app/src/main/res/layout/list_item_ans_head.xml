@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#F3F4F5"
+    android:layout_height="36dp">
+
+    <TextView
+        android:id="@+id/ans_head"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textColor="#222"
+        android:paddingStart="@dimen/small"
+        android:paddingEnd="0dp"
+        android:text="展览"/>
+
+</android.support.constraint.ConstraintLayout>

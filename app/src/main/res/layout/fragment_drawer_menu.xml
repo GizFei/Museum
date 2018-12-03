@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/museum_logo"
+        android:alpha="0.2"
+        android:layout_margin="@dimen/small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/drawer_menu_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="首页"
+            android:textColor="@color/colorPrimary"
+            android:paddingTop="@dimen/normal"
+            android:paddingBottom="@dimen/normal"
+            android:paddingStart="@dimen/huge"
+            android:paddingEnd="0dp"
+            android:foreground="@drawable/ripple_effect_gray"
+            android:tag="INDEX"
+            android:background="@drawable/bg_drawer_menu"/>
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="所有博物馆"-->
+            <!--android:textColor="#8d9fb1"-->
+            <!--android:paddingTop="@dimen/normal"-->
+            <!--android:paddingBottom="@dimen/normal"-->
+            <!--android:paddingStart="@dimen/huge"-->
+            <!--android:paddingEnd="0dp"-->
+            <!--android:tag="MUSEUMS"/>-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="我的收藏"
+            android:textColor="#8d9fb1"
+            android:paddingTop="@dimen/normal"
+            android:paddingBottom="@dimen/normal"
+            android:paddingStart="@dimen/huge"
+            android:paddingEnd="0dp"
+            android:foreground="@drawable/ripple_effect_gray"
+            android:tag="COLLECTION"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="我的记录"
+            android:textColor="#8d9fb1"
+            android:paddingTop="@dimen/normal"
+            android:paddingBottom="@dimen/normal"
+            android:paddingStart="@dimen/huge"
+            android:paddingEnd="0dp"
+            android:foreground="@drawable/ripple_effect_gray"
+            android:tag="RECORD"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设置"
+            android:textColor="#8d9fb1"
+            android:paddingTop="@dimen/normal"
+            android:paddingBottom="@dimen/normal"
+            android:paddingStart="@dimen/huge"
+            android:paddingEnd="0dp"
+            android:foreground="@drawable/ripple_effect_gray"
+            android:tag="SETTING"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="关于Museum"
+            android:textColor="#8d9fb1"
+            android:paddingTop="@dimen/normal"
+            android:paddingBottom="@dimen/normal"
+            android:paddingStart="@dimen/huge"
+            android:paddingEnd="0dp"
+            android:foreground="@drawable/ripple_effect_gray"
+            android:tag="ABOUT"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

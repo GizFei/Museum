@@ -1,32 +1,25 @@
 package com.giz.utils;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.giz.bmob.Museum;
+import com.giz.database.Museum;
 import com.giz.museum.MuseumActivity;
 import com.giz.museum.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CoverFlowPagerAdapter extends PagerAdapter {
 
@@ -56,7 +49,7 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
         final Museum museum = mMuseumList.get(position);
 
         final ImageView imageView = view.findViewById(R.id.museum_logo);
-        TextView mMuseumName = view.findViewById(R.id.museum_name);
+        TextView mMuseumName = view.findViewById(R.id.index_museum_name);
         List<TextView> mMuseumCatalogs = new ArrayList<>();
         mMuseumCatalogs.add((TextView) view.findViewById(R.id.museum_catalog1));
         mMuseumCatalogs.add((TextView) view.findViewById(R.id.museum_catalog2));
