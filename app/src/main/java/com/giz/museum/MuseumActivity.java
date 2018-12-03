@@ -3,80 +3,46 @@ package com.giz.museum;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.giz.bmob.CollectionDB;
-import com.giz.bmob.Museum;
-import com.giz.bmob.MuseumLibrary;
-import com.giz.bmob.RecordDB;
+import com.giz.database.CollectionDB;
+import com.giz.database.Museum;
+import com.giz.database.MuseumLibrary;
+import com.giz.database.RecordDB;
 import com.giz.customize.ArcMenu;
 import com.giz.customize.CustomToast;
-import com.giz.utils.MuseumPicturePagerAdapter;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumActivity extends AppCompatActivity {
 
     private static final String EXTRA_MUSEUM = "museum_intent";
 
     private Museum mMuseum;
-    private AppBarLayout mAppBarLayout;
-    private LinearLayout mDotsLinearLayout;
-    private CoordinatorLayout mCoordinatorLayout;
-    private NestedScrollView mScrollView;
-    private ContentLoadingProgressBar mProgressBar;
-    private ImageView mStarImgView;
-    private ViewPager mViewPager;
-    private MuseumPicturePagerAdapter mPagerAdapter;
 
+    // 管理的Fragment
     private InfoFragment mInfoFragment;
     private PanoramaFragment mPanoramaFragment;
+    private AnFragment mAnFragment;
+    private TreasureFragment mTreasureFragment;
+
+    private FloatingActionButton mStarImgView;
+    private FloatingActionButton mArcMainBtn;
 
     private boolean mHasStarred;
 
@@ -89,16 +55,19 @@ public class MuseumActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.details_museum);
+        setContentView(R.layout.activity_detail_museum);
 
+        // 获得Museum信息
         String museumId = getIntent().getStringExtra(EXTRA_MUSEUM);
         mMuseum = MuseumLibrary.get().getMuseumById(museumId);
 
+        // 初始化控件
         initViews();
+        // 初始化Fragment
         initFragments();
+        // 添加信息Fragment
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.fragment_container, mInfoFragment)
-                .add(R.id.fragment_container, mPanoramaFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, mInfoFragment).commit();
         setFragment(1);
     }
 
@@ -106,76 +75,39 @@ public class MuseumActivity extends AppCompatActivity {
      * 初始化Fragment
      */
     private void initFragments() {
-        mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId());
-        mPanoramaFragment = PanoramaFragment.newInstance();
+        mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId(), mArcMainBtn);
     }
 
     /**
      * 初始化布局
      */
     private void initViews() {
-
-        mStarImgView = findViewById(R.id.arc_img_star);
-        mHasStarred = CollectionDB.get(this).hasStarred(mMuseum.getMuseumId());
-        if(mHasStarred){
-            mStarImgView.setImageResource(R.drawable.ic_arc_starred);
-        }
-
-        mProgressBar = findViewById(R.id.progressBar);
-
-        mCoordinatorLayout = findViewById(R.id.coordinator);
-        mScrollView = findViewById(R.id.scrollView);
-
-        mViewPager = findViewById(R.id.picture_vp);
-
-        CollapsingToolbarLayout ctl = findViewById(R.id.ctl);
-        ctl.setTitle(mMuseum.getName());
-        ctl.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
-        ctl.setExpandedTitleColor(getResources().getColor(R.color.transparent));
-        ctl.setStatusBarScrimResource(R.color.colorPrimaryDark);
-
-        mDotsLinearLayout = findViewById(R.id.dots_ll);
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                for(int k = 0; k < mPagerAdapter.getCount(); k++){
-                    if(k == i){
-                        mDotsLinearLayout.getChildAt(k).
-                                setBackgroundResource(R.drawable.icon_dot_active);
-                    }else{
-                        mDotsLinearLayout.getChildAt(k).setBackgroundResource(R.drawable.icon_dot);
-                    }
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
+        mArcMainBtn = findViewById(R.id.arc_main);
+        // 底部导航条
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.nav_info:
-                        showHeaders();
+                        // 博物馆信息
                         setFragment(1);
                         return true;
-                    case R.id.nav_nav:
-                        hideHeaders();
+                    case R.id.nav_an:
+                        // 博物馆近期动态（活动和新闻）
                         setFragment(2);
                         return true;
-                    case R.id.nav_pano:
-                        hideHeaders();
+                    case R.id.nav_collection:
+                        // 馆藏展示
                         setFragment(3);
+                        return true;
+                    case R.id.nav_nav:
+                        // 博物馆导览（楼层导引、店铺导引）
+                        setFragment(4);
+                        return true;
+                    case R.id.nav_pano:
+                        setFragment(5);
+                        // 全景图
                         return true;
                 }
                 return false;
@@ -183,8 +115,8 @@ public class MuseumActivity extends AppCompatActivity {
         });
         bottomNavigationView.setOnNavigationItemReselectedListener(null);
 
+        // 右下角悬浮菜单
         final ArcMenu menu = findViewById(R.id.action_arcmenu);
-        final ImageView arcMain = findViewById(R.id.arc_main);
         menu.setMenuItemClickListener(new ArcMenu.OnMenuItemClickListener() {
             @Override
             public void onClick(View view, int pos) {
@@ -199,10 +131,10 @@ public class MuseumActivity extends AppCompatActivity {
                     case 2: // 收藏
                         if(mHasStarred){
                             CollectionDB.get(MuseumActivity.this).removeStarMuseum(mMuseum.getMuseumId());
-                            mStarImgView.setImageResource(R.drawable.ic_arc_star);
+                            mStarImgView.setImageResource(R.drawable.ic_star_filled_white);
                         }else{
                             CollectionDB.get(MuseumActivity.this).addStarMuseum(mMuseum);
-                            mStarImgView.setImageResource(R.drawable.ic_arc_starred);
+                            mStarImgView.setImageResource(R.drawable.arc_ic_star_yellow);
                         }
                         mHasStarred = !mHasStarred;
                         break;
@@ -222,55 +154,28 @@ public class MuseumActivity extends AppCompatActivity {
             }
         });
 
-        mAppBarLayout = findViewById(R.id.myAppBar);
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                if(i != 0 && menu.isOpen())
-                    menu.fold();
-                float factor = 1.0f - (-(float)i) / appBarLayout.getTotalScrollRange();
-                menu.setAlpha(factor);
-                arcMain.setScaleX(factor);
-                arcMain.setScaleY(factor);
-            }
-        });
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        setUpPager();
+        // 是否收藏过了
+        mStarImgView = findViewById(R.id.arc_img_star);
+        mHasStarred = CollectionDB.get(MuseumActivity.this).hasStarred(mMuseum.getMuseumId());
+        if(mHasStarred){
+            mStarImgView.setImageResource(R.drawable.arc_ic_star_yellow);
+        }
     }
 
-    // 收起AppBarLayout和FAB
-    private void hideHeaders() {
-        Log.d("MuseumActivity", "HideHeaders");
-        // 禁止滑动
-        mScrollView.setNestedScrollingEnabled(false);
-        // 向上滑动AppBarLayout以隐藏
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams();
-        CoordinatorLayout.Behavior behavior = params.getBehavior();
-        behavior.onNestedPreScroll(mCoordinatorLayout, mAppBarLayout, mScrollView, 0,
-                mAppBarLayout.getTotalScrollRange(), new int[]{0, 0}, 0);
-    }
-
-    private void showHeaders(){
-        Log.d("MuseumActivity", "ShowHeaders");
-        // 允许滑动
-        mScrollView.setNestedScrollingEnabled(true);
-        // 向下滑出以显示
-        CoordinatorLayout.LayoutParams params = ((CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams());
-        CoordinatorLayout.Behavior behavior = params.getBehavior();
-        behavior.onNestedPreScroll(mCoordinatorLayout, mAppBarLayout, mScrollView, 0,
-                0, new int[]{0,0}, 0);
-    }
+//    private void showHeaders(){
+//        Log.d("MuseumActivity", "ShowHeaders");
+//        // 允许滑动
+//        mScrollView.setNestedScrollingEnabled(true);
+//        // 向下滑出以显示
+//        CoordinatorLayout.LayoutParams params = ((CoordinatorLayout.LayoutParams)mAppBarLayout.getLayoutParams());
+//        CoordinatorLayout.Behavior behavior = params.getBehavior();
+//        behavior.onNestedPreScroll(mCoordinatorLayout, mAppBarLayout, mScrollView, 0,
+//                0, new int[]{0,0}, 0);
+//    }
 
     /**
      * 显示当前的Fragment
+     * 1、信息  2、动态  3、馆藏  4、导览  5、全景
      * @param i Fragment的编号，从左到右，从1开始
      */
     private void setFragment(int i) {
@@ -278,12 +183,36 @@ public class MuseumActivity extends AppCompatActivity {
         hideFragments(transaction);
         switch (i){
             case 1:
-                transaction.show(mInfoFragment);
+                if(mInfoFragment == null){
+                    mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId(), mArcMainBtn);
+                    transaction.add(R.id.fragment_container, mInfoFragment);
+                }else{
+                    transaction.show(mInfoFragment);
+                }
                 break;
             case 2:
+                if(mAnFragment == null){
+                    mAnFragment = AnFragment.newInstance(mMuseum.getMuseumId());
+                    transaction.add(R.id.fragment_container, mAnFragment);
+                }else{
+                    transaction.show(mAnFragment);
+                }
                 break;
             case 3:
-                transaction.show(mPanoramaFragment);
+                if(mTreasureFragment == null){
+                    mTreasureFragment = TreasureFragment.newInstance(mMuseum.getMuseumId());
+                    transaction.add(R.id.fragment_container, mTreasureFragment);
+                }else{
+                    transaction.show(mTreasureFragment);
+                }
+                break;
+            case 5:
+                if(mPanoramaFragment == null){
+                    mPanoramaFragment = PanoramaFragment.newInstance();
+                    transaction.add(R.id.fragment_container, mPanoramaFragment);
+                }else{
+                    transaction.show(mPanoramaFragment);
+                }
                 break;
         }
         transaction.commit();
@@ -299,82 +228,31 @@ public class MuseumActivity extends AppCompatActivity {
         if(mPanoramaFragment != null){
             transaction.hide(mPanoramaFragment);
         }
+        if(mAnFragment != null){
+            transaction.hide(mAnFragment);
+        }
+        if(mTreasureFragment != null){
+            transaction.hide(mTreasureFragment);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        getSupportFragmentManager().beginTransaction().remove(mInfoFragment)
-                .remove(mPanoramaFragment).commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(mInfoFragment != null){
+            transaction.remove(mInfoFragment);
+        }
+        if(mAnFragment != null){
+            transaction.remove(mAnFragment);
+        }
+        if(mPanoramaFragment != null){
+            transaction.remove(mPanoramaFragment);
+        }
+        if(mTreasureFragment != null){
+            transaction.remove(mTreasureFragment);
+        }
+        transaction.commit();
         super.onBackPressed();
-    }
-
-    private void setUpPager(){
-        if(!isNetWorkAvailableAndConnected()){
-            mProgressBar.setVisibility(View.GONE);
-            mDotsLinearLayout.setVisibility(View.GONE);
-            findViewById(R.id.detail_tip_no_net).setVisibility(View.VISIBLE);
-            return;
-        }
-        mDotsLinearLayout.setVisibility(View.VISIBLE);
-        findViewById(R.id.detail_tip_no_net).setVisibility(View.GONE);
-
-        BmobQuery query = new BmobQuery("picture");
-        query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
-        Log.d("ID", mMuseum.getMuseumId());
-        query.findObjectsByTable(new QueryListener<JSONArray>() {
-            @Override
-            public void done(JSONArray array, BmobException e) {
-                if(e == null && array.length() != 0){
-                    try{
-                        List<String> urls = new ArrayList<>();
-                        JSONObject pics = array.getJSONObject(0);
-                        int num = pics.getInt("num");
-                        for(int i = 0; i < num; i++){
-                            urls.add(pics.getJSONObject("img" + i).getString("url"));
-                        }
-                        new PagerPicTask().execute(urls);
-                    }catch (Exception ee){
-                        mProgressBar.setVisibility(View.GONE);
-                        CustomToast.make(MuseumActivity.this, "未找到图片数据").show();
-                        ee.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
-    private class PagerPicTask extends AsyncTask<List<String>, Void, List<Drawable>>{
-
-        @Override
-        protected List<Drawable> doInBackground(List<String>... url) {
-            try {
-                List<String> urls = url[0];
-                List<Drawable> drawables = new ArrayList<>();
-                for(String u : urls){
-                    drawables.add(Drawable.createFromStream(new URL(u).openStream(), "Drawable"));
-                }
-                return drawables;
-            }catch (Exception e){
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Drawable> drawables) {
-            mProgressBar.setVisibility(View.GONE);
-            if(drawables == null){
-                mProgressBar.setVisibility(View.GONE);
-                CustomToast.make(MuseumActivity.this, "未找到图片数据").show();
-            }else{
-                mPagerAdapter = new MuseumPicturePagerAdapter(MuseumActivity.this, drawables);
-                mViewPager.setAdapter(mPagerAdapter);
-
-                for(int i = mPagerAdapter.getCount(); i < 5; i++){
-                    mDotsLinearLayout.getChildAt(i).setVisibility(View.GONE);
-                }
-            }
-        }
     }
 
     //Textview转化为Bitmap
@@ -389,6 +267,9 @@ public class MuseumActivity extends AppCompatActivity {
         return bitmap;
     }
 
+    /**
+     * 分享事件
+     */
     private void share() {
         //只是用到了Android自带的分享，如果有更高需求可以使用shareSDK包
         TextView textView = new TextView(getApplicationContext());

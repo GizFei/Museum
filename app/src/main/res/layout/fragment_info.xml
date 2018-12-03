@@ -1,236 +1,364 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/normalize_padding"
-    android:paddingBottom="@dimen/normalize_padding"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/coordinator"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/gray">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray"
+    android:layout_width="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progress_museum"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:translationZ="@dimen/normalize_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/myAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/info"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/ctl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="?attr/actionBarSize"
+            app:expandedTitleGravity="top"
+            app:titleEnabled="true"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="240dp">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/picture_vp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:transitionName="@string/image_trans"
+                    android:background="@color/light_gray">
+
+                </android.support.v4.view.ViewPager>
+
+                <android.support.v4.widget.ContentLoadingProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/detail_tip_no_net"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:visibility="gone"
+                    android:contentDescription="@string/image_description"
+                    android:src="@drawable/tip_no_internet"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <LinearLayout
+                    android:id="@+id/dots_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/small"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/picture_vp">
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_margin="@dimen/tiny"
+                        android:background="@drawable/icon_dot_active"/>
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_margin="@dimen/tiny"
+                        android:background="@drawable/icon_dot"/>
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_margin="@dimen/tiny"
+                        android:background="@drawable/icon_dot"/>
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_margin="@dimen/tiny"
+                        android:background="@drawable/icon_dot"/>
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_margin="@dimen/tiny"
+                        android:background="@drawable/icon_dot"/>
+
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/icon_back"
+                app:contentInsetStartWithNavigation="0dp"
+                app:titleMarginStart="0dp"
+                app:contentInsetStart="0dp" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:foreground="@drawable/image_ripple"
-        android:layout_margin="@dimen/normalize_margin"
-        app:cardCornerRadius="@dimen/normalize_margin"
-        app:cardElevation="0dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/picture_vp"
+        tools:background="@color/colorAccent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:text="概况"
-            android:textSize="18sp"
-            android:lineSpacingExtra="36dp"
-            android:textColor="@color/black"
-            android:background="@drawable/shape_bottom_sheet"
-            android:paddingStart="@dimen/normalize_padding"
-            android:paddingTop="@dimen/pSmall"
-            android:layout_height="36dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:background="@color/colorPrimary"
-            android:layout_height="1dp"/>
-
-        <LinearLayout
-            android:id="@+id/info_container"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:layout_marginBottom="@dimen/mSmall"
-            android:orientation="vertical">
+            android:paddingTop="@dimen/small"
+            android:paddingBottom="@dimen/small"
+            android:background="@color/light_gray">
 
-            <TextView
+            <ProgressBar
+                android:id="@+id/progress_museum"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:translationZ="@dimen/small"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="@dimen/normalize_margin"
-                android:layout_marginBottom="@dimen/normalize_margin"
-                android:drawableStart="@drawable/ic_museum"
-                android:drawablePadding="@dimen/pSmall"
-                android:text="博物馆名称"/>
+                android:backgroundTint="@color/white"
+                android:foreground="@drawable/image_ripple"
+                android:layout_margin="@dimen/small"
+                app:cardCornerRadius="@dimen/small"
+                app:cardElevation="0dp">
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="概况"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="36dp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/shape_bottom_sheet"
+                    android:paddingStart="@dimen/small"
+                    android:paddingTop="@dimen/tiny"
+                    android:layout_height="36dp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:background="@color/gray"
+                    android:layout_height="1dp"/>
+
+                <LinearLayout
+                    android:id="@+id/info_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:layout_marginBottom="@dimen/tiny"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="@dimen/small"
+                        android:layout_marginBottom="@dimen/small"
+                        android:drawableStart="@drawable/info_ic_museum"
+                        android:drawablePadding="@dimen/small"
+                        android:text="博物馆名称"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:drawableStart="@drawable/info_ic_address"
+                        android:drawablePadding="@dimen/small"
+                        android:layout_marginBottom="@dimen/small"
+                        android:text="博物馆地址"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:drawableStart="@drawable/info_ic_ticket"
+                        android:drawablePadding="@dimen/small"
+                        android:layout_marginBottom="@dimen/small"
+                        android:text="博物馆门票"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:drawableStart="@drawable/info_ic_opentime"
+                        android:drawablePadding="@dimen/small"
+                        android:layout_marginBottom="@dimen/small"
+                        android:text="博物馆开放时间"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/introduction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:drawableStart="@drawable/ic_address"
-                android:drawablePadding="@dimen/pSmall"
-                android:layout_marginBottom="@dimen/normalize_margin"
-                android:text="博物馆地址"/>
+                android:backgroundTint="@color/white"
+                android:foreground="@drawable/image_ripple"
+                android:layout_margin="@dimen/small"
+                app:layout_constraintTop_toBottomOf="@id/info"
+                app:cardCornerRadius="@dimen/small"
+                app:cardElevation="0dp">
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="简介"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/shape_bottom_sheet"
+                    android:paddingStart="@dimen/small"
+                    android:paddingTop="@dimen/tiny"
+                    android:layout_height="36dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:background="@color/gray"
+                    android:layout_height="1dp"/>
+
+                <com.giz.customize.JustifyTextView
+                    android:id="@+id/museum_intro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="44dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:layout_marginBottom="@dimen/tiny"
+                    android:paddingBottom="@dimen/tiny"
+                    android:lineSpacingExtra="@dimen/tiny"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:text="博物馆简介" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/recent_activity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:drawableStart="@drawable/ic_ticket"
-                android:drawablePadding="@dimen/pSmall"
-                android:layout_marginBottom="@dimen/normalize_margin"
-                android:text="博物馆门票"/>
+                android:backgroundTint="@color/white"
+                android:foreground="@drawable/image_ripple"
+                android:layout_margin="@dimen/small"
+                app:layout_constraintTop_toBottomOf="@id/introduction"
+                app:cardCornerRadius="@dimen/small"
+                app:cardElevation="0dp">
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="展览先知"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="36dp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/shape_bottom_sheet"
+                    android:paddingStart="@dimen/small"
+                    android:paddingTop="@dimen/tiny"
+                    android:layout_height="36dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:background="@color/gray"
+                    android:layout_height="1dp"/>
+
+                <LinearLayout
+                    android:id="@+id/activity_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:layout_marginBottom="@dimen/tiny"
+                    android:paddingTop="@dimen/tiny"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/recent_news"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@color/black"
-                android:drawableStart="@drawable/ic_opentime"
-                android:drawablePadding="@dimen/pSmall"
-                android:layout_marginBottom="@dimen/normalize_margin"
-                android:text="博物馆开放时间"/>
+                android:backgroundTint="@color/white"
+                android:foreground="@drawable/image_ripple"
+                android:layout_margin="@dimen/small"
+                app:layout_constraintTop_toBottomOf="@id/recent_activity"
+                app:cardCornerRadius="@dimen/small"
+                app:cardElevation="0dp">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="新闻速递"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="36dp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/shape_bottom_sheet"
+                    android:paddingStart="@dimen/small"
+                    android:paddingTop="@dimen/tiny"
+                    android:layout_height="36dp" />
 
-    </android.support.v7.widget.CardView>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:background="@color/gray"
+                    android:layout_height="1dp"/>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/introduction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:foreground="@drawable/image_ripple"
-        android:layout_margin="@dimen/normalize_margin"
-        app:layout_constraintTop_toBottomOf="@id/info"
-        app:cardCornerRadius="@dimen/normalize_margin"
-        app:cardElevation="0dp">
+                <LinearLayout
+                    android:id="@+id/news_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:layout_marginBottom="@dimen/tiny"
+                    android:paddingTop="@dimen/tiny"
+                    android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:text="简介"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:background="@drawable/shape_bottom_sheet"
-            android:paddingStart="@dimen/normalize_padding"
-            android:paddingTop="@dimen/pSmall"
-            android:layout_height="36dp" />
+                </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:background="@color/colorPrimary"
-            android:layout_height="1dp"/>
+            </android.support.v7.widget.CardView>
 
-        <com.giz.customize.JustifyTextView
-            android:id="@+id/museum_intro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:layout_marginBottom="@dimen/mSmall"
-            android:paddingBottom="@dimen/pSmall"
-            android:lineSpacingExtra="@dimen/mSmall"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:text="博物馆简介" />
+        </android.support.constraint.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </android.support.v4.widget.NestedScrollView>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/recent_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:foreground="@drawable/image_ripple"
-        android:layout_margin="@dimen/normalize_margin"
-        app:layout_constraintTop_toBottomOf="@id/introduction"
-        app:cardCornerRadius="@dimen/normalize_margin"
-        app:cardElevation="0dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:text="展览先知"
-            android:textSize="18sp"
-            android:lineSpacingExtra="36dp"
-            android:textColor="@color/black"
-            android:background="@drawable/shape_bottom_sheet"
-            android:paddingStart="@dimen/normalize_padding"
-            android:paddingTop="@dimen/pSmall"
-            android:layout_height="36dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:background="@color/colorPrimary"
-            android:layout_height="1dp"/>
-
-        <LinearLayout
-            android:id="@+id/activity_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:layout_marginBottom="@dimen/mSmall"
-            android:paddingTop="@dimen/pSmall"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/recent_news"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:foreground="@drawable/image_ripple"
-        android:layout_margin="@dimen/normalize_margin"
-        app:layout_constraintTop_toBottomOf="@id/recent_activity"
-        app:cardCornerRadius="@dimen/normalize_margin"
-        app:cardElevation="0dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:text="新闻速递"
-            android:textSize="18sp"
-            android:lineSpacingExtra="36dp"
-            android:textColor="@color/black"
-            android:background="@drawable/shape_bottom_sheet"
-            android:paddingStart="@dimen/normalize_padding"
-            android:paddingTop="@dimen/pSmall"
-            android:layout_height="36dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:background="@color/colorPrimary"
-            android:layout_height="1dp"/>
-
-        <LinearLayout
-            android:id="@+id/news_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:layout_marginStart="@dimen/normalize_margin"
-            android:layout_marginEnd="@dimen/normalize_margin"
-            android:layout_marginBottom="@dimen/mSmall"
-            android:paddingTop="@dimen/pSmall"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

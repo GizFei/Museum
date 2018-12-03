@@ -77,6 +77,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 break;
             case POS_RIGHT_BOTTOM:
                 mPosition = Position.RIGHT_BOTTOM;
+                break;
             case POS_RIGHT_CENTER:
                 mPosition = Position.RIGHT_CENTER;
                 break;
@@ -95,7 +96,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
         if(changed){
             layoutCButton();
 
-            double angle = 180.0 / (mSubBtnCount - 1);
+            double angle = 90.0 / (mSubBtnCount - 1);
             for(int i = 0; i < mSubBtnCount; i++)
                 layoutSubButton(angle, i);
         }
@@ -135,8 +136,6 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
 
         switch (mPosition) {
             case LEFT_TOP:
-                l = 0;
-                t = 0;
                 break;
             case LEFT_BOTTOM:
                 l = 0;
@@ -157,6 +156,8 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
         }
 
         // 定位
+        l -= getPaddingEnd();
+        t -= getPaddingBottom();
         mCButton.layout(l, t, l + width, t + height);
     }
 
@@ -184,8 +185,8 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 t = (int)(mRadius * Math.sin(mAngle));
                 break;
             case RIGHT_BOTTOM:
-                l = getMeasuredWidth() - (int)(mRadius * Math.sin(mAngle)) - width;
-                t = getMeasuredHeight() - (int)(mRadius * Math.cos(mAngle)) - height;
+                l = getMeasuredWidth() - (int)(mRadius * Math.sin(mAngle)) - width - getPaddingEnd();
+                t = getMeasuredHeight() - (int)(mRadius * Math.cos(mAngle)) - height - getPaddingBottom();
                 break;
             case RIGHT_CENTER:
                 l = getMeasuredWidth() - (int)(mRadius * Math.sin(mAngle)) - width;
@@ -197,7 +198,6 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 break;
         }
 
-        l -= 10;
         subButton.layout(l, t, l + width, t + height);
     }
 
@@ -218,7 +218,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
     // 切换菜单
     public void toggleMenu(int duration){
         // 为menuItem添加平移动画和旋转动画
-        double angele = Math.PI /(mSubBtnCount - 1);
+        double angele = Math.PI * 0.5f /(mSubBtnCount - 1);
         for(int i = 0; i < mSubBtnCount; i++) {
             final View childView = getChildAt(i);
             childView.setVisibility(VISIBLE);
@@ -231,8 +231,8 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                 cl = (int) (mRadius * Math.cos(angele * i));
                 ct = (int) (mRadius * Math.sin(angele * i));
             }else{
-                cl = (int) (mRadius * Math.sin(angele * i));
-                ct = (int) (mRadius * Math.cos(angele * i));
+                cl = (int) (mRadius * Math.sin(angele * i)) - getPaddingEnd();
+                ct = (int) (mRadius * Math.cos(angele * i)) - getPaddingBottom();
             }
 //            if(mPosition == Position.RIGHT_CENTER){
 //                cl = (int) (mRadius * Math.sin(angele * i));

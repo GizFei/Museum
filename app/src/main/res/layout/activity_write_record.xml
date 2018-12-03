@@ -6,19 +6,28 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ImageView
+        android:id="@+id/wr_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_back_color"
+        android:layout_marginStart="@dimen/normal"
+        android:layout_marginTop="@dimen/normal"
+        android:foreground="@drawable/image_ripple"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <TextView
         android:id="@+id/wr_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/icon_back_color"
-        android:layout_marginStart="@dimen/mLarge"
-        android:layout_marginTop="@dimen/mLarge"
+        android:layout_marginStart="@dimen/small"
         android:text="随拍随写"
         android:textSize="16sp"
-        android:drawablePadding="@dimen/normalize_padding"
-        android:foreground="@drawable/image_ripple"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/wr_back"
+        app:layout_constraintBottom_toBottomOf="@id/wr_back"
+        app:layout_constraintStart_toEndOf="@id/wr_back"/>
 
     <Button
         style="@style/Base.Widget.AppCompat.Button.Borderless"
@@ -30,21 +39,21 @@
         android:textColor="@color/white"
         android:foreground="@drawable/ripple_rect"
         android:contentDescription="@string/image_description"
-        android:layout_marginEnd="@dimen/mLarge"
+        android:layout_marginEnd="@dimen/normal"
         app:layout_constraintTop_toTopOf="@id/wr_title"
         app:layout_constraintBottom_toBottomOf="@id/wr_title"
-        android:background="@drawable/button_save_bg"
+        android:background="@drawable/record_btn_save"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
         android:id="@+id/wr_content"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:padding="@dimen/normalize_margin"
+        android:padding="@dimen/small"
         android:maxLines="10"
         android:hint="写点什么..."
         android:background="@color/gray"
-        android:layout_margin="@dimen/mLarge"
+        android:layout_margin="@dimen/normal"
         android:gravity="start"
         app:layout_constraintTop_toBottomOf="@id/wr_title"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,8 +66,8 @@
         android:scaleType="centerCrop"
         tools:background="@drawable/collection_bs"
         android:contentDescription="@string/image_description"
-        android:layout_marginStart="@dimen/mLarge"
-        android:layout_marginTop="@dimen/mLarge"
+        android:layout_marginStart="@dimen/normal"
+        android:layout_marginTop="@dimen/normal"
         android:transitionName="@string/photo_trans"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/wr_content"/>
@@ -68,9 +77,9 @@
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:contentDescription="@string/image_description"
-        android:src="@drawable/ic_wr_close"
+        android:src="@drawable/w_record_icon_close"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/normalize_margin"
+        android:layout_marginTop="@dimen/small"
         android:foreground="@drawable/image_ripple"
         app:layout_constraintTop_toBottomOf="@id/wr_picture"
         app:layout_constraintStart_toStartOf="@id/wr_picture"
@@ -81,11 +90,11 @@
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:contentDescription="@string/image_description"
-        android:src="@drawable/ic_record_camera"
-        android:layout_margin="@dimen/mLarge"
+        android:src="@drawable/record_ic_camera"
+        android:layout_margin="@dimen/normal"
         android:foreground="@drawable/ripple_rect"
         app:layout_constraintTop_toBottomOf="@id/wr_content"
-        android:background="@drawable/button_record_photo"
+        android:background="@drawable/record_btn_photo"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

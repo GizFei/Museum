@@ -7,22 +7,16 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
-import android.support.transition.TransitionValues;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
@@ -31,12 +25,11 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import android.support.v8.renderscript.RenderScript;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -44,20 +37,13 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.giz.bmob.MuseumLibrary;
-import com.giz.customize.CollectionBottomSheetFragment;
+import com.giz.database.MuseumLibrary;
 import com.giz.customize.CustomToast;
-import com.giz.customize.PopupMenu;
 import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
-import com.giz.bmob.Museum;
+import com.giz.database.Museum;
 import com.giz.utils.FastBlur;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,8 +54,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -77,7 +61,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumListActivity extends AppCompatActivity {
-
+    private static final String TAG = "MuseumListActivity";
     // 列表显示样式：
     // true：列表形式，false：网格形式
     private boolean isListStyle = true;
@@ -92,22 +76,21 @@ public class MuseumListActivity extends AppCompatActivity {
     private CoverFlowPagerAdapter mPagerAdapter;
     private AppBarLayout mAppBarLayout;
     private ProgressBar mProgressBar;
-    private BottomAppBar mBottomAppBar;
-    private PopupMenu mPopupMenu;
-    private SmartRefreshLayout mRefreshLayout;
 
     private List<Museum> mMuseumList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
+        // 初始化窗口动画
+        setupWindowAnimations();
         setContentView(R.layout.activity_list_museum);
 
         Bmob.initialize(this, "d86d0b43c41c255217e9377f570e3283");
 
         // 初始化布局控件
         mAppBarLayout = findViewById(R.id.myAppBar);
-        mBottomAppBar = findViewById(R.id.bottom_app_bar);
         // 初始化列表
         mMuseumRecyclerView = findViewById(R.id.list_museum);
         mMuseumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -126,16 +109,19 @@ public class MuseumListActivity extends AppCompatActivity {
         mPagerBg = findViewById(R.id.pager_bg);
         // 进度条
         mProgressBar = findViewById(R.id.progressBar);
-        // 弹出菜单
-        mPopupMenu = findViewById(R.id.popup_menu);
         // 初始化下拉刷新布局
-        mRefreshLayout = findViewById(R.id.refresh_layout);
-        mRefreshLayout.setRefreshHeader(new BezierRadarHeader(this).setEnableHorizontalDrag(true));
         // 初始化事件
         initEvents();
 
         mMuseumList = new ArrayList<>();
         downloadMuseumList();
+    }
+
+    private void setupWindowAnimations() {
+        Fade fade = (Fade)TransitionInflater.from(this).inflateTransition(R.transition.activity_fade);
+//        Slide slide = (Slide)TransitionInflater.from(this).inflateTransition(R.transition.activity_slide);
+//        slide.setSlideEdge(Gravity.END);
+        getWindow().setEnterTransition(fade);
     }
 
     private void initEvents(){
@@ -145,13 +131,6 @@ public class MuseumListActivity extends AppCompatActivity {
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
 //                Log.d("APPBAR", String.valueOf(appBarLayout.getTotalScrollRange()));
 //                Log.d("APPBAR", String.valueOf(i));
-                if(mPopupMenu.isMenuOpen()){
-                    mPopupMenu.toggle();
-                    AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
-                            MuseumListActivity.this, R.drawable.av_up_to_menu);
-                    mBottomAppBar.setNavigationIcon(drawableCompat);
-                    ((Animatable)mBottomAppBar.getNavigationIcon()).start();
-                }
                 if(i == 0){
                     cardView.setBackgroundTintList(ColorStateList.valueOf(getResources().
                             getColor(R.color.light_gray)));
@@ -166,8 +145,6 @@ public class MuseumListActivity extends AppCompatActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPopupMenu.isMenuOpen())
-                    mPopupMenu.toggle();
                 ActivityOptionsCompat compat = ActivityOptionsCompat.makeClipRevealAnimation(v,
                         v.getWidth()/2, v.getHeight()/2, 0, 0);
                 ActivityCompat.startActivity(MuseumListActivity.this,
@@ -206,52 +183,6 @@ public class MuseumListActivity extends AppCompatActivity {
                     }
                 }
                 return true;
-            }
-        });
-
-        mBottomAppBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mPopupMenu.isMenuOpen()){
-                    AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
-                            MuseumListActivity.this, R.drawable.av_up_to_menu);
-                    mBottomAppBar.setNavigationIcon(drawableCompat);
-                    ((Animatable)mBottomAppBar.getNavigationIcon()).start();
-                }else{
-                    AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
-                            MuseumListActivity.this, R.drawable.av_menu_to_up);
-                    mBottomAppBar.setNavigationIcon(drawableCompat);
-                    ((Animatable)mBottomAppBar.getNavigationIcon()).start();
-                }
-                mPopupMenu.toggle();
-            }
-        });
-
-        mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public void onClick(View view) {
-                AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
-                        MuseumListActivity.this, R.drawable.av_up_to_menu);
-                mBottomAppBar.setNavigationIcon(drawableCompat);
-                ((Animatable)mBottomAppBar.getNavigationIcon()).start();
-                switch (view.getId()){
-                    case R.id.popup_collection: // 收藏夹
-                        new CollectionBottomSheetFragment().show(getSupportFragmentManager(), "Collection");
-                        break;
-                    case R.id.popup_record: // 记录集
-                        Intent intent = new Intent(MuseumListActivity.this, RecordActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        });
-
-        // 下拉刷新事件
-        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                downloadMuseumList();
-                Log.d("MLA", "refresh");
             }
         });
 
@@ -355,8 +286,6 @@ public class MuseumListActivity extends AppCompatActivity {
             mSearchView.setQuery("", false);
             mSearchView.clearFocus();
         }
-        if(mPopupMenu.isMenuOpen())
-            mPopupMenu.toggle();
         if(isListStyle){
             AnimatedVectorDrawableCompat listToGridAnim = AnimatedVectorDrawableCompat.create(this,
                     R.drawable.av_list_to_pager);
@@ -372,8 +301,7 @@ public class MuseumListActivity extends AppCompatActivity {
             setMuseumViewPagerBg(0);
 
             // 底部工具栏、悬浮球隐藏
-            mBottomAppBar.animate().translationY(mBottomAppBar.getHeight()).
-                    setInterpolator(new LinearInterpolator()).start();
+
             mFab.animate().scaleX(0).scaleY(0).alpha(0).
                     setInterpolator(new LinearInterpolator()).start();
             // 工具栏透明
@@ -389,18 +317,14 @@ public class MuseumListActivity extends AppCompatActivity {
             mMuseumViewPager.setVisibility(View.GONE);
             mPagerBg.setBackgroundResource(R.color.gray);
 
-            //new MuseumListTask().execute();
             mMuseumAdapter.setMuseumList(mMuseumList);
             mMuseumAdapter.notifyDataSetChanged();
             mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
                     R.anim.layout_anim_from_bottom));
-            //mMuseumRecyclerView.setAdapter(mMuseumAdapter);
             mMuseumRecyclerView.startLayoutAnimation();
 
             // 悬浮球显示
             mFab.animate().scaleY(1).scaleX(1).alpha(1).setInterpolator(new LinearInterpolator()).start();
-            mBottomAppBar.animate().translationY(0).
-                    setInterpolator(new LinearInterpolator()).start();
             // 工具栏恢复
             mAppBarLayout.setBackgroundResource(R.color.colorPrimary);
         }
@@ -417,7 +341,7 @@ public class MuseumListActivity extends AppCompatActivity {
             super(itemView);
             itemView.setOnClickListener(this);
             mMuseumCatalogs = new ArrayList<>();
-            mMuseumName = itemView.findViewById(R.id.museum_name);
+            mMuseumName = itemView.findViewById(R.id.index_museum_name);
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog1));
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog2));
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog3));
@@ -445,8 +369,6 @@ public class MuseumListActivity extends AppCompatActivity {
                 mSearchView.setQuery("", false);
                 mSearchView.clearFocus();
             }
-            if(mPopupMenu.isMenuOpen())
-                mPopupMenu.toggle();
             Intent intent = MuseumActivity.newIntent(MuseumListActivity.this,
                     mMuseum.getMuseumId());
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
@@ -527,7 +449,6 @@ public class MuseumListActivity extends AppCompatActivity {
     // 从云端下载博物馆列表
     private void downloadMuseumList(){
 //        // 防止误点击
-//        mSwitchIcon.setEnabled(false);
         if(!isNetWorkAvailableAndConnected()){
             mProgressBar.setVisibility(View.GONE);
             mPagerBg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -536,11 +457,10 @@ public class MuseumListActivity extends AppCompatActivity {
         }
         // 不重复请求
         if(mPagerAdapter != null){
-            mRefreshLayout.finishRefresh();
             return;
         }
 
-        Log.d("kkk", "download");
+        Log.d(TAG, "download museum list");
         BmobQuery query = new BmobQuery("museum");
         query.findObjectsByTable(new QueryListener<JSONArray>() {
             @Override
@@ -583,8 +503,9 @@ public class MuseumListActivity extends AppCompatActivity {
         mBgDrawables = new HashMap<>();
         for(Museum museum: mMuseumList){
             Drawable drawable = museum.getCover();
-            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 10, false);
-            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(blurBg));
+//            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 64, false);
+            Bitmap blurBg = FastBlur.scaleGaussianBlur(RenderScript.create(this), ((BitmapDrawable)drawable).getBitmap(), 16);
+            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(getResources(), blurBg));
         }
         if(mPagerAdapter == null){
             mPagerAdapter = new CoverFlowPagerAdapter(MuseumListActivity.this,
@@ -594,15 +515,11 @@ public class MuseumListActivity extends AppCompatActivity {
 
 //        mSwitchIcon.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
-        mRefreshLayout.finishRefresh();
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        startActivity(intent);
+        super.onBackPressed();
     }
 
     private boolean isNetWorkAvailableAndConnected(){

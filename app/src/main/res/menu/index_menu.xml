@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/index_museums"
+        android:icon="@drawable/info_ic_museum"
+        android:title="所有博物馆"
+        app:showAsAction="ifRoom"/>
+
+</menu>

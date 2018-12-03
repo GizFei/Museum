@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="@drawable/image_ripple"
-    android:paddingTop="@dimen/pSmall"
-    android:paddingBottom="@dimen/normalize_padding">
+    android:paddingTop="@dimen/tiny"
+    android:paddingBottom="@dimen/small">
 
     <ImageView
         android:id="@+id/pic_news"
@@ -23,7 +23,7 @@
         android:layout_width="0dp"
         app:layout_constraintHorizontal_weight="1"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mSmall"
+        android:layout_marginStart="@dimen/tiny"
         android:textSize="14sp"
         android:textColor="@color/black"
         android:text="博物馆革命传统教育课程——坦克新知（九月活动）"
@@ -40,7 +40,7 @@
         android:id="@+id/date_news"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mSmall"
+        android:layout_marginStart="@dimen/tiny"
         android:text="2018-09-08"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/pic_news"
@@ -51,9 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray"
-        android:layout_marginStart="@dimen/normalize_margin"
-        android:layout_marginEnd="@dimen/normalize_margin"
-        android:layout_marginTop="@dimen/normalize_margin"
+        android:layout_marginStart="@dimen/small"
+        android:layout_marginEnd="@dimen/small"
+        android:layout_marginTop="@dimen/small"
         app:layout_constraintTop_toBottomOf="@id/date_news"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

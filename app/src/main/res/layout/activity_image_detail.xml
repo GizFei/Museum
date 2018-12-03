@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:backgroundTint="@color/transparent">
+
+    <View
+        android:id="@+id/scrim"
+        android:background="#d4373838"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:backgroundTint="@color/transparent"
+        android:src="@drawable/treasure_eg"
+        android:scaleType="centerInside"
+        android:layout_gravity="center_vertical"
+        android:transitionName="@string/image_trans"
+        android:contentDescription="@string/image_description"/>
+
+</FrameLayout>

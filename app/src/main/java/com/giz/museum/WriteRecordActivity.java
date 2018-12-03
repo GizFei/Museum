@@ -8,20 +8,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -29,12 +25,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.giz.bmob.Museum;
-import com.giz.bmob.MuseumLibrary;
-import com.giz.bmob.MuseumRecord;
-import com.giz.bmob.RecordDB;
+import com.giz.database.Museum;
+import com.giz.database.MuseumLibrary;
+import com.giz.database.MuseumRecord;
+import com.giz.database.RecordDB;
 import com.giz.customize.CustomToast;
 import com.giz.utils.BitmapUtils;
 
@@ -56,7 +51,7 @@ public class WriteRecordActivity extends AppCompatActivity {
     private TextView mContent;
     private ImageButton mTakePhoto;
     private Button mSaveBtn;
-    private TextView mTitle;
+    private ImageView mBackBtn;
     private ImageView mDeletePhoto;
 
     public static Intent newIntent(Context context, String museumId){
@@ -74,8 +69,8 @@ public class WriteRecordActivity extends AppCompatActivity {
         mPhoto = findViewById(R.id.wr_picture);
         mContent = findViewById(R.id.wr_content);
         mTakePhoto = findViewById(R.id.wr_camera);
+        mBackBtn = findViewById(R.id.wr_back);
         mSaveBtn = findViewById(R.id.wr_save);
-        mTitle = findViewById(R.id.wr_title);
         mDeletePhoto = findViewById(R.id.wr_delete_photo);
 
         mTakePhoto.setEnabled(false);
@@ -105,7 +100,7 @@ public class WriteRecordActivity extends AppCompatActivity {
             }
         });
 
-        mTitle.setOnClickListener(new View.OnClickListener() {
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(WriteRecordActivity.this)

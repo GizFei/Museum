@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00bcd4</color>
+    <color name="colorPrimary">#48c4fa</color>
     <color name="colorPrimaryDark">#778f9b</color>
-    <color name="colorAccent">#448AFF</color>
+    <color name="colorAccent">#5de59f</color>
+
+    <color name="colorAccent_old">#448AFF</color>
+    <color name="colorPrimary_old">#00bcd4</color>
+    <color name="colorPrimaryDark_old">#778f9b</color>
 
     <color name="transparent">#00FFFFFF</color>
     <color name="white">#FFF</color>
     <color name="black">#222</color>
     <color name="gray">#EEE</color>
 
+    <color name="dark_gray">#DDD</color>
     <color name="light_gray">#F1F2F3</color>
     <color name="anim_icon">#0C1736</color>
     <color name="detail_card_bg">#ebf4f7</color>

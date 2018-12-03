@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detail_activity"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/white"
+    android:foreground="@drawable/ripple_effect_gray"
+    android:layout_marginStart="@dimen/small"
+    android:layout_marginEnd="@dimen/small"
+    android:layout_marginTop="@dimen/tiny"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/tiny">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/tiny">
+
+        <com.giz.customize.RoundedImageView
+            android:id="@+id/ans_thumb"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/activity_eg"
+            app:type="corner"
+            app:radius="@dimen/tiny"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/ans_title"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tiny"
+            android:layout_marginEnd="@dimen/small"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:text="九九重阳畅秋志——品重阳糕、做菊花酥"
+            app:layout_constraintTop_toTopOf="@id/ans_thumb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ans_thumb"/>
+        <TextView
+            android:id="@+id/ans_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tiny"
+            android:text="2018-10-16"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/ans_thumb"
+            app:layout_constraintTop_toBottomOf="@id/ans_title"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toTopOf="@id/ans_place"/>
+        <TextView
+            android:id="@+id/ans_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tiny"
+            android:text="地点"
+            android:textSize="12sp"
+            android:paddingTop="@dimen/tiny"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/ans_thumb"
+            app:layout_constraintBottom_toBottomOf="@id/ans_thumb"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>
