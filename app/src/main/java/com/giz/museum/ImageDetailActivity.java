@@ -33,6 +33,7 @@ public class ImageDetailActivity extends AppCompatActivity implements GestureDet
      * @return Intent
      */
     public static Intent newIntent(Context context, String url){
+        sDrawable = null;  // 清除静态drawable
         Intent intent = new Intent(context, ImageDetailActivity.class);
         intent.putExtra(EXTRA_BYTE, url);
         return intent;

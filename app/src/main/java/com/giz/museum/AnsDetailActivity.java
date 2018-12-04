@@ -124,7 +124,7 @@ public class AnsDetailActivity extends AppCompatActivity {
         findViewById(R.id.ans_detail_name).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(WebViewActivity.newIntent(AnsDetailActivity.this, mIndexInfo.idxUrl));
+                startActivity(MuseumActivity.newIntent(AnsDetailActivity.this, mIndexInfo.idxMuseumId));
             }
         });
     }
