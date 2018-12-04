@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/light_gray"
+    android:paddingTop="@dimen/small"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.giz.customize.RoundedImageView
+        android:id="@+id/artifact_img"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/small"
+        android:src="@drawable/skeleton_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:type="circle"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#CCC"
+        app:layout_constraintStart_toEndOf="@id/artifact_img"
+        app:layout_constraintEnd_toStartOf="@id/artifact_info"
+        app:layout_constraintTop_toTopOf="@id/artifact_img"
+        app:layout_constraintBottom_toBottomOf="@id/artifact_img"
+        />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/artifact_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/normal"
+        android:layout_marginEnd="@dimen/small"
+        android:backgroundTint="@color/white"
+        app:cardCornerRadius="@dimen/tiny"
+        android:layout_marginBottom="@dimen/small"
+        app:cardElevation="@dimen/tiny"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/artifact_img"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/tiny"
+            android:orientation="vertical">
+
+            <!-- 文物名称 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="爵"
+                android:textColor="@color/black"
+                android:padding="@dimen/small"
+                android:textSize="16sp"/>
+            <!-- 文物功用（通俗） -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="中国传统一种用于饮酒的容器。"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:paddingTop="@dimen/tiny"
+                android:paddingBottom="@dimen/tiny"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+            <!-- 文物简介 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/tiny"
+                android:text="从出土的形制来看，前有流（倾酒的流槽），后有尾，中有杯，一侧有鋬，下有三足，杯口有二柱。爵同时又是饮器的通称。"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:paddingTop="@dimen/tiny"
+                android:paddingBottom="@dimen/tiny"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

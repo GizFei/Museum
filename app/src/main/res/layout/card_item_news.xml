@@ -15,7 +15,7 @@
         android:layout_height="60dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/image_description"
-        android:src="@drawable/activity_eg"
+        android:src="@drawable/skeleton_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
     <TextView

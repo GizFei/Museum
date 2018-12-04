@@ -1,4 +1,4 @@
-package com.giz.utils;
+package com.giz.duplicated;
 
 import android.content.Context;
 import android.graphics.Bitmap;

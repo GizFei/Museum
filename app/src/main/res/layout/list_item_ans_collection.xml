@@ -19,7 +19,7 @@
         android:layout_margin="@dimen/tiny">
 
         <com.giz.customize.RoundedImageView
-            android:id="@+id/ans_thumb"
+            android:id="@+id/ans_collection_thumb"
             android:layout_width="100dp"
             android:layout_height="75dp"
             android:scaleType="centerCrop"
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
-            android:id="@+id/ans_title"
+            android:id="@+id/ans_collection_title"
             android:layout_width="0dp"
             app:layout_constraintHorizontal_weight="1"
             android:layout_height="wrap_content"
@@ -41,32 +41,33 @@
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="九九重阳畅秋志——品重阳糕、做菊花酥"
-            app:layout_constraintTop_toTopOf="@id/ans_thumb"
+            app:layout_constraintTop_toTopOf="@id/ans_collection_thumb"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ans_thumb"/>
+            app:layout_constraintStart_toEndOf="@id/ans_collection_thumb"/>
+
         <TextView
-            android:id="@+id/ans_date"
+            android:id="@+id/ans_collection_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tiny"
+            android:text="地点"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/ans_collection_thumb"
+            app:layout_constraintBottom_toTopOf="@id/ans_collection_date"/>
+
+        <TextView
+            android:id="@+id/ans_collection_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/tiny"
             android:text="2018-10-16"
             android:textSize="12sp"
             android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/ans_thumb"
-            app:layout_constraintTop_toBottomOf="@id/ans_title"
-            app:layout_constraintVertical_bias="1"
-            app:layout_constraintBottom_toTopOf="@id/ans_place"/>
-        <TextView
-            android:id="@+id/ans_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tiny"
-            android:text="地点"
-            android:textSize="12sp"
             android:paddingTop="@dimen/tiny"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/ans_thumb"
-            app:layout_constraintBottom_toBottomOf="@id/ans_thumb"/>
+            app:layout_constraintStart_toEndOf="@id/ans_collection_thumb"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toBottomOf="@id/ans_collection_thumb"/>
 
     </android.support.constraint.ConstraintLayout>
 

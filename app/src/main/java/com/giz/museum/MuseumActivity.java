@@ -16,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -27,10 +28,20 @@ import com.giz.database.RecordDB;
 import com.giz.customize.ArcMenu;
 import com.giz.customize.CustomToast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumActivity extends AppCompatActivity {
 
+    private static final String TAG = "MuseumActivity";
     private static final String EXTRA_MUSEUM = "museum_intent";
 
     private Museum mMuseum;
@@ -38,7 +49,7 @@ public class MuseumActivity extends AppCompatActivity {
     // 管理的Fragment
     private InfoFragment mInfoFragment;
     private PanoramaFragment mPanoramaFragment;
-    private AnFragment mAnFragment;
+    private AnsFragment mAnsFragment;
     private TreasureFragment mTreasureFragment;
 
     private FloatingActionButton mStarImgView;
@@ -56,19 +67,56 @@ public class MuseumActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_museum);
+        mArcMainBtn = findViewById(R.id.arc_main);
+        // 禁止菜单
+        mArcMainBtn.setEnabled(false);
 
         // 获得Museum信息
         String museumId = getIntent().getStringExtra(EXTRA_MUSEUM);
         mMuseum = MuseumLibrary.get().getMuseumById(museumId);
+        if(mMuseum == null){
+            // 直接进入该页面
+            mMuseum = new Museum(museumId);
+            BmobQuery query = new BmobQuery("museum");
+            query.addWhereEqualTo("objectId", museumId);
+            query.findObjectsByTable(new QueryListener<JSONArray>() {
+                @Override
+                public void done(JSONArray array, BmobException e) {
+                    try {
+                        JSONObject object = array.getJSONObject(0);
+                        Log.d(TAG, "get the museum info" + object.toString(4));
+                        mMuseum.setName(object.getString("name"));
+                        mMuseum.setCatalog(getCatalog(object.getJSONArray("catalog")));
+                        mMuseum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                        mMuseum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
+                                object.getJSONArray("location").getDouble(1)});
+                        MuseumLibrary.get().addMuseum(mMuseum);
+
+                        // 初始化Fragment
+                        initFragments();
+                        // 添加信息Fragment
+                        FragmentManager fm = getSupportFragmentManager();
+                        fm.beginTransaction().add(R.id.fragment_container, mInfoFragment).commit();
+                        setFragment(1);
+
+                        mArcMainBtn.setEnabled(true);
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+        }else {
+            mArcMainBtn.setEnabled(true);
+            // 初始化Fragment
+            initFragments();
+            // 添加信息Fragment
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().add(R.id.fragment_container, mInfoFragment).commit();
+            setFragment(1);
+        }
 
         // 初始化控件
         initViews();
-        // 初始化Fragment
-        initFragments();
-        // 添加信息Fragment
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.fragment_container, mInfoFragment).commit();
-        setFragment(1);
     }
 
     /**
@@ -82,7 +130,6 @@ public class MuseumActivity extends AppCompatActivity {
      * 初始化布局
      */
     private void initViews() {
-        mArcMainBtn = findViewById(R.id.arc_main);
         // 底部导航条
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -191,11 +238,11 @@ public class MuseumActivity extends AppCompatActivity {
                 }
                 break;
             case 2:
-                if(mAnFragment == null){
-                    mAnFragment = AnFragment.newInstance(mMuseum.getMuseumId());
-                    transaction.add(R.id.fragment_container, mAnFragment);
+                if(mAnsFragment == null){
+                    mAnsFragment = AnsFragment.newInstance(mMuseum.getMuseumId());
+                    transaction.add(R.id.fragment_container, mAnsFragment);
                 }else{
-                    transaction.show(mAnFragment);
+                    transaction.show(mAnsFragment);
                 }
                 break;
             case 3:
@@ -228,8 +275,8 @@ public class MuseumActivity extends AppCompatActivity {
         if(mPanoramaFragment != null){
             transaction.hide(mPanoramaFragment);
         }
-        if(mAnFragment != null){
-            transaction.hide(mAnFragment);
+        if(mAnsFragment != null){
+            transaction.hide(mAnsFragment);
         }
         if(mTreasureFragment != null){
             transaction.hide(mTreasureFragment);
@@ -242,8 +289,8 @@ public class MuseumActivity extends AppCompatActivity {
         if(mInfoFragment != null){
             transaction.remove(mInfoFragment);
         }
-        if(mAnFragment != null){
-            transaction.remove(mAnFragment);
+        if(mAnsFragment != null){
+            transaction.remove(mAnsFragment);
         }
         if(mPanoramaFragment != null){
             transaction.remove(mPanoramaFragment);
@@ -345,5 +392,13 @@ public class MuseumActivity extends AppCompatActivity {
     private boolean isNetWorkAvailableAndConnected(){
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+    }
+
+    private List<String> getCatalog(JSONArray array) throws JSONException {
+        List<String> list = new ArrayList<>();
+        for(int j = 0; j < array.length(); j++){
+            list.add(array.getString(j));
+        }
+        return list;
     }
 }

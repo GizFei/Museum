@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.giz.customize.CustomToast;
 import com.giz.database.Museum;
 import com.giz.database.MuseumLibrary;
 import com.giz.utils.CoverFlowEffectTransformer;
@@ -47,6 +48,8 @@ public class TreasureFragment extends TestFragment {
     private Museum mMuseum;
     private ViewPager mViewPager;
     private RecyclerView mRecyclerView;
+    private TextView mArtifactBtn;
+    private TextView mCreativeBtn;
 
     private List<Treasure> mValueTreasureList;
     private List<Treasure> mTreasureList;
@@ -91,10 +94,29 @@ public class TreasureFragment extends TestFragment {
 
         mViewPager = view.findViewById(R.id.treasure_value_vp);
         mRecyclerView = view.findViewById(R.id.treasure_rv);
+        mArtifactBtn = view.findViewById(R.id.treasure_artifact_btn);
+        mCreativeBtn = view.findViewById(R.id.treasure_creative_btn);
 
         mViewPager.setClipChildren(false);
         mViewPager.setClipToPadding(false);
         mViewPager.setPageTransformer(false, new CoverFlowEffectTransformer(mActivity));
+
+        mArtifactBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: 文物");
+                startActivity(ArtifactActivity.newIntent(mActivity, mMuseum.getMuseumId()));
+            }
+        });
+        mCreativeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: 文创");
+            }
+        });
+        // 初始化treasureAdapter，这样可以滑动
+        mTreasureAdapter = new TreasureAdapter();
+        mRecyclerView.setAdapter(mTreasureAdapter);
         return view;
     }
 
@@ -129,6 +151,7 @@ public class TreasureFragment extends TestFragment {
                     HttpSingleTon.getInstance(mActivity).addToRequestQueue(request1);
                 } catch (JSONException e1) {
                     e1.printStackTrace();
+                    CustomToast.make(mActivity, "数据丢了...").show();
                 }
             }
         });
@@ -148,6 +171,7 @@ public class TreasureFragment extends TestFragment {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            CustomToast.make(mActivity, "更新失败").show();
         }
     }
 
@@ -162,9 +186,12 @@ public class TreasureFragment extends TestFragment {
             if(mTreasureAdapter == null){
                 mTreasureAdapter = new TreasureAdapter();
                 mRecyclerView.setAdapter(mTreasureAdapter);
+            }else{
+                mTreasureAdapter.notifyDataSetChanged();
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            CustomToast.make(mActivity, "更新失败").show();
         }
     }
 

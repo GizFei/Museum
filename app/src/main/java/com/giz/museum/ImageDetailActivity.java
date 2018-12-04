@@ -24,11 +24,29 @@ public class ImageDetailActivity extends AppCompatActivity implements GestureDet
     private static final String EXTRA_BYTE = "byte_extra";
 
     private ImageView mImageView;
+    private static Drawable sDrawable = null;
 
+    /**
+     * 通过图片网址构建Intent
+     * @param context 上下文
+     * @param url 图片地址
+     * @return Intent
+     */
     public static Intent newIntent(Context context, String url){
         Intent intent = new Intent(context, ImageDetailActivity.class);
         intent.putExtra(EXTRA_BYTE, url);
         return intent;
+    }
+
+    /**
+     * 通过图片构建Intent
+     * @param context 上下文
+     * @param drawable 图片
+     * @return Intent
+     */
+    public static Intent newIntent(Context context, Drawable drawable){
+        sDrawable = drawable;
+        return new Intent(context, ImageDetailActivity.class);
     }
 
     @Override
@@ -43,22 +61,26 @@ public class ImageDetailActivity extends AppCompatActivity implements GestureDet
             }
         });
 
-        postponeEnterTransition();
-        String url = getIntent().getStringExtra(EXTRA_BYTE);
-        ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                mImageView.setImageBitmap(response);
-                supportStartPostponedEnterTransition();
-            }
-        }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // 设置没有图片时显示的素材
-                    }
-                });
-        HttpSingleTon.getInstance(this).addToRequestQueue(imageRequest);
+        if(sDrawable != null){
+            mImageView.setImageDrawable(sDrawable);
+        }else{
+            postponeEnterTransition();
+            String url = getIntent().getStringExtra(EXTRA_BYTE);
+            ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    mImageView.setImageBitmap(response);
+                    supportStartPostponedEnterTransition();
+                }
+            }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // 设置没有图片时显示的素材
+                        }
+                    });
+            HttpSingleTon.getInstance(this).addToRequestQueue(imageRequest);
+        }
     }
 
     @Override
