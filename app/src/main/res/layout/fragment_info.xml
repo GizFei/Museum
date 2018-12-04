@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:transitionName="@string/image_trans"
-                    android:background="@color/light_gray">
+                    android:background="@drawable/skeleton_image">
 
                 </android.support.v4.view.ViewPager>
 
@@ -107,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/icon_back"
+                app:navigationIcon="@drawable/ic_chevron_left_white"
                 app:contentInsetStartWithNavigation="0dp"
                 app:titleMarginStart="0dp"
                 app:contentInsetStart="0dp" />
@@ -264,96 +264,6 @@
                     android:textSize="15sp"
                     android:textColor="@color/black"
                     android:text="博物馆简介" />
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/recent_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:foreground="@drawable/image_ripple"
-                android:layout_margin="@dimen/small"
-                app:layout_constraintTop_toBottomOf="@id/introduction"
-                app:cardCornerRadius="@dimen/small"
-                app:cardElevation="0dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:text="展览先知"
-                    android:textSize="18sp"
-                    android:lineSpacingExtra="36dp"
-                    android:textColor="@color/black"
-                    android:background="@drawable/shape_bottom_sheet"
-                    android:paddingStart="@dimen/small"
-                    android:paddingTop="@dimen/tiny"
-                    android:layout_height="36dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginStart="@dimen/small"
-                    android:layout_marginEnd="@dimen/small"
-                    android:background="@color/gray"
-                    android:layout_height="1dp"/>
-
-                <LinearLayout
-                    android:id="@+id/activity_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginStart="@dimen/small"
-                    android:layout_marginEnd="@dimen/small"
-                    android:layout_marginBottom="@dimen/tiny"
-                    android:paddingTop="@dimen/tiny"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/recent_news"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:foreground="@drawable/image_ripple"
-                android:layout_margin="@dimen/small"
-                app:layout_constraintTop_toBottomOf="@id/recent_activity"
-                app:cardCornerRadius="@dimen/small"
-                app:cardElevation="0dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:text="新闻速递"
-                    android:textSize="18sp"
-                    android:lineSpacingExtra="36dp"
-                    android:textColor="@color/black"
-                    android:background="@drawable/shape_bottom_sheet"
-                    android:paddingStart="@dimen/small"
-                    android:paddingTop="@dimen/tiny"
-                    android:layout_height="36dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginStart="@dimen/small"
-                    android:layout_marginEnd="@dimen/small"
-                    android:background="@color/gray"
-                    android:layout_height="1dp"/>
-
-                <LinearLayout
-                    android:id="@+id/news_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginStart="@dimen/small"
-                    android:layout_marginEnd="@dimen/small"
-                    android:layout_marginBottom="@dimen/tiny"
-                    android:paddingTop="@dimen/tiny"
-                    android:orientation="vertical">
-
-                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 

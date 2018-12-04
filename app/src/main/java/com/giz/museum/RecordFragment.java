@@ -73,6 +73,13 @@ public class RecordFragment extends TestFragment {
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setPageTransformer(true, new CardSlideTransformer());
         mNoRecordTv = view.findViewById(R.id.tip_no_record);
+        // 打开抽屉菜单
+        view.findViewById(R.id.record_open_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.openDrawerMenu();
+            }
+        });
 
         return view;
     }

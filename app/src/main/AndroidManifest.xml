@@ -75,6 +75,10 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ImageDetailActivity"
             android:theme="@style/TransparentTheme"/>
+        <activity android:name=".ArtifactActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AnsDetailActivity"
+            android:screenOrientation="portrait" />
         <provider
             android:authorities="com.giz.museum.fileprovider"
             android:name="android.support.v4.content.FileProvider"

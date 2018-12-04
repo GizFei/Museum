@@ -32,6 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
+
 public class DrawerActivity extends AppCompatActivity {
 
     private static final String TAG = "DrawerActivity";
@@ -54,7 +56,6 @@ public class DrawerActivity extends AppCompatActivity {
     private FragmentManager mManager;
 
     private Bitmap captureOfContent;
-    private List<Museum> mMuseumList;
     private ACache mACache;
 
     @Override
@@ -63,18 +64,18 @@ public class DrawerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
+        Bmob.initialize(this, "d86d0b43c41c255217e9377f570e3283");
+
         mDrawerLayout = findViewById(R.id.index_drawer_layout);
         mManager = getSupportFragmentManager();
         mACache = ACache.get(getApplicationContext());
-        mMuseumList = new ArrayList<>();
 
         initDrawerMenu();
         initEvents();
         initFragments();
         setupWindowAnimations();
-        if(!isNetWorkAvailableAndConnected()){
-            getCacheMuseumList();
-        }
+        // 获得缓存的列表
+//        getCacheMuseumList();
     }
 
     private void setupWindowAnimations() {
@@ -262,25 +263,26 @@ public class DrawerActivity extends AppCompatActivity {
     /**
      * 获取缓存的博物馆列表
      */
-    private void getCacheMuseumList() {
-        try {
-            JSONArray array = mACache.getAsJSONArray(CACHE_ARRAY_KEY);
-            for(int i = 0; i < array.length(); i++){
-                JSONObject object = array.getJSONObject(i);
-                Museum museum = new Museum(object.getString("objectId"));
-                museum.setName(object.getString("name"));
-                museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
-                museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
-                museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
-                        object.getJSONArray("location").getDouble(1)});
-                museum.setLogo(mACache.getAsDrawable(museum.getLogoCacheKey()));
-                mMuseumList.add(museum);
-            }
-            MuseumLibrary.get().setMuseumList(mMuseumList);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void getCacheMuseumList() {
+//        try {
+//            JSONArray array = mACache.getAsJSONArray(CACHE_ARRAY_KEY);
+//            if(array != null){
+//                for(int i = 0; i < array.length(); i++){
+//                    JSONObject object = array.getJSONObject(i);
+//                    Museum museum = new Museum(object.getString("objectId"));
+//                    museum.setName(object.getString("name"));
+//                    museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+//                    museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
+//                    museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
+//                            object.getJSONArray("location").getDouble(1)});
+//                    museum.setLogo(mACache.getAsDrawable(museum.getLogoCacheKey()));
+//                    mMuseumList.add(museum);
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private boolean isNetWorkAvailableAndConnected(){
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);

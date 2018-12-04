@@ -11,6 +11,7 @@
     <string name="image_description">An Image</string>
     <string name="image_trans">transitionImg</string>
     <string name="photo_trans">transitionPhoto</string>
+    <string name="cl_trans">transitionCL</string>
 
     <string name="drawer_open_desc">Open Drawer</string>
     <string name="drawer_close_desc">Close Drawer</string>

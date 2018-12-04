@@ -53,8 +53,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     // 下拉刷新框架
-    // implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
-    // implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'
+     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
+     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'
     // 可伸展卡片
     implementation 'com.alespero:expandable-cardview:0.8'
     // 硬盘缓存
