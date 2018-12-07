@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="LIST"
+        android:entries="@array/pref_museums_display_style"
+        android:entryValues="@array/pref_museums_display_style_value"
+        android:key="museums_style"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="博物馆列表展示样式"/>
+
+</PreferenceScreen>

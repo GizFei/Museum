@@ -152,11 +152,12 @@ public class InfoFragment extends Fragment {
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
                 if(-i == appBarLayout.getTotalScrollRange()){
                     mArcMainBtn.animate().scaleY(0).scaleX(0).setDuration(400).alpha(0.0f).start();
-                    mArcMainBtn.hide();
+                    mActivity.hideArcMenu();
                 }else if(i == 0){
                     mArcMainBtn.animate().scaleY(1).scaleX(1).setDuration(400).alpha(1f).start();
-                    mArcMainBtn.show();
+                    mActivity.showArcMenu();
                 }
+                mActivity.foldArcMenu();
             }
         });
 
@@ -222,12 +223,15 @@ public class InfoFragment extends Fragment {
                         for(int i = 0; i < num; i++){
                             urls.add(pics.getJSONObject("img" + i).getString("url"));
                         }
+                        Log.d(TAG, "done: " + urls);
                         new PagerPicTask().execute(urls);
                     }catch (Exception ee){
-                        mImagesProgressBar.setVisibility(View.GONE);
-                        CustomToast.make(getContext(), "未找到图片数据").show();
                         ee.printStackTrace();
                     }
+                }else{
+                    mImagesProgressBar.setVisibility(View.GONE);
+                    mDotsLinearLayout.setVisibility(View.GONE);
+                    CustomToast.make(getContext(), "图片丢了...").show();
                 }
             }
         });
@@ -293,10 +297,11 @@ public class InfoFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Drawable> drawables) {
+            Log.d(TAG, "onPostExecute: no progress bar");
             mImagesProgressBar.setVisibility(View.GONE);
-            if(drawables == null){
+            if(drawables == null || drawables.size() == 0){
                 mImagesProgressBar.setVisibility(View.GONE);
-                CustomToast.make(getContext(), "未找到图片数据").show();
+                CustomToast.make(getContext(), "图片丢了...").show();
             }else{
                 mPagerAdapter = new MuseumPicturePagerAdapter(mActivity, drawables);
                 mViewPager.setAdapter(mPagerAdapter);

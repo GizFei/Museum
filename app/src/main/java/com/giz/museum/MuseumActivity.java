@@ -54,6 +54,7 @@ public class MuseumActivity extends AppCompatActivity {
 
     private FloatingActionButton mStarImgView;
     private FloatingActionButton mArcMainBtn;
+    private ArcMenu mArcMenu;
 
     private boolean mHasStarred;
 
@@ -68,6 +69,7 @@ public class MuseumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_museum);
         mArcMainBtn = findViewById(R.id.arc_main);
+        mArcMenu = findViewById(R.id.action_arcmenu);
         // 禁止菜单
         mArcMainBtn.setEnabled(false);
 
@@ -230,6 +232,7 @@ public class MuseumActivity extends AppCompatActivity {
         hideFragments(transaction);
         switch (i){
             case 1:
+                showArcMenu();
                 if(mInfoFragment == null){
                     mInfoFragment = InfoFragment.newInstance(mMuseum.getMuseumId(), mArcMainBtn);
                     transaction.add(R.id.fragment_container, mInfoFragment);
@@ -238,6 +241,7 @@ public class MuseumActivity extends AppCompatActivity {
                 }
                 break;
             case 2:
+                hideArcMenu();
                 if(mAnsFragment == null){
                     mAnsFragment = AnsFragment.newInstance(mMuseum.getMuseumId());
                     transaction.add(R.id.fragment_container, mAnsFragment);
@@ -246,6 +250,7 @@ public class MuseumActivity extends AppCompatActivity {
                 }
                 break;
             case 3:
+                hideArcMenu();
                 if(mTreasureFragment == null){
                     mTreasureFragment = TreasureFragment.newInstance(mMuseum.getMuseumId());
                     transaction.add(R.id.fragment_container, mTreasureFragment);
@@ -253,7 +258,11 @@ public class MuseumActivity extends AppCompatActivity {
                     transaction.show(mTreasureFragment);
                 }
                 break;
+            case 4:
+                hideArcMenu();
+                break;
             case 5:
+                hideArcMenu();
                 if(mPanoramaFragment == null){
                     mPanoramaFragment = PanoramaFragment.newInstance();
                     transaction.add(R.id.fragment_container, mPanoramaFragment);
@@ -263,6 +272,24 @@ public class MuseumActivity extends AppCompatActivity {
                 break;
         }
         transaction.commit();
+    }
+
+    public void showArcMenu() {
+        mArcMainBtn.show();
+        mArcMenu.setVisibility(View.VISIBLE);
+    }
+
+    public void hideArcMenu() {
+        if(mArcMenu.isOpen())
+            mArcMenu.fold();
+        mArcMainBtn.hide();
+        mArcMenu.setVisibility(View.GONE);
+    }
+
+    public void foldArcMenu(){
+        if(mArcMenu.isOpen()){
+            mArcMenu.fold();
+        }
     }
 
     /**

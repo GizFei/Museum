@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
+        android:layout_marginBottom="@dimen/small"
         android:layout_marginTop="@dimen/small">
 
         <android.support.constraint.ConstraintLayout
@@ -42,7 +43,10 @@
                 android:text="博物馆名称"
                 android:textSize="16sp"
                 android:textColor="@color/black"
+                android:ellipsize="end"
                 android:layout_marginStart="@dimen/small"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintEnd_toEndOf="@id/index_collect"
                 app:layout_constraintTop_toTopOf="@id/index_museum_logo"
                 app:layout_constraintBottom_toBottomOf="@id/index_museum_logo"
                 app:layout_constraintStart_toEndOf="@id/index_museum_logo"/>
@@ -119,7 +123,7 @@
             android:id="@+id/detail_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/small"
+            android:paddingBottom="@dimen/tiny"
             android:orientation="vertical"
             android:foreground="@drawable/ripple_effect_gray"
             android:layout_marginTop="@dimen/tiny"
@@ -138,7 +142,7 @@
                 android:textSize="16sp"
                 android:drawablePadding="@dimen/small"
                 android:gravity="center_vertical"
-                android:text="活动/展览名称"
+                android:text="活动/展览/新闻"
                 android:textColor="@color/black"/>
 
             <TextView
@@ -183,6 +187,18 @@
                 <!--android:textColor="@color/black"/>-->
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/index_type_img"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/index_type_news"
+            android:alpha="0.4"
+            android:rotation="-18"
+            android:layout_marginEnd="@dimen/small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 

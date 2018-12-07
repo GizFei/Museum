@@ -32,6 +32,7 @@ public class AnsDetailActivity extends AppCompatActivity {
     private TextView mUrlForward;
     private ACache mACache;
     private ImageView mThumbImg;
+    private ImageView mTypeImg;
 
     public static Intent newIntent(Context context, String infoJsonString){
         Intent intent = new Intent(context, AnsDetailActivity.class);
@@ -47,6 +48,7 @@ public class AnsDetailActivity extends AppCompatActivity {
 
         mIndexInfo = new IndexInfo(getIntent().getStringExtra(EXTRA_INFO));
         mThumbImg = findViewById(R.id.ans_detail_image);
+        mTypeImg = findViewById(R.id.index_type_img);
         ((TextView)findViewById(R.id.ans_detail_name)).setText(mIndexInfo.idxMuseumName);
         ((TextView)findViewById(R.id.ans_detail_title)).setText(mIndexInfo.idxTitle);
         ((TextView)findViewById(R.id.ans_detail_date)).setText(mIndexInfo.idxDate);
@@ -76,6 +78,17 @@ public class AnsDetailActivity extends AppCompatActivity {
                 supportStartPostponedEnterTransition();
             }
         }, 0, 0);
+        switch (mIndexInfo.idxType){
+            case "show":
+                mTypeImg.setImageResource(R.drawable.index_type_show);
+                break;
+            case "news":
+                mTypeImg.setImageResource(R.drawable.index_type_news);
+                break;
+            case "activity":
+                mTypeImg.setImageResource(R.drawable.index_type_activity);
+                break;
+        }
 
         mCollectBtn = findViewById(R.id.ans_detail_collect);
         mUrlForward = findViewById(R.id.ans_detail_url);

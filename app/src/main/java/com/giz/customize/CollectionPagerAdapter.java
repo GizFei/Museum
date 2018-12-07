@@ -30,6 +30,7 @@ import com.giz.museum.MuseumActivity;
 import com.giz.museum.R;
 import com.giz.museum.WebViewActivity;
 import com.giz.utils.ACache;
+import com.giz.utils.DetailUtils;
 import com.giz.utils.HttpSingleTon;
 
 import org.json.JSONArray;
@@ -41,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static android.os.Environment.isExternalStorageRemovable;
+import static com.giz.utils.DetailUtils.dp2px;
 
 public class CollectionPagerAdapter extends PagerAdapter {
 
@@ -357,7 +359,7 @@ public class CollectionPagerAdapter extends PagerAdapter {
                 public void onResponse(Bitmap response) {
                     mThumbImg.setImageBitmap(response);
                 }
-            }, (int)dp2px(100), (int)dp2px(75));
+            }, (int)dp2px(mContext, 100), (int)dp2px(mContext, 75));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -457,10 +459,5 @@ public class CollectionPagerAdapter extends PagerAdapter {
                 return null;
             }
         }
-    }
-
-    private float dp2px(float value){
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
-                mContext.getResources().getDisplayMetrics());
     }
 }
