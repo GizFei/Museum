@@ -1,6 +1,7 @@
 package com.giz.museum;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,13 +11,13 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
@@ -26,25 +27,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alespero.expandablecardview.ExpandableCardView;
 import com.android.volley.Response;
-import com.android.volley.toolbox.ImageRequest;
 import com.giz.customize.CustomToast;
 import com.giz.database.Museum;
 import com.giz.utils.ACache;
 import com.giz.utils.HttpSingleTon;
 import com.giz.utils.TestFragment;
-import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -63,6 +58,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static com.giz.utils.DetailUtils.dp2px;
 
 public class IndexFragment extends TestFragment {
     static {
@@ -139,8 +135,15 @@ public class IndexFragment extends TestFragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.index_museums:
-                        Intent intent = new Intent(getActivity(), MuseumListActivityNew.class);
-                        mDrawerActivity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mDrawerActivity).toBundle());
+                        String style = PreferenceManager.getDefaultSharedPreferences(mDrawerActivity)
+                                .getString("museums_style", "LIST");
+                        if(style.equals("LIST")){
+                            Intent intent = new Intent(getActivity(), MuseumListActivity.class);
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mDrawerActivity).toBundle());
+                        }else{
+                            Intent intent = new Intent(getActivity(), MuseumPagerActivity.class);
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mDrawerActivity).toBundle());
+                        }
                         return true;
                 }
                 return false;
@@ -313,6 +316,7 @@ public class IndexFragment extends TestFragment {
         private TextView mTitleTv;
         private TextView mDateTv;
         private TextView mPlaceTv;
+        private ImageView mTypeImg;
 
         private ConstraintLayout mHeader;
 
@@ -327,11 +331,23 @@ public class IndexFragment extends TestFragment {
             mPlaceTv = itemView.findViewById(R.id.index_place);
             mTitleTv = itemView.findViewById(R.id.index_title);
             mHeader = itemView.findViewById(R.id.card_index_header);
+            mTypeImg = itemView.findViewById(R.id.index_type_img);
         }
 
         private void bind(final IndexInfo info){
             if(info == null){
                 return;
+            }
+            switch (info.idxType){
+                case "show":
+                    mTypeImg.setImageResource(R.drawable.index_type_show);
+                    break;
+                case "news":
+                    mTypeImg.setImageResource(R.drawable.index_type_news);
+                    break;
+                case "activity":
+                    mTypeImg.setImageResource(R.drawable.index_type_activity);
+                    break;
             }
             mNameTv.setText(info.idxMuseumName);
             mTitleTv.setText(info.idxTitle);
@@ -353,7 +369,7 @@ public class IndexFragment extends TestFragment {
                 public void onResponse(Bitmap response) {
                     mLogoImg.setImageBitmap(response);
                 }
-            }, (int)dp2px(36f), (int)dp2px(36f));
+            }, (int)dp2px(mDrawerActivity, 36f), (int)dp2px(mDrawerActivity, 36f));
             HttpSingleTon.getInstance(mDrawerActivity).addImageRequest(info.idxThumbUrl, new Response.Listener<Bitmap>() {
                 @Override
                 public void onResponse(Bitmap response) {
@@ -366,8 +382,7 @@ public class IndexFragment extends TestFragment {
 //                    Intent intent = WebViewActivity.newIntent(mDrawerActivity, info.idxUrl);
 //                    startActivity(intent);
                     ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(mDrawerActivity,
-                            new Pair<View, String>(mIndexImg, getResources().getString(R.string.image_trans)),
-                            new Pair<View, String>(mHeader, getResources().getString(R.string.cl_trans)));
+                            mIndexImg, getResources().getString(R.string.image_trans));
                     startActivity(AnsDetailActivity.newIntent(mDrawerActivity, info.toJSON().toString()), optionsCompat.toBundle());
                 }
             });
@@ -388,15 +403,22 @@ public class IndexFragment extends TestFragment {
             mCollectBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCollectBtn.setSelected(true);
-                    mCollectBtn.setEnabled(false);
-                    JSONArray array = mACache.getAsJSONArray(CollectionFragment.ACACHE_ANS_KEY);
-                    if(array == null){
-                        array = new JSONArray();
+                    if(!isAnsCollected(info.idxObjectId)){
+                        mCollectBtn.setSelected(true);
+                        mCollectBtn.setEnabled(false);
+                        JSONArray array = mACache.getAsJSONArray(CollectionFragment.ACACHE_ANS_KEY);
+                        if(array == null){
+                            array = new JSONArray();
+                        }
+                        array.put(info.toJSON());
+                        mACache.put(CollectionFragment.ACACHE_ANS_KEY, array);
+                        CustomToast.make(mDrawerActivity, "收藏成功").show();
+                    }else{
+                        mCollectBtn.setSelected(true);
+                        mCollectBtn.setEnabled(false);
+                        CustomToast.make(mDrawerActivity, "收藏过了").show();
                     }
-                    array.put(info.toJSON());
-                    mACache.put(CollectionFragment.ACACHE_ANS_KEY, array);
-                    CustomToast.make(mDrawerActivity, "收藏成功").show();
+
                 }
             });
             mShareBtn.setOnClickListener(new View.OnClickListener() {
@@ -472,8 +494,8 @@ public class IndexFragment extends TestFragment {
             }
         }
         private JSONObject toJSON(){
+            JSONObject object = new JSONObject();
             try {
-                JSONObject object = new JSONObject();
                 object.put("museumId", idxMuseumId);
                 object.put("objectId", idxObjectId);
                 object.put("type", idxType);
@@ -488,7 +510,7 @@ public class IndexFragment extends TestFragment {
                 return object;
             } catch (JSONException e) {
                 e.printStackTrace();
-                return null;
+                return object;
             }
         }
     }
@@ -505,11 +527,6 @@ public class IndexFragment extends TestFragment {
     private boolean isNetWorkAvailableAndConnected(){
         ConnectivityManager cm = (ConnectivityManager)mDrawerActivity.getSystemService(CONNECTIVITY_SERVICE);
         return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
-    }
-
-    private float dp2px(float value){
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
-                getResources().getDisplayMetrics());
     }
 
     private boolean isAnsCollected(String ansId){

@@ -26,14 +26,12 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
     private List<Museum> mMuseumList;
     private Context mContext;
     private AppCompatActivity mActivity;
-    private SearchView mSearchView;
 
     public CoverFlowPagerAdapter(Context context, List<Museum> list, AppCompatActivity activity,
                                  SearchView searchView) {
         mMuseumList = list;
         mContext = context;
         mActivity = activity;
-        mSearchView = searchView;
     }
 
     @Override
@@ -72,8 +70,6 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSearchView.setQuery("", false);
-                mSearchView.clearFocus();
                 Intent intent = MuseumActivity.newIntent(mContext, museum.getMuseumId());
                 ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         mActivity, imageView, mActivity.getResources().getString(R.string.image_trans));

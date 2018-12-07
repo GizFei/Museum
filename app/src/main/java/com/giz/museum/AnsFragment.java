@@ -109,7 +109,6 @@ public class AnsFragment extends TestFragment {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mANSInfoList.clear();
                 setupRecyclerView();
             }
         });
@@ -162,6 +161,7 @@ public class AnsFragment extends TestFragment {
 
     private void updateRv(JSONObject ansJSON){
         Log.d(TAG, "updateRv");
+        mANSInfoList.clear();   // 清除数据
         try {
             Log.d(TAG, ansJSON.toString(4));
             JSONArray showArray = ansJSON.getJSONArray("show");
@@ -334,10 +334,5 @@ public class AnsFragment extends TestFragment {
                 e.printStackTrace();
             }
         }
-    }
-
-    private float dp2px(float value){
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
-                getResources().getDisplayMetrics());
     }
 }

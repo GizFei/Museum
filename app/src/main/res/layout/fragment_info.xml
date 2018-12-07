@@ -144,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:foreground="@drawable/image_ripple"
+                android:foreground="@drawable/ripple_effect_light_gray"
                 android:layout_margin="@dimen/small"
                 app:cardCornerRadius="@dimen/small"
                 app:cardElevation="0dp">
@@ -227,7 +227,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:foreground="@drawable/image_ripple"
+                android:foreground="@drawable/ripple_effect_light_gray"
                 android:layout_margin="@dimen/small"
                 app:layout_constraintTop_toBottomOf="@id/info"
                 app:cardCornerRadius="@dimen/small"
