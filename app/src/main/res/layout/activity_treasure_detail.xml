@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/treasure_detail_img_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/blur_bg"/>
+
+    <ImageView
+        android:id="@+id/treasure_detail_img"
+        android:layout_width="match_parent"
+        android:scaleType="centerInside"
+        android:layout_height="240dp"
+        android:layout_marginStart="@dimen/large"
+        android:layout_marginEnd="@dimen/large"
+        android:layout_marginTop="@dimen/huge"
+        android:transitionName="@string/image_trans"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/skeleton_image"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/normal"
+        android:overScrollMode="never"
+        android:fadingEdge="none"
+        android:paddingBottom="@dimen/normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/treasure_detail_img">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/treasure_detail_cv1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large"
+                android:layout_marginEnd="@dimen/large"
+                android:backgroundTint="#2d202020"
+                app:cardCornerRadius="@dimen/tiny"
+                app:cardElevation="0dp">
+
+                    <TextView
+                        android:id="@+id/treasure_detail_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/normal"
+                        android:layout_marginEnd="@dimen/normal"
+                        android:layout_marginTop="@dimen/small"
+                        android:layout_marginBottom="@dimen/small"
+                        android:text="这是一个文物"
+                        android:fontFamily="微软雅黑"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"/>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large"
+                android:layout_marginEnd="@dimen/large"
+                android:backgroundTint="#2d202020"
+                android:layout_marginTop="@dimen/small"
+                android:layout_marginBottom="@dimen/large"
+                app:layout_constraintTop_toBottomOf="@id/treasure_detail_cv1"
+                app:cardCornerRadius="@dimen/tiny"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@+id/treasure_detail_intro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/intro_example"
+                    android:textColor="@color/white"
+                    android:layout_margin="@dimen/normal"
+                    android:lineSpacingExtra="@dimen/small"
+                    android:layout_marginTop="@dimen/small"
+                    app:layout_constraintTop_toBottomOf="@id/divider"/>
+
+            </android.support.v7.widget.CardView>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

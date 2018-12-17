@@ -1,5 +1,6 @@
 package com.giz.museum;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +68,14 @@ public class DrawerMenuFragment extends Fragment {
                 }
             });
         }
+        Button settingBtn = rootView.findViewById(R.id.drawer_menu_setting);
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 进入设置活动
+                startActivity(new Intent(getContext(), SettingActivity.class));
+            }
+        });
 
         return rootView;
     }

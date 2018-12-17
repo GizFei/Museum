@@ -29,7 +29,7 @@
                 android:layout_height="56dp"
                 android:layout_marginStart="@dimen/small"
                 android:contentDescription="@string/image_description"
-                android:src="@drawable/museum_zhejiang"
+                android:src="@drawable/skeleton_image"
                 app:type="circle"
                 app:layout_constraintStart_toStartOf="@id/CL"
                 app:layout_constraintTop_toTopOf="@id/CL"

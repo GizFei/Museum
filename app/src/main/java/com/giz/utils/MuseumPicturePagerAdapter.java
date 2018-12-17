@@ -3,12 +3,16 @@ package com.giz.utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.giz.duplicated.PictureDownloader;
+import com.giz.museum.ImageDetailActivity;
+import com.giz.museum.MuseumActivity;
+import com.giz.museum.R;
 
 import java.util.List;
 
@@ -35,13 +39,23 @@ public class MuseumPicturePagerAdapter extends PagerAdapter {
 
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        ImageView imageView = new ImageView(mContext);
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+        final ImageView imageView = new ImageView(mContext);
+        imageView.setTransitionName(mContext.getResources().getString(R.string.image_trans));
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 //        imageView.setImageDrawable(mPictureManager.getDrawable(mPictures[position]));
         imageView.setImageDrawable(mDrawables.get(position));
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        (MuseumActivity)mContext, imageView, imageView.getTransitionName());
+                mContext.startActivity(ImageDetailActivity.newIntent(mContext, imageView.getDrawable()),
+                        optionsCompat.toBundle());
+            }
+        });
         container.addView(imageView);
         return imageView;
     }

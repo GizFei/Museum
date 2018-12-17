@@ -66,4 +66,12 @@ public class MuseumLibrary {
         }
         return null;
     }
+
+    /**
+     * 添加一个博物馆信息
+     * @param museum 博物馆信息
+     */
+    public void addMuseum(Museum museum){
+        mMuseumList.add(museum);
+    }
 }

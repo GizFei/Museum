@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
@@ -20,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.giz.customize.CustomToast;
 import com.giz.database.Museum;
 import com.giz.database.MuseumLibrary;
 import com.giz.utils.HttpSingleTon;
@@ -38,15 +41,16 @@ import cn.bmob.v3.listener.QueryListener;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public class AnFragment extends TestFragment {
+public class AnsFragment extends TestFragment {
 
-    private static final String TAG = "AnFragment";
+    private static final String TAG = "AnsFragment";
     private static final String ARGS_ID = "args_id";
 
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mRefreshLayout;
 
     private Museum mMuseum;
-    private AnAdapter mAdapter;
+    private AnsAdapter mAdapter;
     private MuseumActivity mActivity;
     private List<ANSInfo> mANSInfoList;
 
@@ -56,8 +60,8 @@ public class AnFragment extends TestFragment {
      * @return AnFragment实例
      * 这是展示博物馆动态（活动、新闻、展览的信息）
      */
-    public static AnFragment newInstance(String museumId){
-        AnFragment fragment = new AnFragment();
+    public static AnsFragment newInstance(String museumId){
+        AnsFragment fragment = new AnsFragment();
         Bundle bundle = new Bundle();
 
         bundle.putString(ARGS_ID, museumId);
@@ -82,7 +86,7 @@ public class AnFragment extends TestFragment {
 
         // 获得博物馆信息
         String id = getArguments().getString(ARGS_ID);
-        Log.d(TAG, "AnFragment onCreate " + id);
+        Log.d(TAG, "AnsFragment onCreate " + id);
         mMuseum = MuseumLibrary.get().getMuseumById(id);
 
         mANSInfoList = new ArrayList<>();
@@ -91,10 +95,23 @@ public class AnFragment extends TestFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "AnFragment onCreateView ");
-        View view = inflater.inflate(R.layout.fragment_an, container, false);
+        Log.d(TAG, "AnsFragment onCreateView ");
+        View view = inflater.inflate(R.layout.fragment_ans, container, false);
 
-        mRecyclerView = view.findViewById(R.id.an_recycler_view);
+        mRecyclerView = view.findViewById(R.id.ans_recycler_view);
+        mRefreshLayout = view.findViewById(R.id.ans_refresh_layout);
+
+        mRefreshLayout.setProgressViewOffset(true, 0, 100);
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        mAdapter = new AnsAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setupRecyclerView();
+            }
+        });
 
         return view;
     }
@@ -132,16 +149,19 @@ public class AnFragment extends TestFragment {
                         });
                         HttpSingleTon.getInstance(mActivity).addToRequestQueue(ansRequest);
                     } catch (JSONException e1) {
+                        CustomToast.make(mActivity, "数据丢了...").show();
                         Log.d(TAG, "Bmob error");
                         e1.printStackTrace();
                     }
                 }
+                mRefreshLayout.setRefreshing(false);
             }
         });
     }
 
     private void updateRv(JSONObject ansJSON){
         Log.d(TAG, "updateRv");
+        mANSInfoList.clear();   // 清除数据
         try {
             Log.d(TAG, ansJSON.toString(4));
             JSONArray showArray = ansJSON.getJSONArray("show");
@@ -179,25 +199,28 @@ public class AnFragment extends TestFragment {
             }
 
             if(mAdapter == null){
-                mAdapter = new AnAdapter();
+                mAdapter = new AnsAdapter();
                 mRecyclerView.setAdapter(mAdapter);
+            }else{
+                mAdapter.notifyDataSetChanged();
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        mRefreshLayout.setRefreshing(false);
     }
 
-    private class AnHolder extends RecyclerView.ViewHolder{
+    private class AnsHolder extends RecyclerView.ViewHolder{
 
         private int mType;
 
-        private AnHolder(View view, int type){
+        private AnsHolder(View view, int type){
             super(view);
             mType = type;
         }
 
         private void bind(final ANSInfo info){
-            if(mType == AnAdapter.TYPE_HEAD){
+            if(mType == AnsAdapter.TYPE_HEAD){
                 ((TextView)itemView.findViewById(R.id.ans_head)).setText(info.hText);
             }else{
                 ImageRequest thumbRequest = new ImageRequest(info.ansThumbUrl, new Response.Listener<Bitmap>() {
@@ -208,7 +231,7 @@ public class AnFragment extends TestFragment {
                 }, 100, 75, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        ((ImageView)itemView.findViewById(R.id.ans_thumb)).setImageResource(R.drawable.activity_eg);
+                        ((ImageView)itemView.findViewById(R.id.ans_thumb)).setImageResource(R.drawable.skeleton_image);
                     }
                 });
                 HttpSingleTon.getInstance(mActivity).addToRequestQueue(thumbRequest);
@@ -230,30 +253,30 @@ public class AnFragment extends TestFragment {
         }
     }
 
-    private class AnAdapter extends RecyclerView.Adapter<AnHolder>{
+    private class AnsAdapter extends RecyclerView.Adapter<AnsHolder>{
 
         private static final int TYPE_HEAD = 0;
         private static final int TYPE_CONTENT = 1;
         private LayoutInflater mInflater;
 
-        private AnAdapter(){
+        private AnsAdapter(){
             mInflater =  LayoutInflater.from(mActivity);
         }
 
         @NonNull
         @Override
-        public AnHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        public AnsHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             if(i == TYPE_HEAD){
                 // 头布局
-                return new AnHolder(mInflater.inflate(R.layout.list_item_ans_head, viewGroup, false), i);
+                return new AnsHolder(mInflater.inflate(R.layout.list_item_ans_head, viewGroup, false), i);
             }else{
-                return new AnHolder(mInflater.inflate(R.layout.list_item_ans, viewGroup, false), i);
+                return new AnsHolder(mInflater.inflate(R.layout.list_item_ans, viewGroup, false), i);
             }
         };
 
         @Override
-        public void onBindViewHolder(@NonNull AnHolder anHolder, int i) {
-            anHolder.bind(mANSInfoList.get(i));
+        public void onBindViewHolder(@NonNull AnsHolder ansHolder, int i) {
+            ansHolder.bind(mANSInfoList.get(i));
         }
 
         @Override
@@ -311,10 +334,5 @@ public class AnFragment extends TestFragment {
                 e.printStackTrace();
             }
         }
-    }
-
-    private float dp2px(float value){
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
-                getResources().getDisplayMetrics());
     }
 }
