@@ -224,6 +224,9 @@ public class WriteRecordActivity extends AppCompatActivity {
         return DateFormat.format(format, date).toString();
     }
 
+    /**
+     * 获得拍照权限
+     */
     private void requestCamera(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED){

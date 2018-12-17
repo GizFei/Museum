@@ -31,7 +31,7 @@
                 android:layout_height="0dp"
                 android:contentDescription="@string/image_description"
                 android:scaleType="centerCrop"
-                android:src="@drawable/icon_map"
+                android:src="@drawable/skeleton_image"
                 android:transitionName="@string/image_trans"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/mask"/>

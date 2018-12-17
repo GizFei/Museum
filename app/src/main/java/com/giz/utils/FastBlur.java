@@ -244,14 +244,17 @@ public class FastBlur {
     }
 
     public static Bitmap gaussianBlur(RenderScript mRenderScript, int radius, Bitmap original) {
+        Bitmap bitmap = Bitmap.createBitmap(original.getWidth(), original.getHeight(), original.getConfig());
         Allocation input = Allocation.createFromBitmap(mRenderScript, original);
         Allocation output = Allocation.createTyped(mRenderScript, input.getType());
         ScriptIntrinsicBlur scriptIntrinsicBlur = ScriptIntrinsicBlur.create(mRenderScript, Element.U8_4(mRenderScript));
         scriptIntrinsicBlur.setRadius(radius);
         scriptIntrinsicBlur.setInput(input);
         scriptIntrinsicBlur.forEach(output);
-        output.copyTo(original);
-        return original;
+        output.copyTo(bitmap);
+        original.recycle();
+
+        return bitmap;
     }
 
     // 将图片变小后进行模糊再放大的策略

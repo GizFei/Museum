@@ -18,6 +18,17 @@
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <ImageView
+        android:id="@+id/collection_open_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/normal"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintTop_toTopOf="@id/collection_text"
+        app:layout_constraintBottom_toBottomOf="@id/collection_text"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/index_ic_menu"/>
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -54,6 +65,8 @@
         android:id="@+id/collection_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:fadingEdge="none"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/collection_tab_layout"

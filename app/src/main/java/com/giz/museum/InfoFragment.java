@@ -58,8 +58,6 @@ public class InfoFragment extends Fragment {
     private Museum mMuseum;                 // 博物馆
     private CardView mInfoCard;             // 信息卡片
     private CardView mIntroCard;            // 博物馆介绍卡片
-    private CardView mActivityCard;         // 活动卡片
-    private CardView mNewsCard;             // 新闻卡片
     private ProgressBar mMuseumProgress;    // 博物馆信息加载进度条
     private Toolbar mToolbar;               // 工具栏
 
@@ -70,9 +68,6 @@ public class InfoFragment extends Fragment {
     private ViewPager mViewPager;                       // 轮播视图
     private MuseumPicturePagerAdapter mPagerAdapter;    // 轮播视图适配器
 
-    private ActivityOrShowTask mActivityOrShowTask;
-    private NewsTask mNewsTask;
-    private boolean mHasStarred;
     private FloatingActionButton mArcMainBtn;
 
     /**
@@ -113,8 +108,6 @@ public class InfoFragment extends Fragment {
 
         mInfoCard = view.findViewById(R.id.info);
         mIntroCard = view.findViewById(R.id.introduction);
-        mActivityCard = view.findViewById(R.id.recent_activity);
-        mNewsCard = view.findViewById(R.id.recent_news);
         mMuseumProgress = view.findViewById(R.id.progress_museum);
         mImagesProgressBar = view.findViewById(R.id.progressBar);
         mAppBarLayout = view.findViewById(R.id.myAppBar);
@@ -154,22 +147,17 @@ public class InfoFragment extends Fragment {
             }
         });
 
-        mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView nestedScrollView, int i, int i1, int i2, int i3) {
-                Log.d(TAG, "Scroll");
-                mArcMainBtn.animate().scaleX(0).scaleY(0).alpha(0).setDuration(1000).start();
-            }
-        });
-
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
                 if(-i == appBarLayout.getTotalScrollRange()){
-                    mArcMainBtn.animate().scaleY(0).scaleX(0).setDuration(400).alpha(0.2f).start();
+                    mArcMainBtn.animate().scaleY(0).scaleX(0).setDuration(400).alpha(0.0f).start();
+                    mActivity.hideArcMenu();
                 }else if(i == 0){
                     mArcMainBtn.animate().scaleY(1).scaleX(1).setDuration(400).alpha(1f).start();
+                    mActivity.showArcMenu();
                 }
+                mActivity.foldArcMenu();
             }
         });
 
@@ -180,31 +168,15 @@ public class InfoFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         // 结束后台任务
-        if(mActivityOrShowTask != null){
-            mActivityOrShowTask.cancel(true);
-        }
-        if(mNewsTask != null){
-            mNewsTask.cancel(true);
-        }
+//        if(mActivityOrShowTask != null){
+//            mActivityOrShowTask.cancel(true);
+//        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // 初始化视图中的内容
-
-//        mAppBarLayout = view.findViewById(R.id.myAppBar);
-//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-//                if(i != 0 && menu.isOpen())
-//                    menu.fold();
-//                float factor = 1.0f - (-(float)i) / appBarLayout.getTotalScrollRange();
-//                menu.setAlpha(factor);
-//                arcMain.setScaleX(factor);
-//                arcMain.setScaleY(factor);
-//            }
-//        });
 
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,11 +205,9 @@ public class InfoFragment extends Fragment {
         if(!isNetWorkAvailableAndConnected()){
             mImagesProgressBar.setVisibility(View.GONE);
             mDotsLinearLayout.setVisibility(View.GONE);
-            //getView().findViewById(R.id.detail_tip_no_net).setVisibility(View.VISIBLE);
             return;
         }
         mDotsLinearLayout.setVisibility(View.VISIBLE);
-        //getView().findViewById(R.id.detail_tip_no_net).setVisibility(View.GONE);
 
         BmobQuery query = new BmobQuery("picture");
         query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
@@ -253,12 +223,15 @@ public class InfoFragment extends Fragment {
                         for(int i = 0; i < num; i++){
                             urls.add(pics.getJSONObject("img" + i).getString("url"));
                         }
+                        Log.d(TAG, "done: " + urls);
                         new PagerPicTask().execute(urls);
                     }catch (Exception ee){
-                        mImagesProgressBar.setVisibility(View.GONE);
-                        CustomToast.make(getContext(), "未找到图片数据").show();
                         ee.printStackTrace();
                     }
+                }else{
+                    mImagesProgressBar.setVisibility(View.GONE);
+                    mDotsLinearLayout.setVisibility(View.GONE);
+                    CustomToast.make(getContext(), "图片丢了...").show();
                 }
             }
         });
@@ -274,55 +247,6 @@ public class InfoFragment extends Fragment {
 
     private void initIntroCard(){
         ((JustifyTextView)mIntroCard.findViewById(R.id.museum_intro)).setText(mMuseum.getIntro());
-    }
-
-    private void initActivityCard(List<MuseumAOrS> museumAOrs){
-        LinearLayout activityContainer = mActivityCard.findViewById(R.id.activity_container);
-        if(museumAOrs == null)
-            return;
-        for(int i = 0; i < museumAOrs.size(); i++){
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.card_item_activity, null);
-            MuseumAOrS aOrS = museumAOrs.get(i);
-            ((ImageView)view.findViewById(R.id.pic_activity)).setImageDrawable(aOrS.thumbDrawable);
-            ((TextView)view.findViewById(R.id.title_activity)).setText(aOrS.title);
-            if(aOrS.tag.equals("activity")){
-                ((ImageView)view.findViewById(R.id.tag_activity)).setImageResource(R.mipmap.tag_activity);
-            }else{
-                ((ImageView)view.findViewById(R.id.tag_activity)).setImageResource(R.mipmap.tag_show);
-            }
-            ((TextView)view.findViewById(R.id.date_activity)).setText(aOrS.date);
-            ((TextView)view.findViewById(R.id.place_activity)).setText(aOrS.place);
-            ((TextView)view.findViewById(R.id.people_activity)).setText(aOrS.people);
-            if(i == museumAOrs.size()-1)
-                view.findViewById(R.id.divider).setVisibility(View.GONE);
-            activityContainer.addView(view);
-        }
-    }
-
-    private void initNewsCard(List<MuseumNews> museumNews){
-        LinearLayout newsContainer = mNewsCard.findViewById(R.id.news_container);
-        if(museumNews == null){
-            mMuseumProgress.setVisibility(View.GONE);
-            return;
-        }
-        for(int i = 0; i < museumNews.size(); i++){
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.card_item_news, null);
-            final MuseumNews news = museumNews.get(i);
-            ((ImageView)view.findViewById(R.id.pic_news)).setImageDrawable(news.thumbDrawable);
-            ((TextView)view.findViewById(R.id.title_news)).setText(news.title);
-            ((TextView)view.findViewById(R.id.date_news)).setText(news.date);
-            ((TextView)view.findViewById(R.id.url_news)).setText(news.url);
-            if(i == museumNews.size()-1)
-                view.findViewById(R.id.divider).setVisibility(View.GONE);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = WebViewActivity.newIntent(getActivity(), news.url);
-                    startActivity(intent);
-                }
-            });
-            newsContainer.addView(view);
-        }
         mMuseumProgress.setVisibility(View.GONE);
     }
 
@@ -344,8 +268,6 @@ public class InfoFragment extends Fragment {
                             mMuseum.setIntro(object.getString("intro"));
                             initInfoCard();
                             initIntroCard();
-                            mActivityOrShowTask.execute(object.getJSONArray("activities"));
-                            mNewsTask.execute(object.getJSONArray("news"));
                         }catch (Exception ee){
                             ee.printStackTrace();
                             mMuseumProgress.setVisibility(View.GONE);
@@ -353,66 +275,6 @@ public class InfoFragment extends Fragment {
                     }
                 }
             });
-
-            mActivityOrShowTask = new ActivityOrShowTask();
-            mNewsTask = new NewsTask();
-        }
-    }
-
-    private class ActivityOrShowTask extends AsyncTask<JSONArray, Void, List<MuseumAOrS>>{
-        @Override
-        protected List<MuseumAOrS> doInBackground(JSONArray... arrays) {
-            try{
-                List<MuseumAOrS> museumAOrs = new ArrayList<>();
-                Log.d("INFOFRAGMENT", String.valueOf(arrays[0].length()));
-                for(int i = 0; i < arrays[0].length(); i++){
-                    JSONObject activity = arrays[0].getJSONObject(i);
-                    MuseumAOrS aOrS = new MuseumAOrS();
-                    aOrS.tag = activity.getString("tag");
-                    aOrS.title = activity.getString("title");
-                    aOrS.thumbDrawable = Drawable.createFromStream(new URL(activity.getString("thumburl")).openStream(), "THUMB");
-                    aOrS.date = activity.getString("date");
-                    aOrS.place = activity.getString("place");
-                    aOrS.people = activity.getString("people");
-                    museumAOrs.add(aOrS);
-                }
-                return museumAOrs;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<MuseumAOrS> aOrS) {
-            initActivityCard(aOrS);
-        }
-    }
-
-    private class NewsTask extends AsyncTask<JSONArray, Void, List<MuseumNews>>{
-        @Override
-        protected List<MuseumNews> doInBackground(JSONArray... jsonArrays) {
-            try{
-                List<MuseumNews> museumNews = new ArrayList<>();
-                for(int i = 0; i < jsonArrays[0].length(); i++){
-                    JSONObject news = jsonArrays[0].getJSONObject(i);
-                    MuseumNews mn = new MuseumNews();
-                    mn.title = news.getString("title");
-                    mn.date = news.getString("date");
-                    mn.url = news.getString("url");
-                    mn.thumbDrawable = Drawable.createFromStream(new URL(news.getString("thumburl")).openStream(), "THUMB");
-                    museumNews.add(mn);
-                }
-                return museumNews;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<MuseumNews> museumNews) {
-            initNewsCard(museumNews);
         }
     }
 
@@ -435,12 +297,13 @@ public class InfoFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Drawable> drawables) {
+            Log.d(TAG, "onPostExecute: no progress bar");
             mImagesProgressBar.setVisibility(View.GONE);
-            if(drawables == null){
+            if(drawables == null || drawables.size() == 0){
                 mImagesProgressBar.setVisibility(View.GONE);
-                CustomToast.make(getContext(), "未找到图片数据").show();
+                CustomToast.make(getContext(), "图片丢了...").show();
             }else{
-                mPagerAdapter = new MuseumPicturePagerAdapter(getContext(), drawables);
+                mPagerAdapter = new MuseumPicturePagerAdapter(mActivity, drawables);
                 mViewPager.setAdapter(mPagerAdapter);
 
                 for(int i = mPagerAdapter.getCount(); i < 5; i++){
@@ -448,25 +311,6 @@ public class InfoFragment extends Fragment {
                 }
             }
         }
-    }
-
-    /**
-     * 博物馆活动或展览类
-     */
-    private class MuseumAOrS {
-        String tag;
-        String title;
-        Drawable thumbDrawable;
-        String date;
-        String place;
-        String people;
-    }
-
-    private class MuseumNews{
-        String title;
-        Drawable thumbDrawable;
-        String date;
-        String url;
     }
 
     private boolean isNetWorkAvailableAndConnected(){

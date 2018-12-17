@@ -1,49 +1,38 @@
 package com.giz.museum;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.animation.Animator;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v8.renderscript.RenderScript;
+import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.giz.database.MuseumLibrary;
-import com.giz.customize.CustomToast;
-import com.giz.utils.CoverFlowEffectTransformer;
-import com.giz.utils.CoverFlowPagerAdapter;
 import com.giz.database.Museum;
-import com.giz.utils.FastBlur;
+import com.giz.utils.ACache;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,9 +40,8 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -62,22 +50,21 @@ import cn.bmob.v3.listener.QueryListener;
 
 public class MuseumListActivity extends AppCompatActivity {
     private static final String TAG = "MuseumListActivity";
-    // 列表显示样式：
-    // true：列表形式，false：网格形式
-    private boolean isListStyle = true;
+    private static final String CACHE_ARRAY_KEY = "MuseumListArray";
+
     private MuseumAdapter mMuseumAdapter;
     private RecyclerView mMuseumRecyclerView;
-    private ViewPager mMuseumViewPager;
-    private ImageView mSwitchIcon;
-    private ImageView mPagerBg;
-    private SearchView mSearchView;
-    private Map<String, Drawable> mBgDrawables; // museumId -> drawable
+
     private FloatingActionButton mFab;
-    private CoverFlowPagerAdapter mPagerAdapter;
-    private AppBarLayout mAppBarLayout;
-    private ProgressBar mProgressBar;
+    private Toolbar mToolbar;
+    private Toolbar mSearchToolbar;
+    private SwipeRefreshLayout mRefreshLayout;
 
     private List<Museum> mMuseumList;
+    private SearchFragment mSearchFragment;
+    private FrameLayout mSearchFragmentContainer;
+
+    private ACache mACache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,31 +77,79 @@ public class MuseumListActivity extends AppCompatActivity {
         Bmob.initialize(this, "d86d0b43c41c255217e9377f570e3283");
 
         // 初始化布局控件
-        mAppBarLayout = findViewById(R.id.myAppBar);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mSearchToolbar = findViewById(R.id.search_toolbar);
+        mSearchFragmentContainer = findViewById(R.id.search_fragment_container);
         // 初始化列表
         mMuseumRecyclerView = findViewById(R.id.list_museum);
         mMuseumRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // 初始化悬浮按钮
         mFab= findViewById(R.id.map_fab);
-        // 初始化列表样式转换按钮
-        mSwitchIcon = findViewById(R.id.list_style);
-        // 初始化搜索框
-        mSearchView = findViewById(R.id.search_view);
-        View underline = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
-        if(underline != null){
-            underline.setBackgroundColor(Color.TRANSPARENT);
-        }
-        // 初始化ViewPager
-        mMuseumViewPager = findViewById(R.id.pager_museum);
-        mPagerBg = findViewById(R.id.pager_bg);
-        // 进度条
-        mProgressBar = findViewById(R.id.progressBar);
         // 初始化下拉刷新布局
+        mRefreshLayout = findViewById(R.id.refresh_layout);
+        mRefreshLayout.setProgressViewOffset(true, 0, 100);
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        // 初始化缓存
+        mACache = ACache.get(getApplicationContext());
         // 初始化事件
         initEvents();
 
+        setupSearchView();
         mMuseumList = new ArrayList<>();
         downloadMuseumList();
+    }
+
+    private void setupSearchView() {
+        mSearchToolbar.inflateMenu(R.menu.menu_search);
+        Menu menu = mSearchToolbar.getMenu();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("搜索博物馆...");
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Log.d(TAG, "on expand");
+                // 展开搜索框
+                mSearchFragmentContainer.setVisibility(View.VISIBLE);
+                mSearchFragment = SearchFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().add(R.id.search_fragment_container,
+                        mSearchFragment).commit();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Log.d(TAG, "on collapse");
+                collapseSearchView();
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.fragment_to_bottom,
+                        R.anim.fragment_to_bottom, R.anim.fragment_to_bottom, R.anim.fragment_to_bottom).remove(mSearchFragment).commit();
+                mSearchFragment = null;
+                //mSearchFragmentContainer.setVisibility(View.GONE); // 隐藏容器
+                return true;
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+//                Log.d(TAG, "Focus "+String.valueOf(s));
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.d(TAG, "Focus "+String.valueOf(s));
+                if(mSearchFragment == null){
+                    mSearchFragment = SearchFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().add(R.id.search_fragment_container,
+                            mSearchFragment).commit();
+                    mSearchFragment.updateRecyclerView(s);
+                }else{
+                    mSearchFragment.updateRecyclerView(s);
+                }
+                return true;
+            }
+        });
     }
 
     private void setupWindowAnimations() {
@@ -125,22 +160,6 @@ public class MuseumListActivity extends AppCompatActivity {
     }
 
     private void initEvents(){
-        final CardView cardView = findViewById(R.id.card_search_view);
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-//                Log.d("APPBAR", String.valueOf(appBarLayout.getTotalScrollRange()));
-//                Log.d("APPBAR", String.valueOf(i));
-                if(i == 0){
-                    cardView.setBackgroundTintList(ColorStateList.valueOf(getResources().
-                            getColor(R.color.light_gray)));
-                }else if(i == -appBarLayout.getTotalScrollRange()){
-                    cardView.setBackgroundTintList(ColorStateList.valueOf(getResources().
-                            getColor(R.color.white)));
-                }
-                appBarLayout.getBackground().setAlpha((int)((float)(appBarLayout.getTotalScrollRange()+i)/appBarLayout.getTotalScrollRange() * 255));
-            }
-        });
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,181 +172,36 @@ public class MuseumListActivity extends AppCompatActivity {
             }
         });
 
-        mSwitchIcon.setOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPagerAdapter == null){
-                    CustomToast.make(MuseumListActivity.this, "还未加载完成").show();
-                }else{
-                    switchRecyclerView();
-                }
+                onBackPressed();
             }
         });
 
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        // 下拉刷新事件
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                mSearchView.clearFocus();
+            public void onRefresh() {
+                downloadMuseumList();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_museum_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_search:
+                expandSearchView();
                 return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if(mMuseumAdapter != null){
-                    if(isListStyle){
-                        mMuseumAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
-                        mMuseumAdapter.notifyDataSetChanged();
-                    }else{
-                        mPagerAdapter.setMuseumList(MuseumLibrary.get().queryMuseumsByWord(newText));
-                        mMuseumViewPager.setAdapter(mPagerAdapter);
-                    }
-                }
-                return true;
-            }
-        });
-
-        initViewPager();
-    }
-
-    private void initViewPager(){
-
-        mMuseumViewPager.setClipChildren(false);
-        mMuseumViewPager.setOffscreenPageLimit(3);
-        mMuseumViewPager.setPageTransformer(false, new CoverFlowEffectTransformer(this));
-
-        mMuseumViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            /**
-             * state
-             * SCROLL_STATE_DRAGGING 1 手指按下
-             * SCROLL_STATE_SETTLING 2 手指松开
-             * SCROLL_STATE_IDLE 0 停止滑动
-             */
-            int currentPage = 0;
-            int state;
-            boolean pageChanged = false;
-
-            private float half(float alpha){
-                return (alpha * 0.5f + 0.5f);
-            }
-
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-//                Log.d("onPageScrolled", String.format("%d %f", i, v));
-                if(state == 1){ // 手指滑动
-                    if(i < currentPage)
-                        mPagerBg.setAlpha(half(v));
-                    else
-                        mPagerBg.setAlpha(half(1-v));
-                }else if(state == 2){ // 布局自己滑动（补足偏差）
-                    if(!pageChanged){
-                        if(i == currentPage){
-                            mPagerBg.setAlpha(half(1-v));
-                        }else{
-                            if(v != 0f)
-                                mPagerBg.setAlpha(half(v));
-                        }
-                    }else{
-                        if(i == currentPage){
-                            mPagerBg.setAlpha(half(v));
-                        }else{
-                            mPagerBg.setAlpha(half(1-v));
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onPageSelected(int i){
-                pageChanged = true;
-                currentPage = i;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-                state = i;
-                if(i == ViewPager.SCROLL_STATE_IDLE){
-                    if(pageChanged){
-                        Log.d("onPageScrollState", String.valueOf(currentPage));
-                        setMuseumViewPagerBg(currentPage);
-                        pageChanged = false;
-                    }else{
-                        mPagerBg.setAlpha(1);
-                    }
-
-                }
-            }
-        });
-    }
-
-    /**
-     * 设置ViewPager列表样式下应用背景
-     * @param i 列表项位置
-     */
-    private void setMuseumViewPagerBg(int i){
-        // 前后图片平滑过渡
-        TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{
-                mPagerBg.getBackground(), mBgDrawables.get(mPagerAdapter.getMuseumIdByPosition(i))});
-        mPagerBg.setBackground(transitionDrawable);
-        transitionDrawable.startTransition(400);
-
-        // 恢复图片的透明度至1
-        ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
-                0.5f, 1.0f);
-        animator.setDuration(200);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.start();
-    }
-
-    /**
-     * 切换列表显示样式
-     */
-    private void switchRecyclerView() {
-        if(mSearchView.isFocused()){
-            mSearchView.setQuery("", false);
-            mSearchView.clearFocus();
         }
-        if(isListStyle){
-            AnimatedVectorDrawableCompat listToGridAnim = AnimatedVectorDrawableCompat.create(this,
-                    R.drawable.av_list_to_pager);
-            mSwitchIcon.setImageDrawable(listToGridAnim);
-            ((Animatable)mSwitchIcon.getDrawable()).start();
-            isListStyle = false;
-
-            mMuseumRecyclerView.setVisibility(View.GONE);
-            mMuseumViewPager.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
-                    R.anim.layout_anim_from_bottom));
-            mMuseumViewPager.setVisibility(View.VISIBLE);
-            mMuseumViewPager.setCurrentItem(0, true);
-            setMuseumViewPagerBg(0);
-
-            // 底部工具栏、悬浮球隐藏
-
-            mFab.animate().scaleX(0).scaleY(0).alpha(0).
-                    setInterpolator(new LinearInterpolator()).start();
-            // 工具栏透明
-            mAppBarLayout.setBackgroundResource(R.color.transparent);
-        }else{
-            AnimatedVectorDrawableCompat gridToListAnim = AnimatedVectorDrawableCompat.create(this,
-                    R.drawable.av_pager_to_list);
-            mSwitchIcon.setImageDrawable(gridToListAnim);
-            ((Animatable)mSwitchIcon.getDrawable()).start();
-            isListStyle = true;
-
-            mMuseumRecyclerView.setVisibility(View.VISIBLE);
-            mMuseumViewPager.setVisibility(View.GONE);
-            mPagerBg.setBackgroundResource(R.color.gray);
-
-            mMuseumAdapter.setMuseumList(mMuseumList);
-            mMuseumAdapter.notifyDataSetChanged();
-            mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this,
-                    R.anim.layout_anim_from_bottom));
-            mMuseumRecyclerView.startLayoutAnimation();
-
-            // 悬浮球显示
-            mFab.animate().scaleY(1).scaleX(1).alpha(1).setInterpolator(new LinearInterpolator()).start();
-            // 工具栏恢复
-            mAppBarLayout.setBackgroundResource(R.color.colorPrimary);
-        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class MuseumHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -365,14 +239,10 @@ public class MuseumListActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(mSearchView.isFocused()){
-                mSearchView.setQuery("", false);
-                mSearchView.clearFocus();
-            }
             Intent intent = MuseumActivity.newIntent(MuseumListActivity.this,
                     mMuseum.getMuseumId());
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
-                        MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
+                    MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
             ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
         }
     }
@@ -390,7 +260,7 @@ public class MuseumListActivity extends AppCompatActivity {
         public MuseumHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             LayoutInflater inflater = LayoutInflater.from(MuseumListActivity.this);
             return new MuseumHolder(inflater.inflate(R.layout.list_museum_item, viewGroup,
-                        false));
+                    false));
         }
 
         @Override
@@ -412,7 +282,6 @@ public class MuseumListActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mProgressBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -421,8 +290,16 @@ public class MuseumListActivity extends AppCompatActivity {
             Log.d("kkk", "doInBackground");
             for(int i = 0; i < mMuseumList.size(); i++){
                 try{
-                    mMuseumList.get(i).setLogo((Drawable.createFromStream(new URL(mMuseumList.get(i).getLogoUrl()).openStream(), "LL")));
-                    mMuseumList.get(i).setCover((Drawable.createFromStream(new URL(mMuseumList.get(i).getCoverUrl()).openStream(), "COVER")));
+                    Museum museum = mMuseumList.get(i);
+                    Drawable drawable = mACache.getAsDrawable(museum.getLogoCacheKey());
+                    if(drawable == null){
+                        drawable = (Drawable.createFromStream(new URL(museum.getLogoUrl()).openStream(), "LL"));
+                        museum.setLogo(drawable);
+                        mACache.put(museum.getLogoCacheKey(), drawable);
+                    }else{
+                        museum.setLogo(drawable);
+                    }
+//                    museum.setCover((Drawable.createFromStream(new URL(museum.getCoverUrl()).openStream(), "COVER")));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -433,33 +310,29 @@ public class MuseumListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v) {
             Log.d("kkk", "onPostExecute");
-            if(mMuseumAdapter == null){
+            if (mMuseumAdapter == null) {
                 mMuseumAdapter = new MuseumAdapter(mMuseumList);
                 mMuseumRecyclerView.setAdapter(mMuseumAdapter);
                 mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(MuseumListActivity.this,
                         R.anim.layout_anim_from_bottom));
                 mMuseumRecyclerView.startLayoutAnimation();
-            }
 
-            // 预先加载好模糊背景
-            setUpBlurBackground();
+                mRefreshLayout.setRefreshing(false);
+            }else{
+                mRefreshLayout.setRefreshing(false);
+            }
         }
     }
 
     // 从云端下载博物馆列表
     private void downloadMuseumList(){
-//        // 防止误点击
         if(!isNetWorkAvailableAndConnected()){
-            mProgressBar.setVisibility(View.GONE);
-            mPagerBg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            mPagerBg.setImageResource(R.drawable.tip_no_internet);
-            return;
-        }
-        // 不重复请求
-        if(mPagerAdapter != null){
+            mRefreshLayout.setRefreshing(false);
+            getCacheMuseumList();
             return;
         }
 
+        mRefreshLayout.setRefreshing(true); // 显示下拉刷新图标
         Log.d(TAG, "download museum list");
         BmobQuery query = new BmobQuery("museum");
         query.findObjectsByTable(new QueryListener<JSONArray>() {
@@ -468,6 +341,7 @@ public class MuseumListActivity extends AppCompatActivity {
                 Log.d("kkk", "download");
                 if(e == null){
                     try {
+                        mACache.put(CACHE_ARRAY_KEY, jsonArray);
                         for(int i = 0; i < jsonArray.length(); i++){
                             JSONObject object = jsonArray.getJSONObject(i);
                             Museum museum = new Museum(object.getString("objectId"));
@@ -476,10 +350,11 @@ public class MuseumListActivity extends AppCompatActivity {
                             museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
                             museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
                             museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
-                                object.getJSONArray("location").getDouble(1)});
+                                    object.getJSONArray("location").getDouble(1)});
 //                            Log.d("BMOB", museum.getMuseumId());
                             mMuseumList.add(museum);
                         }
+                        Collections.shuffle(mMuseumList); // 乱序
                         MuseumLibrary.get().setMuseumList(mMuseumList);
                         new MuseumListTask().execute();
                     }catch (Exception je){
@@ -491,6 +366,40 @@ public class MuseumListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 获取缓存的博物馆列表
+     */
+    private void getCacheMuseumList() {
+        try {
+            JSONArray array = mACache.getAsJSONArray(CACHE_ARRAY_KEY);
+            for(int i = 0; i < array.length(); i++){
+                JSONObject object = array.getJSONObject(i);
+                Museum museum = new Museum(object.getString("objectId"));
+                museum.setName(object.getString("name"));
+                museum.setCatalog(getCatalog(object.getJSONArray("catalog")));
+                museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
+                museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
+                        object.getJSONArray("location").getDouble(1)});
+                museum.setLogo(mACache.getAsDrawable(museum.getLogoCacheKey()));
+                mMuseumList.add(museum);
+            }
+            Collections.shuffle(mMuseumList); // 乱序
+            MuseumLibrary.get().setMuseumList(mMuseumList);
+            if (mMuseumAdapter == null) {
+                mMuseumAdapter = new MuseumAdapter(mMuseumList);
+                mMuseumRecyclerView.setAdapter(mMuseumAdapter);
+                mMuseumRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(MuseumListActivity.this,
+                        R.anim.layout_anim_from_bottom));
+                mMuseumRecyclerView.startLayoutAnimation();
+
+                mRefreshLayout.setRefreshing(false);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private List<String> getCatalog(JSONArray array) throws JSONException {
         List<String> list = new ArrayList<>();
         for(int j = 0; j < array.length(); j++){
@@ -499,31 +408,86 @@ public class MuseumListActivity extends AppCompatActivity {
         return list;
     }
 
-    private void setUpBlurBackground(){
-        mBgDrawables = new HashMap<>();
-        for(Museum museum: mMuseumList){
-            Drawable drawable = museum.getCover();
-//            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 64, false);
-            Bitmap blurBg = FastBlur.scaleGaussianBlur(RenderScript.create(this), ((BitmapDrawable)drawable).getBitmap(), 16);
-            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(getResources(), blurBg));
-        }
-        if(mPagerAdapter == null){
-            mPagerAdapter = new CoverFlowPagerAdapter(MuseumListActivity.this,
-                    mMuseumList, MuseumListActivity.this, mSearchView);
-            mMuseumViewPager.setAdapter(mPagerAdapter);
-        }
-
-//        mSwitchIcon.setEnabled(true);
-        mProgressBar.setVisibility(View.GONE);
-    }
-
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(mSearchToolbar.getVisibility() == View.VISIBLE){
+            collapseSearchView();
+//            mSearchFragmentContainer.setVisibility(View.GONE);
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.fragment_to_bottom,
+                    R.anim.fragment_to_bottom, R.anim.fragment_to_bottom, R.anim.fragment_to_bottom)
+                    .remove(mSearchFragment).commit();
+            mSearchFragment = null;
+        }else{
+            super.onBackPressed();
+        }
     }
 
     private boolean isNetWorkAvailableAndConnected(){
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+    }
+
+    // 展开搜索框
+    private void expandSearchView(){
+        Log.d(TAG, "Expand search view");
+        Menu menu = mSearchToolbar.getMenu();
+        MenuItem searchView = menu.findItem(R.id.action_search);
+        searchView.expandActionView();
+        searchView.getActionView().requestFocus();
+        int cx = mToolbar.getWidth();
+        int cy = mToolbar.getHeight();
+        Animator anim = ViewAnimationUtils.createCircularReveal(mSearchToolbar, cx,
+                cy / 2, 0, cx);
+        anim.setDuration(400);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mSearchToolbar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mToolbar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        anim.start();
+    }
+    // 折叠搜索框
+    private void collapseSearchView(){
+        int cx = mToolbar.getWidth();
+        int cy = mToolbar.getHeight();
+        mToolbar.setVisibility(View.VISIBLE);
+        Animator anim = ViewAnimationUtils.createCircularReveal(mSearchToolbar, cx,
+                cy / 2, cx, 0);
+        anim.setDuration(300);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mSearchToolbar.setVisibility(View.GONE);
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        anim.start();
     }
 }

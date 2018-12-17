@@ -75,18 +75,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="设置"
-            android:textColor="#8d9fb1"
-            android:paddingTop="@dimen/normal"
-            android:paddingBottom="@dimen/normal"
-            android:paddingStart="@dimen/huge"
-            android:paddingEnd="0dp"
-            android:foreground="@drawable/ripple_effect_gray"
-            android:tag="SETTING"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:text="关于Museum"
             android:textColor="#8d9fb1"
             android:paddingTop="@dimen/normal"
@@ -97,5 +85,23 @@
             android:tag="ABOUT"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/drawer_menu_setting"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:drawableStart="@drawable/ic_settings"
+        android:text="设置"
+        android:textSize="16sp"
+        android:paddingStart="@dimen/small"
+        android:paddingEnd="@dimen/small"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="@dimen/normal"
+        android:background="@drawable/bg_setting_btn"
+        android:drawablePadding="@dimen/tiny"
+        android:textColor="#8d9fb1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

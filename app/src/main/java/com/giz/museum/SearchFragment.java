@@ -27,7 +27,7 @@ public class SearchFragment extends TestFragment {
 
     private RecyclerView mRecyclerView;
     private MuseumAdapter mAdapter;
-    private MuseumListActivityNew mActivity;
+    private Context mContext;
 
     public static SearchFragment newInstance() {
         Bundle args = new Bundle();
@@ -45,7 +45,7 @@ public class SearchFragment extends TestFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mActivity = (MuseumListActivityNew)context;
+        mContext = context;
     }
 
     @Nullable
@@ -105,11 +105,11 @@ public class SearchFragment extends TestFragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = MuseumActivity.newIntent(mActivity,
+            Intent intent = MuseumActivity.newIntent(mContext,
                     mMuseum.getMuseumId());
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
-                    mActivity, R.anim.activity_in, R.anim.activity_out);
-            ActivityCompat.startActivity(mActivity, intent, compat.toBundle());
+                    mContext, R.anim.activity_in, R.anim.activity_out);
+            ActivityCompat.startActivity(mContext, intent, compat.toBundle());
         }
     }
 
@@ -124,7 +124,7 @@ public class SearchFragment extends TestFragment {
         @NonNull
         @Override
         public MuseumHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            LayoutInflater inflater = LayoutInflater.from(mActivity);
+            LayoutInflater inflater = LayoutInflater.from(mContext);
             return new MuseumHolder(inflater.inflate(R.layout.list_museum_item, viewGroup,
                     false));
         }

@@ -57,9 +57,6 @@
         <activity android:name=".MuseumListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".MuseumListActivityNew"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".MuseumActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MuseumListActivity"/>
@@ -75,6 +72,17 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ImageDetailActivity"
             android:theme="@style/TransparentTheme"/>
+        <activity android:name=".ArtifactActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AnsDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SettingActivity"
+            android:theme="@style/DarkActionBar"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MuseumPagerActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".TreasureDetailActivity"
+            android:screenOrientation="portrait" />
         <provider
             android:authorities="com.giz.museum.fileprovider"
             android:name="android.support.v4.content.FileProvider"
