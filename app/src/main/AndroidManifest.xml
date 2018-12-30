@@ -66,8 +66,6 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".MarkActivity"
             android:screenOrientation="landscape"/>
-        <activity android:name=".RecordActivity"
-            android:screenOrientation="portrait"/>
         <activity android:name=".WriteRecordActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ImageDetailActivity"
@@ -78,11 +76,16 @@
             android:screenOrientation="portrait" />
         <activity android:name=".SettingActivity"
             android:theme="@style/DarkActionBar"
+            android:parentActivityName=".DrawerActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".MuseumPagerActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".TreasureDetailActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".RecordDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ImageDetailActivityNew"
+            android:screenOrientation="portrait"/>
         <provider
             android:authorities="com.giz.museum.fileprovider"
             android:name="android.support.v4.content.FileProvider"

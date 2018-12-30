@@ -186,8 +186,8 @@ public class IndexFragment extends TestFragment {
     private void initRecyclerView(){
         if(!isNetWorkAvailableAndConnected()){
             // 没有网络
-            mIndexAdapter = new IndexAdapter();
-            mRecyclerView.setAdapter(mIndexAdapter);
+//            mIndexAdapter = new IndexAdapter();
+//            mRecyclerView.setAdapter(mIndexAdapter);
             mNoNetTipImg.setVisibility(View.VISIBLE);
             return;
         }
@@ -318,8 +318,6 @@ public class IndexFragment extends TestFragment {
         private TextView mPlaceTv;
         private ImageView mTypeImg;
 
-        private ConstraintLayout mHeader;
-
         private IndexHolder(@NonNull View view) {
             super(view);
             mLogoImg = itemView.findViewById(R.id.index_museum_logo);
@@ -330,7 +328,6 @@ public class IndexFragment extends TestFragment {
             mDateTv = itemView.findViewById(R.id.index_date);
             mPlaceTv = itemView.findViewById(R.id.index_place);
             mTitleTv = itemView.findViewById(R.id.index_title);
-            mHeader = itemView.findViewById(R.id.card_index_header);
             mTypeImg = itemView.findViewById(R.id.index_type_img);
         }
 
@@ -379,8 +376,6 @@ public class IndexFragment extends TestFragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = WebViewActivity.newIntent(mDrawerActivity, info.idxUrl);
-//                    startActivity(intent);
                     ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(mDrawerActivity,
                             mIndexImg, getResources().getString(R.string.image_trans));
                     startActivity(AnsDetailActivity.newIntent(mDrawerActivity, info.toJSON().toString()), optionsCompat.toBundle());
@@ -458,7 +453,8 @@ public class IndexFragment extends TestFragment {
 
         @Override
         public int getItemCount() {
-            return mIndexInfoList.size() == 0 ? 3 : mIndexInfoList.size();
+//            return mIndexInfoList.size() == 0 ? 3 : mIndexInfoList.size();
+            return mIndexInfoList.size();
         }
     }
 
