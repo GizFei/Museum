@@ -46,12 +46,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Response;
 import com.giz.database.MuseumLibrary;
 import com.giz.customize.CustomToast;
 import com.giz.utils.CoverFlowEffectTransformer;
 import com.giz.utils.CoverFlowPagerAdapter;
 import com.giz.database.Museum;
 import com.giz.utils.FastBlur;
+import com.giz.utils.HttpSingleTon;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,10 +108,11 @@ public class MuseumPagerActivity extends AppCompatActivity {
         mToolbarLike = findViewById(R.id.pager_museum_cl);
         mSearchFragmentContainer = findViewById(R.id.search_fragment_container);
 
+        mBgDrawables = new HashMap<>();
+        mMuseumList = new ArrayList<>();
+
         initEvents();
         setupSearchView();
-
-        mMuseumList = new ArrayList<>();
         downloadMuseumList();
     }
 
@@ -281,54 +284,78 @@ public class MuseumPagerActivity extends AppCompatActivity {
      * @param i 列表项位置
      */
     private void setMuseumViewPagerBg(int i){
-        // 前后图片平滑过渡
-        TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{
-                mPagerBg.getDrawable(), mBgDrawables.get(mPagerAdapter.getMuseumIdByPosition(i))});
-        mPagerBg.setImageDrawable(transitionDrawable);
-        transitionDrawable.startTransition(400);
+        final Museum museum = MuseumLibrary.get().getMuseumById(mPagerAdapter.getMuseumIdByPosition(i));
+        if(mBgDrawables.containsKey(museum.getMuseumId())){
+            // 前后图片平滑过渡
+            TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{
+                    mPagerBg.getDrawable(), mBgDrawables.get(mPagerAdapter.getMuseumIdByPosition(i))});
+            mPagerBg.setImageDrawable(transitionDrawable);
+            transitionDrawable.startTransition(400);
 
-        // 恢复图片的透明度至1
-        ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
-                0.5f, 1.0f);
-        animator.setDuration(200);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.start();
-    }
+            // 恢复图片的透明度至1
+            ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
+                    0.5f, 1.0f);
+            animator.setDuration(200);
+            animator.setInterpolator(new LinearInterpolator());
+            animator.start();
+        }else{
+            HttpSingleTon.getInstance(MuseumPagerActivity.this).addImageRequest(museum.getCoverUrl(),
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap response) {
+                            Bitmap bg = FastBlur.doBlur(response.copy(response.getConfig(), true), 32, true);
+                            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(getResources(), bg));
+                            // 前后图片平滑过渡
+                            TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{
+                                    mPagerBg.getDrawable(), mBgDrawables.get(museum.getMuseumId())});
+                            mPagerBg.setImageDrawable(transitionDrawable);
+                            transitionDrawable.startTransition(400);
 
-    private class MuseumListTask extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected void onPreExecute() {
-            mProgressBar.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d("kkk", "doInBackground");
-            for(int i = 0; i < mMuseumList.size(); i++){
-                try{
-                    mMuseumList.get(i).setLogo((Drawable.createFromStream(new URL(mMuseumList.get(i).getLogoUrl()).openStream(), "LL")));
-                    mMuseumList.get(i).setCover((Drawable.createFromStream(new URL(mMuseumList.get(i).getCoverUrl()).openStream(), "COVER")));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            Log.d("kkk", "onPostExecute");
-
-            // 预先加载好模糊背景
-            setUpBlurBackground();
+                            // 恢复图片的透明度至1
+                            ValueAnimator animator = ObjectAnimator.ofFloat(mPagerBg, "alpha",
+                                    0.5f, 1.0f);
+                            animator.setDuration(200);
+                            animator.setInterpolator(new LinearInterpolator());
+                            animator.start();
+                        }
+                    }, 0, 0);
         }
     }
+
+//    private class MuseumListTask extends AsyncTask<Void, Void, Void>{
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mProgressBar.setVisibility(View.VISIBLE);
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            Log.d("kkk", "doInBackground");
+//            for(int i = 0; i < mMuseumList.size(); i++){
+//                try{
+//                    mMuseumList.get(i).setLogo((Drawable.createFromStream(new URL(mMuseumList.get(i).getLogoUrl()).openStream(), "LL")));
+//                    mMuseumList.get(i).setCover((Drawable.createFromStream(new URL(mMuseumList.get(i).getCoverUrl()).openStream(), "COVER")));
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void v) {
+//            Log.d("kkk", "onPostExecute");
+//
+//            // 预先加载好模糊背景
+//            setUpBlurBackground();
+//        }
+//    }
 
     // 从云端下载博物馆列表
     private void downloadMuseumList(){
-//        // 防止误点击
+        // 防止误点击
         if(!isNetWorkAvailableAndConnected()){
             mProgressBar.setVisibility(View.GONE);
             mPagerBg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -357,11 +384,11 @@ public class MuseumPagerActivity extends AppCompatActivity {
                             museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
                             museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
                                     object.getJSONArray("location").getDouble(1)});
-//                            Log.d("BMOB", museum.getMuseumId());
                             mMuseumList.add(museum);
                         }
                         MuseumLibrary.get().setMuseumList(mMuseumList);
-                        new MuseumListTask().execute();
+                        setUpBlurBackground();
+//                        new MuseumListTask().execute();
                     }catch (Exception je){
                         Log.e("JSON Error: ", je.getMessage());
                         je.printStackTrace();
@@ -379,17 +406,33 @@ public class MuseumPagerActivity extends AppCompatActivity {
         return list;
     }
 
+//    private void setUpBlurBackground(){
+//        mBgDrawables = new HashMap<>();
+//        for(Museum museum: mMuseumList){
+//            Drawable drawable = museum.getCover();
+////            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 64, false);
+//            Bitmap blurBg = FastBlur.scaleGaussianBlur(RenderScript.create(this), ((BitmapDrawable)drawable).getBitmap(), 16);
+//            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(getResources(), blurBg));
+//        }
+//        if(mPagerAdapter == null){
+//            mPagerAdapter = new CoverFlowPagerAdapter(MuseumPagerActivity.this, mMuseumList,
+//                    MuseumPagerActivity.this, null);
+//            mMuseumViewPager.setAdapter(mPagerAdapter);
+//            setMuseumViewPagerBg(0);    // 首个
+//        }
+//
+//        mProgressBar.setVisibility(View.GONE);
+//    }
+
     private void setUpBlurBackground(){
-        mBgDrawables = new HashMap<>();
-        for(Museum museum: mMuseumList){
-            Drawable drawable = museum.getCover();
-//            Bitmap blurBg = FastBlur.doBlur(((BitmapDrawable)drawable).getBitmap(), 64, false);
-            Bitmap blurBg = FastBlur.scaleGaussianBlur(RenderScript.create(this), ((BitmapDrawable)drawable).getBitmap(), 16);
-            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(getResources(), blurBg));
-        }
+//        for(Museum museum: mMuseumList){
+//            Drawable drawable = museum.getCover();
+//            Bitmap blurBg = FastBlur.scaleGaussianBlur(RenderScript.create(this), ((BitmapDrawable)drawable).getBitmap(), 16);
+//            mBgDrawables.put(museum.getMuseumId(), new BitmapDrawable(getResources(), blurBg));
+//        }
         if(mPagerAdapter == null){
             mPagerAdapter = new CoverFlowPagerAdapter(MuseumPagerActivity.this, mMuseumList,
-                    MuseumPagerActivity.this, null);
+                    MuseumPagerActivity.this);
             mMuseumViewPager.setAdapter(mPagerAdapter);
             setMuseumViewPagerBg(0);    // 首个
         }

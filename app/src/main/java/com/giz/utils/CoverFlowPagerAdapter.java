@@ -2,6 +2,7 @@ package com.giz.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
 import com.giz.database.Museum;
 import com.giz.museum.MuseumActivity;
 import com.giz.museum.R;
@@ -27,8 +29,7 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
     private Context mContext;
     private AppCompatActivity mActivity;
 
-    public CoverFlowPagerAdapter(Context context, List<Museum> list, AppCompatActivity activity,
-                                 SearchView searchView) {
+    public CoverFlowPagerAdapter(Context context, List<Museum> list, AppCompatActivity activity) {
         mMuseumList = list;
         mContext = context;
         mActivity = activity;
@@ -65,7 +66,14 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
             }
         }
 
-        imageView.setImageDrawable(mMuseumList.get(position).getCover());
+//        imageView.setImageDrawable(mMuseumList.get(position).getCover());
+        HttpSingleTon.getInstance(mContext).addImageRequest(mMuseumList.get(position).getCoverUrl(),
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        imageView.setImageBitmap(response);
+                    }
+                }, 0, 0);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

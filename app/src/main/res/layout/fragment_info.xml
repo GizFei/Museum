@@ -251,7 +251,7 @@
                     android:background="@color/gray"
                     android:layout_height="1dp"/>
 
-                <com.giz.customize.JustifyTextView
+                <TextView
                     android:id="@+id/museum_intro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

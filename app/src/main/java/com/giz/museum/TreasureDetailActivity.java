@@ -51,6 +51,7 @@ public class TreasureDetailActivity extends AppCompatActivity {
         mDetailImgBg = findViewById(R.id.treasure_detail_img_bg);
         mNameTv = findViewById(R.id.treasure_detail_name);
         mIntroTv = findViewById(R.id.treasure_detail_intro);
+        postponeEnterTransition();
 
         JSONObject object = null;
         try {
@@ -74,6 +75,7 @@ public class TreasureDetailActivity extends AppCompatActivity {
                         mDetailImg.setImageBitmap(response);
                         Bitmap bm = response.copy(Bitmap.Config.RGB_565, true);
                         mDetailImgBg.setImageBitmap(FastBlur.doBlur(bm, 36, true));
+                        supportStartPostponedEnterTransition();
                     }
                 }, 0,0);
 

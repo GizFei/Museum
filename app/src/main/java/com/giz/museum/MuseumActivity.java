@@ -264,7 +264,7 @@ public class MuseumActivity extends AppCompatActivity {
             case 5:
                 hideArcMenu();
                 if(mPanoramaFragment == null){
-                    mPanoramaFragment = PanoramaFragment.newInstance();
+                    mPanoramaFragment = PanoramaFragment.newInstance(mMuseum.getMuseumId());
                     transaction.add(R.id.fragment_container, mPanoramaFragment);
                 }else{
                     transaction.show(mPanoramaFragment);
