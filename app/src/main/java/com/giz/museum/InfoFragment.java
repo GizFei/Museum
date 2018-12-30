@@ -31,6 +31,7 @@ import com.giz.database.Museum;
 import com.giz.database.MuseumLibrary;
 import com.giz.customize.CustomToast;
 import com.giz.customize.JustifyTextView;
+import com.giz.utils.DetailUtils;
 import com.giz.utils.MuseumPicturePagerAdapter;
 
 import org.json.JSONArray;
@@ -246,7 +247,7 @@ public class InfoFragment extends Fragment {
     }
 
     private void initIntroCard(){
-        ((JustifyTextView)mIntroCard.findViewById(R.id.museum_intro)).setText(mMuseum.getIntro());
+        ((TextView)mIntroCard.findViewById(R.id.museum_intro)).setText(DetailUtils.createIndentText(mMuseum.getIntro()));
         mMuseumProgress.setVisibility(View.GONE);
     }
 

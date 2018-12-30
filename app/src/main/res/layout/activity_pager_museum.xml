@@ -14,6 +14,7 @@
         android:contentDescription="@string/image_description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:foreground="@drawable/image_ripple"
         android:src="@drawable/skeleton_image"
         android:background="@color/transparent"/>
 

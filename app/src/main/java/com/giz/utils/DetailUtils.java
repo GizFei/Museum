@@ -1,6 +1,9 @@
 package com.giz.utils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.text.SpannableString;
 import android.text.style.LeadingMarginSpan;
 import android.util.TypedValue;
@@ -28,5 +31,13 @@ public class DetailUtils {
         SpannableString spannableString = new SpannableString(text);
         spannableString.setSpan(new LeadingMarginSpan.Standard(80, 0), 0, text.length(), 0);
         return spannableString;
+    }
+
+    public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(cm == null)
+            return false;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 }

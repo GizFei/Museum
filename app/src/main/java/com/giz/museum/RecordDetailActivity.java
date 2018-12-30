@@ -2,6 +2,7 @@ package com.giz.museum;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,35 +32,35 @@ import com.giz.database.RecordDB;
 import com.giz.customize.CardSlideTransformer;
 import com.giz.customize.CustomToast;
 import com.giz.utils.BitmapUtils;
+import com.giz.utils.TestFragment;
 
 import java.io.File;
 import java.util.List;
 
-public class RecordActivity extends AppCompatActivity {
+public class RecordDetailActivity extends AppCompatActivity {
 
-    private ViewPager mViewPager;
+    private static final String TAG = "RecordDetailActivity";
+    private static final String EXTRA_ID = "museumId";
+
+    private RecyclerView mRecyclerView;
     private RecordAdapter mRecordAdapter;
+    private TextView mNoRecordTv;
+
+    private DrawerActivity mActivity;
+
+    public static Intent newIntent(Context context, String museumId) {
+        Intent intent = new Intent(context, RecordDetailActivity.class);
+        intent.putExtra(EXTRA_ID, museumId);
+
+        return intent;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record);
-
-        mViewPager = findViewById(R.id.record_pager);
-        mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setPageTransformer(true, new CardSlideTransformer());
-
-        findViewById(R.id.record_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        updateView();
     }
 
-    private class RecordAdapter extends PagerAdapter{
+    private class RecordAdapter extends PagerAdapter {
 
         private List<MuseumRecord> mMuseumRecords;
 
@@ -69,7 +71,7 @@ public class RecordActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, final int position) {
-            final View view = LayoutInflater.from(RecordActivity.this).inflate(R.layout.pager_item_record, null);
+            final View view = LayoutInflater.from(mActivity).inflate(R.layout.pager_item_record, null);
 
             final MuseumRecord record = mMuseumRecords.get(position);
             final TextView content = view.findViewById(R.id.record_content);
@@ -94,7 +96,7 @@ public class RecordActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             if(content.getHeight() == 0){
                                 AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
-                                        RecordActivity.this, R.drawable.av_up_to_down);
+                                        mActivity, R.drawable.av_up_to_down);
                                 contentSwitch.setImageDrawable(drawableCompat);
                                 ((Animatable)contentSwitch.getDrawable()).start();
                                 ValueAnimator animator = ObjectAnimator.ofInt(content, "height", 0, contentHeight);
@@ -103,7 +105,7 @@ public class RecordActivity extends AppCompatActivity {
                                 animator.start();
                             }else{
                                 AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
-                                        RecordActivity.this, R.drawable.av_down_to_up);
+                                        mActivity, R.drawable.av_down_to_up);
                                 contentSwitch.setImageDrawable(drawableCompat);
                                 ((Animatable)contentSwitch.getDrawable()).start();
                                 ValueAnimator animator = ObjectAnimator.ofInt(content, "height", contentHeight, 0);
@@ -127,7 +129,7 @@ public class RecordActivity extends AppCompatActivity {
                     view.setDrawingCacheEnabled(false);
                     view.findViewById(R.id.record_share_icon).setVisibility(View.VISIBLE);
                     view.findViewById(R.id.record_delete_icon).setVisibility(View.VISIBLE);
-                    Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null, null));
+                    Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), bitmap, null, null));
 
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
@@ -140,19 +142,19 @@ public class RecordActivity extends AppCompatActivity {
             (view.findViewById(R.id.record_delete_icon)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(RecordActivity.this)
+                    new AlertDialog.Builder(mActivity)
                             .setTitle("删除该记录吗")
                             .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    RecordDB.get(RecordActivity.this).removeMuseumRecord(record.getRecordDate());
+                                    RecordDB.get(mActivity).removeMuseumRecord(record.getRecordDate());
                                     File file = new File(record.getPicturePath());
                                     if(file.delete()){
-                                        CustomToast.make(RecordActivity.this, "删除成功").show();
+                                        CustomToast.make(mActivity, "删除成功").show();
                                     }else{
-                                        CustomToast.make(RecordActivity.this, "图片未删除").show();
+                                        CustomToast.make(mActivity, "图片未删除").show();
                                     }
-                                    updateView();
+//                                    updateView();
                                 }
                             })
                             .setNegativeButton("取消", null).show();
@@ -180,28 +182,23 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    private void updateView() {
-        if(mRecordAdapter == null){
-            List<MuseumRecord> records = RecordDB.get(this).getMuseumRecords();
-            if(records.size() > 0){
-                findViewById(R.id.tip_no_record).setVisibility(View.GONE);
-            }
-            mRecordAdapter = new RecordAdapter(records);
-            mViewPager.setAdapter(mRecordAdapter);
-        }else{
-            List<MuseumRecord> records = RecordDB.get(this).getMuseumRecords();
-            if(records == null || records.size() == 0)
-                findViewById(R.id.tip_no_record).setVisibility(View.VISIBLE);
-            else
-                findViewById(R.id.tip_no_record).setVisibility(View.GONE);
-            mRecordAdapter = new RecordAdapter(records);
-            mViewPager.setAdapter(mRecordAdapter);
-        }
-    }
-
-//    private SpannableString addIntentToText(String text){
-//        SpannableString result = new SpannableString(text);
-//        result.setSpan(new LeadingMarginSpan.Standard(10, 10), 0, text.length(), 0);
-//        return result;
+//    private void updateView() {
+//        if(mRecordAdapter == null){
+//            List<MuseumRecord> records = RecordDB.get(mActivity).getMuseumRecords();
+//            if(records.size() > 0){
+//                mNoRecordTv.setVisibility(View.GONE);
+//            }
+//            mRecordAdapter = new RecordAdapter(records);
+//            mViewPager.setAdapter(mRecordAdapter);
+//        }else{
+//            List<MuseumRecord> records = RecordDB.get(mActivity).getMuseumRecords();
+//            if(records == null || records.size() == 0)
+//                mNoRecordTv.setVisibility(View.VISIBLE);
+//            else
+//                mNoRecordTv.setVisibility(View.GONE);
+//            mRecordAdapter = new RecordAdapter(records);
+//            mViewPager.setAdapter(mRecordAdapter);
+//        }
 //    }
+
 }
