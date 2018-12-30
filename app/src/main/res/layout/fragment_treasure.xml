@@ -34,6 +34,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
+            android:foreground="@drawable/ripple_effect_light_gray"
             android:background="@color/colorPrimary_old"
             android:contentDescription="@string/image_description"
             android:text="了解文创"
@@ -47,6 +48,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="0dp"
+            android:foreground="@drawable/ripple_effect_light_gray"
             android:textColor="@color/white"
             android:text="了解文物"/>
 

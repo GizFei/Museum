@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -131,7 +132,8 @@ public class AnsDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(AnsDetailActivity.this,
                         mThumbImg, getResources().getString(R.string.image_trans));
-                startActivity(ImageDetailActivity.newIntent(AnsDetailActivity.this, mIndexInfo.idxThumbUrl), optionsCompat.toBundle());
+                Log.d(TAG, "onClick: ");
+                startActivity(ImageDetailActivityNew.newIntent(AnsDetailActivity.this, mIndexInfo.idxThumbUrl), optionsCompat.toBundle());
             }
         });
         findViewById(R.id.ans_detail_name).setOnClickListener(new View.OnClickListener() {
