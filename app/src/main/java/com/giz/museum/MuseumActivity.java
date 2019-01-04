@@ -66,6 +66,7 @@ public class MuseumActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        getWindow().setStatusBarColor(getResources().getColor(R.color.dark_gray));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_museum);
         mArcMainBtn = findViewById(R.id.arc_main);

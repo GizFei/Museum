@@ -31,6 +31,7 @@
                 android:layout_marginStart="@dimen/small"
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/skeleton_image"
+                android:foreground="@drawable/image_ripple"
                 app:type="circle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -44,6 +45,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:ellipsize="end"
+                android:foreground="@drawable/ripple_rect"
                 android:layout_marginStart="@dimen/small"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintEnd_toEndOf="@id/index_collect"
@@ -125,7 +127,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/tiny"
             android:orientation="vertical"
-            android:foreground="@drawable/ripple_effect_gray"
             android:layout_marginTop="@dimen/tiny"
             app:layout_constraintTop_toBottomOf="@id/card_index_image"
             app:layout_constraintBottom_toBottomOf="parent">

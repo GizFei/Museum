@@ -52,6 +52,25 @@ public class RecordDB {
         return museumList;
     }
 
+    public List<MuseumRecord> getMuseumRecordsByName(String museumName){
+        List<MuseumRecord> museumList = new ArrayList<>();
+        Cursor cursor = mDatabase.query(RecordDBSchema.TABLE_NAME,
+                null,
+                RecordDBSchema.Cols.NAME + "=?",
+                new String[]{museumName},
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            museumList.add(getMuseumFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return museumList;
+    }
+
     public boolean isMuseumRecordFull(String id){
         Cursor cursor = mDatabase.query(RecordDBSchema.TABLE_NAME,
                 null,

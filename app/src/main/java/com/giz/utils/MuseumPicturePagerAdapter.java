@@ -50,10 +50,13 @@ public class MuseumPicturePagerAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        (MuseumActivity)mContext, imageView, imageView.getTransitionName());
+                ActivityOptionsCompat optionsCompat1 = ActivityOptionsCompat.makeScaleUpAnimation(imageView,
+                        imageView.getWidth()/2, imageView.getHeight()/2, 0,0);
+
+//                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                        (MuseumActivity)mContext, imageView, imageView.getTransitionName());
                 mContext.startActivity(ImageDetailActivity.newIntent(mContext, imageView.getDrawable()),
-                        optionsCompat.toBundle());
+                        optionsCompat1.toBundle());
             }
         });
         container.addView(imageView);

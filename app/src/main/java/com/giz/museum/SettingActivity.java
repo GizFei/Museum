@@ -52,6 +52,7 @@ public class SettingActivity extends AppCompatPreferenceActivity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         super.onCreate(savedInstanceState, persistentState);
         setupActionBar();
     }

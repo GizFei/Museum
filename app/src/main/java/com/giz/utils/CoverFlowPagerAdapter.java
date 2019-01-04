@@ -13,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.giz.database.Museum;
 import com.giz.museum.MuseumActivity;
+import com.giz.museum.MuseumTrackActivity;
 import com.giz.museum.R;
 
 import java.util.ArrayList;
@@ -64,6 +66,26 @@ public class CoverFlowPagerAdapter extends PagerAdapter {
             } else {
                 mMuseumCatalogs.get(i).setVisibility(View.GONE);
             }
+        }
+
+        // 定位
+        view.findViewById(R.id.museum_locate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent locateIntent = MuseumTrackActivity.newIntent(mContext, museum.getMuseumId());
+                mContext.startActivity(locateIntent);
+            }
+        });
+
+        // 推荐指数
+        LinearLayout commendIndexLL = view.findViewById(R.id.commend_index);
+        float commendIndex = museum.getCommendIndex();
+        for(int i = 0; i < (int)commendIndex; i++){
+            ((ImageView)commendIndexLL.getChildAt(i)).setImageResource(R.drawable.icon_star_color);
+        }
+        if(commendIndex - (int)commendIndex == 0.5f){
+            // 再画半个
+            ((ImageView)commendIndexLL.getChildAt((int)commendIndex)).setImageResource(R.drawable.ic_star_half_filled_color);
         }
 
 //        imageView.setImageDrawable(mMuseumList.get(position).getCover());

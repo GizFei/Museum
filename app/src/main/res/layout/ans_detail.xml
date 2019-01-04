@@ -10,6 +10,7 @@
     android:scrollbarSize="2dp">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/ans_detail_cl"
         android:overScrollMode="always"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -131,7 +132,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/small"
             android:orientation="vertical"
-            android:foreground="@drawable/ripple_effect_gray"
             android:layout_marginTop="@dimen/tiny"
             app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toStartOf="parent"

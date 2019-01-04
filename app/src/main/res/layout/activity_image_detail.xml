@@ -3,25 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    android:backgroundTint="@color/transparent">
+    android:background="@color/black"
+    android:backgroundTint="@color/black">
 
-    <View
-        android:id="@+id/scrim"
-        android:background="#d43e3e3e"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageView
+    <com.giz.customize.PinchImageView
         android:id="@+id/detail_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
         android:backgroundTint="@color/transparent"
         android:src="@drawable/skeleton_image"
-        android:scaleType="matrix"
+        android:scaleType="centerCrop"
         android:transitionName="@string/image_trans"
         android:contentDescription="@string/image_description"/>
+
+    <ImageView
+        android:id="@+id/image_detail_close"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/normal"
+        android:layout_marginTop="@dimen/normal"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/record_icon_close"/>
 
 </FrameLayout>

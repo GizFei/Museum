@@ -172,6 +172,7 @@
                     tools:text="博物馆地址"/>
                 
                 <ImageView
+                    android:id="@+id/museum_locate"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:contentDescription="@string/image_description"

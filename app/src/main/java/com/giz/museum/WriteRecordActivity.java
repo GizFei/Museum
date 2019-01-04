@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -163,8 +166,13 @@ public class WriteRecordActivity extends AppCompatActivity {
         mPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPhotoFile != null && mPhotoFile.exists())
-                    PhotoDetailFragment.newInstance(mPhotoFile.getPath()).show(getSupportFragmentManager(), "LookAtPhoto");
+                if(mPhotoFile != null && mPhotoFile.exists()){
+                    ActivityOptionsCompat optionsCompat1 = ActivityOptionsCompat.makeScaleUpAnimation(mPhoto,
+                            mPhoto.getWidth()/2, mPhoto.getHeight()/2, 0,0);
+                    startActivity(ImageDetailActivity.newIntent(WriteRecordActivity.this, Drawable.createFromPath(mPhotoFile.getPath())),
+                            optionsCompat1.toBundle());
+                }
+//                    PhotoDetailFragment.newInstance(mPhotoFile.getPath()).show(getSupportFragmentManager(), "LookAtPhoto");
             }
         });
     }
