@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.ArraySet;
@@ -51,6 +52,7 @@ public class RecordFragment extends TestFragment {
     private RecyclerView mRecyclerView;
     private RecordCoverAdapter mAdapter;
     private TextView mNoRecordTv;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private DrawerActivity mActivity;
 
@@ -80,11 +82,19 @@ public class RecordFragment extends TestFragment {
 
         mRecyclerView = view.findViewById(R.id.record_rv);
         mNoRecordTv = view.findViewById(R.id.tip_no_record);
+        mSwipeRefreshLayout = view.findViewById(R.id.record_srl);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         // 打开抽屉菜单
         view.findViewById(R.id.record_open_menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mActivity.openDrawerMenu();
+            }
+        });
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateRv();
             }
         });
 
@@ -123,6 +133,7 @@ public class RecordFragment extends TestFragment {
             mAdapter.setData(museumNames, covers, nums);
             mAdapter.notifyDataSetChanged();
         }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private class RecordCoverHolder extends RecyclerView.ViewHolder{
@@ -138,7 +149,7 @@ public class RecordFragment extends TestFragment {
             mCoverNum = itemView.findViewById(R.id.record_cover_num);
         }
 
-        private void bind(String name, String coverPath, int num){
+        private void bind(final String name, String coverPath, int num){
             mCoverImg.setImageBitmap(BitmapFactory.decodeFile(coverPath));
             mCoverTitle.setText(name);
             mCoverNum.setText(num + "条记录");
@@ -146,7 +157,9 @@ public class RecordFragment extends TestFragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    // 进入该博物馆的详细记录
+                    Intent intent = RecordDetailActivity.newIntent(mActivity, name);
+                    startActivity(intent);
                 }
             });
         }

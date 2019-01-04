@@ -2,6 +2,7 @@ package com.giz.customize;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -307,11 +308,19 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
             childView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mMenuItemClickListener != null)
-                        mMenuItemClickListener.onClick(childView, pos);
                     menuItemAnim(pos);
                     rotateCButton(mCButton, -180f, 0f, 300);
                     changeStatus();
+
+                    if(mMenuItemClickListener != null){
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMenuItemClickListener.onClick(childView, pos);
+                            }
+                        }, 300);
+                    }
+
                 }
             });
         }

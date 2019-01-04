@@ -18,6 +18,7 @@ public class Museum extends BmobObject {
     private String mCoverUrl;
     private Drawable mLogo;   // Logo图片
     private Drawable mCover;  // 用于列表ViewPager的图片
+    private float mCommendIndex;    // 推荐指数
 
     private double[] mLocation; // 用于定位的经纬度，0是经度，1是纬度
 
@@ -138,5 +139,13 @@ public class Museum extends BmobObject {
 
     public String getLogoCacheKey(){
         return mMuseumId + "_logo";
+    }
+
+    public float getCommendIndex() {
+        return mCommendIndex;
+    }
+
+    public void setCommendIndex(float commendIndex) {
+        mCommendIndex = commendIndex;
     }
 }

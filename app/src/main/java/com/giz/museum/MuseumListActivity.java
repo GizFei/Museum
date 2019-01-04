@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.giz.database.MuseumLibrary;
@@ -69,6 +70,7 @@ public class MuseumListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         super.onCreate(savedInstanceState);
         // 初始化窗口动画
         setupWindowAnimations();
@@ -208,6 +210,7 @@ public class MuseumListActivity extends AppCompatActivity {
 
         private TextView mMuseumName;
         private List<TextView> mMuseumCatalogs;
+        private LinearLayout mCommendIndex;
         private ImageView mMuseumLogo;
         private Museum mMuseum;
 
@@ -219,6 +222,7 @@ public class MuseumListActivity extends AppCompatActivity {
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog1));
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog2));
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog3));
+            mCommendIndex = itemView.findViewById(R.id.commend_index);
             mMuseumLogo = itemView.findViewById(R.id.museum_logo);
         }
 
@@ -235,6 +239,7 @@ public class MuseumListActivity extends AppCompatActivity {
                 }
             }
             mMuseumLogo.setImageDrawable(museum.getLogo());
+            setCommendIndex(museum.getCommendIndex());
         }
 
         @Override
@@ -244,6 +249,16 @@ public class MuseumListActivity extends AppCompatActivity {
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
                     MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
             ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
+        }
+
+        private void setCommendIndex(float commendIndex){
+            for(int i = 0; i < (int)commendIndex; i++){
+                ((ImageView)mCommendIndex.getChildAt(i)).setImageResource(R.drawable.icon_star_color);
+            }
+            if(commendIndex - (int)commendIndex == 0.5f){
+                // 再画半个
+                ((ImageView)mCommendIndex.getChildAt((int)commendIndex)).setImageResource(R.drawable.ic_star_half_filled_color);
+            }
         }
     }
 
@@ -351,7 +366,7 @@ public class MuseumListActivity extends AppCompatActivity {
                             museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
                             museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
                                     object.getJSONArray("location").getDouble(1)});
-//                            Log.d("BMOB", museum.getMuseumId());
+                            museum.setCommendIndex((float)object.getDouble("commend"));
                             mMuseumList.add(museum);
                         }
                         Collections.shuffle(mMuseumList); // 乱序
