@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
+import com.giz.customize.CustomToast;
 import com.giz.database.Museum;
 import com.giz.database.MuseumLibrary;
 import com.giz.utils.ACache;
@@ -61,6 +62,7 @@ public class DrawerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 //        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.dark_gray));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
@@ -75,7 +77,7 @@ public class DrawerActivity extends AppCompatActivity {
         initFragments();
         setupWindowAnimations();
         // 获得缓存的列表
-//        getCacheMuseumList();
+        getCacheMuseumList();
     }
 
     private void setupWindowAnimations() {
@@ -287,5 +289,38 @@ public class DrawerActivity extends AppCompatActivity {
     private boolean isNetWorkAvailableAndConnected(){
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         return (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected());
+    }
+
+    /**
+     * 获取缓存的博物馆列表
+     */
+    private void getCacheMuseumList() {
+        try {
+            List<Museum> mMuseumList = new ArrayList<>();
+            JSONArray array = mACache.getAsJSONArray(CACHE_ARRAY_KEY);
+            for(int i = 0; i < array.length(); i++){
+                JSONObject object = array.getJSONObject(i);
+                Museum museum = new Museum(object.getString("objectId"));
+                museum.setName(object.getString("name"));
+                museum.setCatalog(getCatalog(object.getJSONArray("catalog")));
+                museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
+                museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
+                        object.getJSONArray("location").getDouble(1)});
+                museum.setLogo(mACache.getAsDrawable(museum.getLogoCacheKey()));
+                mMuseumList.add(museum);
+            }
+            MuseumLibrary.get().setMuseumList(mMuseumList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<String> getCatalog(JSONArray array) throws JSONException {
+        List<String> list = new ArrayList<>();
+        for(int j = 0; j < array.length(); j++){
+            list.add(array.getString(j));
+        }
+        return list;
     }
 }

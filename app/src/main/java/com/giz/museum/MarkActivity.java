@@ -62,6 +62,9 @@ public class MarkActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 全屏
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_mark);
         museumId = getIntent().getStringExtra(KEY_ID);
         mMarkDB = MarkDB.get(this);

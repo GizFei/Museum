@@ -98,8 +98,8 @@ public class ImageDetailActivityNew extends AppCompatActivity implements View.On
                     mBitmap = response;
                     mImageView.setImageBitmap(response);
                     supportStartPostponedEnterTransition();
-                    centerCropImage();
-                    mImageView.setOnTouchListener(ImageDetailActivityNew.this);
+                    // centerCropImage();
+                    // mImageView.setOnTouchListener(ImageDetailActivityNew.this);
                 }
             }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565,
                     new Response.ErrorListener() {

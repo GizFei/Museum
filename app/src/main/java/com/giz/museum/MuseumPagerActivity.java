@@ -384,6 +384,7 @@ public class MuseumPagerActivity extends AppCompatActivity {
                             museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
                             museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
                                     object.getJSONArray("location").getDouble(1)});
+                            museum.setCommendIndex((float)object.getDouble("commend"));
                             mMuseumList.add(museum);
                         }
                         MuseumLibrary.get().setMuseumList(mMuseumList);

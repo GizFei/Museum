@@ -27,9 +27,11 @@
             android:id="@+id/pager_museum_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="@dimen/tiny"
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_chevron_left_white"
             android:layout_marginStart="@dimen/small"
+            android:foreground="@drawable/image_ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -63,6 +65,7 @@
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_search"
             android:layout_marginEnd="@dimen/normal"
+            android:foreground="@drawable/ripple_effect_light_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
