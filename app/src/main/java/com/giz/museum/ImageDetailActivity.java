@@ -54,9 +54,11 @@ public class ImageDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_image_detail);
         mImageView = findViewById(R.id.detail_image);
-        findViewById(R.id.scrim).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.image_detail_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
