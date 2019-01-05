@@ -84,6 +84,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".RecordDetailActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".PanoramaDetailActivity"
+            android:screenOrientation="portrait" />
         <provider
             android:authorities="com.giz.museum.fileprovider"
             android:name="android.support.v4.content.FileProvider"
