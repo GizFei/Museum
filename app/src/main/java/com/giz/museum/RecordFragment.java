@@ -2,6 +2,7 @@ package com.giz.museum;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -159,7 +160,7 @@ public class RecordFragment extends TestFragment {
                 public void onClick(View v) {
                     // 进入该博物馆的详细记录
                     Intent intent = RecordDetailActivity.newIntent(mActivity, name);
-                    startActivity(intent);
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mActivity).toBundle());
                 }
             });
         }

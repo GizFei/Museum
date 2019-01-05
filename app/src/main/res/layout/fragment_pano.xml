@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/blur_bg">
+
+    <LinearLayout
+        android:id="@+id/pano_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/small"
+        android:paddingBottom="@dimen/small"
+        android:paddingStart="@dimen/normal"
+        android:paddingEnd="@dimen/normal"
+        android:layout_marginTop="@dimen/normal"
+        android:baselineAligned="false"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/pano_dot1"
+                android:layout_width="@dimen/normal"
+                android:layout_height="@dimen/normal"
+                android:layout_marginStart="@dimen/normal"
+                android:layout_marginEnd="@dimen/normal"
+                android:layout_gravity="center"
+                android:background="@drawable/ring_dot_active" />
+
+            <TextView
+                android:id="@+id/pano_intro1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:textColor="#CCFFFFFF"
+                android:textSize="12sp"
+                android:gravity="center_horizontal"
+                android:text="地点一"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/pano_dot2"
+                android:layout_width="@dimen/normal"
+                android:layout_height="@dimen/normal"
+                android:layout_marginStart="@dimen/normal"
+                android:layout_marginEnd="@dimen/normal"
+                android:layout_gravity="center"
+                android:background="@drawable/ring_dot" />
+
+            <TextView
+                android:id="@+id/pano_intro2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:layout_marginTop="@dimen/small"
+                android:gravity="center_horizontal"
+                android:textColor="#7DFFFFFF"
+                android:textSize="12sp"
+                android:text="地点二"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/pano_dot3"
+                android:layout_width="@dimen/normal"
+                android:layout_height="@dimen/normal"
+                android:layout_marginStart="@dimen/normal"
+                android:layout_marginEnd="@dimen/normal"
+                android:layout_gravity="center"
+                android:background="@drawable/ring_dot" />
+
+            <TextView
+                android:id="@+id/pano_intro3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:layout_marginTop="@dimen/small"
+                android:gravity="center_horizontal"
+                android:textSize="12sp"
+                android:textColor="#7DFFFFFF"
+                android:text="地点三"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/pano_dot4"
+                android:layout_width="@dimen/normal"
+                android:layout_height="@dimen/normal"
+                android:layout_marginStart="@dimen/normal"
+                android:layout_marginEnd="@dimen/normal"
+                android:layout_gravity="center"
+                android:background="@drawable/ring_dot" />
+
+            <TextView
+                android:id="@+id/pano_intro4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:layout_marginTop="@dimen/small"
+                android:gravity="center_horizontal"
+                android:textSize="12sp"
+                android:textColor="#7DFFFFFF"
+                android:text="地点四"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/pano_dot5"
+                android:layout_width="@dimen/normal"
+                android:layout_height="@dimen/normal"
+                android:layout_marginStart="@dimen/normal"
+                android:layout_marginEnd="@dimen/normal"
+                android:layout_gravity="center"
+                android:background="@drawable/ring_dot" />
+
+            <TextView
+                android:id="@+id/pano_intro5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/small"
+                android:paddingEnd="@dimen/small"
+                android:layout_marginTop="@dimen/small"
+                android:gravity="center_horizontal"
+                android:textSize="12sp"
+                android:textColor="#7DFFFFFF"
+                android:text="地点五"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pano_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/small"
+        android:layout_marginBottom="@dimen/small"
+        app:layout_constraintTop_toBottomOf="@id/pano_ll"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </android.support.v4.view.ViewPager>
+
+</android.support.constraint.ConstraintLayout>

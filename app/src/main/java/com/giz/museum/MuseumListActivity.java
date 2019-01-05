@@ -246,8 +246,10 @@ public class MuseumListActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = MuseumActivity.newIntent(MuseumListActivity.this,
                     mMuseum.getMuseumId());
-            ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
-                    MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
+//            ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
+//                    MuseumListActivity.this, R.anim.activity_in, R.anim.activity_out);
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeScaleUpAnimation(v, v.getWidth() / 2,
+                                                v.getHeight() / 2, 0,0);
             ActivityCompat.startActivity(MuseumListActivity.this, intent, compat.toBundle());
         }
 

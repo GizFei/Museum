@@ -54,9 +54,13 @@ public class ImageDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_image_detail);
+
+//        状态栏透明的全屏
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                                        |View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+//        getWindow().setStatusBarColor(getResources().getColor(R.color.transparent));
+
         mImageView = findViewById(R.id.detail_image);
         findViewById(R.id.image_detail_close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +88,20 @@ public class ImageDetailActivity extends AppCompatActivity {
                         }
                     });
             HttpSingleTon.getInstance(this).addToRequestQueue(imageRequest);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        // 沉浸式全屏
+        if(hasFocus){
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 }
