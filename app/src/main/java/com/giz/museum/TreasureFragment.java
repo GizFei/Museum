@@ -53,9 +53,6 @@ import cn.bmob.v3.listener.QueryListener;
 
 import static cn.bmob.v3.Bmob.getApplicationContext;
 
-// TODO 摇动重新排序 合并导览和馆藏
-
-
 public class TreasureFragment extends TestFragment {
     private static final String ARGS_ID = "argsID";
     private static final String TAG = "TreasureFragment";
@@ -121,7 +118,7 @@ public class TreasureFragment extends TestFragment {
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                CustomToast.make(getApplicationContext(), "试着摇一摇手机～", Toast.LENGTH_SHORT).show();
+                CustomToast.make(getApplicationContext(), "试着摇一摇手机～", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -134,14 +131,14 @@ public class TreasureFragment extends TestFragment {
     @Override
     public void onResume() {
         super.onResume();
-        // 延迟监听时间可调
+        Log.d(TAG, "onResume: ");
         mSensorManager.registerListener(mShakeListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // 取消注册
+        Log.d(TAG, "onPause: ");
         mSensorManager.unregisterListener(mShakeListener, mSensor);
     }
 
@@ -343,6 +340,19 @@ public class TreasureFragment extends TestFragment {
                 e.printStackTrace();
                 return "";
             }
+        }
+    }
+
+    public void toggleSensor(boolean state){
+        if (state) {
+            // 延迟监听时间可调
+            if (mSensorManager != null)
+                mSensorManager.registerListener(mShakeListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else {
+            // 取消注册
+            if (mSensorManager != null)
+                mSensorManager.unregisterListener(mShakeListener, mSensor);
         }
     }
 }
