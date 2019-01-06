@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="@dimen/normal"
+    android:paddingEnd="@dimen/normal"
+    android:paddingBottom="@dimen/normal"
+    android:paddingTop="@dimen/small">
+
+    <com.giz.customize.RoundedImageView
+        android:id="@+id/pip_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:layout_margin="@dimen/normal"
+        android:paddingBottom="@dimen/small"
+        app:radius="@dimen/small"
+        app:type="corner"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/skeleton_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/pip_cv">
+
+    </com.giz.customize.RoundedImageView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/pip_cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/normal"
+        android:backgroundTint="#2dFFFFFF"
+        app:cardCornerRadius="@dimen/small"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/pip_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:textSize="12sp"
+            android:lineSpacingExtra="@dimen/tiny"
+            android:textColor="@color/white"
+            android:text="@string/intro_example"/>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

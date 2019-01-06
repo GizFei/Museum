@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
-    android:fitsSystemWindows="true">
+    android:background="@color/light_gray">
 
     <ImageView
         android:id="@+id/pager_bg"
@@ -75,8 +73,9 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/pager_museum_search_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="78dp"
         android:visibility="gone"
+        android:paddingTop="20dp"
         android:elevation="@dimen/double_large"
         android:background="@color/white"
         android:backgroundTint="@color/white"
@@ -111,7 +110,7 @@
         android:id="@+id/search_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="78dp"
         android:visibility="gone"
         android:background="@color/transparent"
         android:elevation="@dimen/double_large">
