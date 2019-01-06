@@ -298,6 +298,9 @@ public class DrawerActivity extends AppCompatActivity {
         try {
             List<Museum> mMuseumList = new ArrayList<>();
             JSONArray array = mACache.getAsJSONArray(CACHE_ARRAY_KEY);
+            if(array == null){
+                return;
+            }
             for(int i = 0; i < array.length(); i++){
                 JSONObject object = array.getJSONObject(i);
                 Museum museum = new Museum(object.getString("objectId"));
