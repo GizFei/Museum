@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.vr.sdk.widgets.pano.VrPanoramaView
+        android:id="@+id/vrView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/pano_detail_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="@dimen/normal"
+            android:layout_marginTop="@dimen/normal"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/record_icon_close"/>
+
+    </com.google.vr.sdk.widgets.pano.VrPanoramaView>
+
+</android.support.constraint.ConstraintLayout>

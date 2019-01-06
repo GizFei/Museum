@@ -84,7 +84,6 @@
                     android:textColor="@color/white"
                     android:layout_margin="@dimen/normal"
                     android:lineSpacingExtra="@dimen/small"
-                    android:layout_marginTop="@dimen/small"
                     app:layout_constraintTop_toBottomOf="@id/divider"/>
 
             </android.support.v7.widget.CardView>

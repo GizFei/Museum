@@ -13,7 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -59,6 +61,17 @@ public class SearchFragment extends TestFragment {
         mRecyclerView = view.findViewById(R.id.search_list);
         updateRecyclerView("");
 
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null && imm.isActive()){
+                    imm.hideSoftInputFromWindow(recyclerView.getWindowToken(), 0);
+                }
+            }
+        });
+
         return view;
     }
 
@@ -79,6 +92,7 @@ public class SearchFragment extends TestFragment {
         private TextView mMuseumName;
         private List<TextView> mMuseumCatalogs;
         private ImageView mMuseumLogo;
+        private LinearLayout mCommendIndex;
         private Museum mMuseum;
 
         private MuseumHolder(@NonNull View itemView) {
@@ -90,6 +104,7 @@ public class SearchFragment extends TestFragment {
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog2));
             mMuseumCatalogs.add((TextView)itemView.findViewById(R.id.museum_catalog3));
             mMuseumLogo = itemView.findViewById(R.id.museum_logo);
+            mCommendIndex = itemView.findViewById(R.id.commend_index);
         }
 
         private void bind(Museum museum){
@@ -115,6 +130,17 @@ public class SearchFragment extends TestFragment {
                                 mMuseum.setLogo(new BitmapDrawable(getResources(), response));
                             }
                         }, 0, 0);
+            }
+            setCommendIndex(mMuseum.getCommendIndex());
+        }
+
+        private void setCommendIndex(float commendIndex){
+            for(int i = 0; i < (int)commendIndex; i++){
+                ((ImageView)mCommendIndex.getChildAt(i)).setImageResource(R.drawable.icon_star_color);
+            }
+            if(commendIndex - (int)commendIndex == 0.5f){
+                // 再画半个
+                ((ImageView)mCommendIndex.getChildAt((int)commendIndex)).setImageResource(R.drawable.ic_star_half_filled_color);
             }
         }
 

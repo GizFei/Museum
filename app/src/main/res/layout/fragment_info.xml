@@ -5,8 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     android:background="@color/light_gray"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    app:statusBarBackground="@color/transparent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/myAppBar"
@@ -14,7 +16,6 @@
         android:layout_height="240dp"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
-        android:fitsSystemWindows="true"
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
