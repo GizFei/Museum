@@ -1,8 +1,17 @@
 package com.giz.museum;
 
+import android.animation.FloatArrayEvaluator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -31,11 +41,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import javax.net.ssl.HandshakeCompletedListener;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
+
+import static cn.bmob.v3.Bmob.getApplicationContext;
 
 public class TreasureFragment extends TestFragment {
     private static final String ARGS_ID = "argsID";
@@ -49,6 +65,11 @@ public class TreasureFragment extends TestFragment {
     private RecyclerView mRecyclerView;
 
     private List<Treasure> mTreasureList;
+
+    private SensorManager mSensorManager;       // 传感器管理器
+    private Sensor mSensor;
+    private SoundPool soundPool;                // 音效池
+    private int musicId;
 
     public static TreasureFragment newInstance(String museumId) {
         Bundle args = new Bundle();
@@ -70,15 +91,95 @@ public class TreasureFragment extends TestFragment {
         mActivity = (MuseumActivity) context;
     }
 
+    private void init_soundPool() {
+        if(Build.VERSION.SDK_INT >= 21) {
+            SoundPool.Builder builder = new SoundPool.Builder();
+            builder.setMaxStreams(2);
+            AudioAttributes.Builder attrbuilder = new AudioAttributes.Builder();
+            builder.setAudioAttributes(attrbuilder.build());
+            soundPool = builder.build();
+        }
+        else {
+            soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC,0);
+        }
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mSensorManager = (SensorManager)getActivity().getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        init_soundPool();
+        musicId = soundPool.load(getApplicationContext(), R.raw.shake,1);
+
+        // 音频是否加载完成
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                CustomToast.make(getApplicationContext(), "试着摇一摇手机～", Toast.LENGTH_LONG).show();
+            }
+        });
 
         String id = getArguments().getString(ARGS_ID);
         mMuseum = MuseumLibrary.get().getMuseumById(id);
 
         mTreasureList = new ArrayList<>();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+        mSensorManager.registerListener(mShakeListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+        mSensorManager.unregisterListener(mShakeListener, mSensor);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 释放soundPool
+        soundPool.release();
+        soundPool = null;
+    }
+
+    SensorEventListener mShakeListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+
+            int type = sensorEvent.sensor.getType();
+            if (type == Sensor.TYPE_ACCELEROMETER) {
+                float values[] = sensorEvent.values;
+                float threshold = Math.abs(values[0]) + Math.abs(values[1]) + Math.abs(values[2]);
+                if (threshold > 30) {
+                    soundPool.play(musicId,1.0f,1.0f,1,0,1);
+
+                    int itemCount = mRecyclerView.getAdapter().getItemCount();
+                    List<Integer> list = new ArrayList<Integer>();
+                    for (int i = 0; i < itemCount; i++)
+                        list.add(new Integer(i));
+                    // 顺序调整
+                    Collections.shuffle(list);
+                    for (int i = 0; i < itemCount; i++)
+                        mRecyclerView.getAdapter().notifyItemMoved(i, list.get(i));
+
+                    Log.d(TAG, Float.toString(threshold));
+                }
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+
+        }
+    };
 
     @Nullable
     @Override
@@ -239,6 +340,19 @@ public class TreasureFragment extends TestFragment {
                 e.printStackTrace();
                 return "";
             }
+        }
+    }
+
+    public void toggleSensor(boolean state){
+        if (state) {
+            // 延迟监听时间可调
+            if (mSensorManager != null)
+                mSensorManager.registerListener(mShakeListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else {
+            // 取消注册
+            if (mSensorManager != null)
+                mSensorManager.unregisterListener(mShakeListener, mSensor);
         }
     }
 }
