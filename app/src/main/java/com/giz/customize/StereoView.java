@@ -14,15 +14,17 @@ import android.view.ViewGroup;
 import android.widget.Scroller;
 import android.widget.Toast;
 
+
 /**
- * 自定义控件 3D旋转
- * 参考 https://blog.csdn.net/Mr_immortalZ/article/details/51918560
- * 进行实现、改进和理解
+ * 自定义控件 3D旋转容器
+ * 参考 blog.csdn.net/Mr_immortalZ/article/details/51918560
+ * 进行实现
  */
 public class StereoView extends ViewGroup {
 
     public enum State { Normal, Pre, Next }
     private State mState = State.Normal;
+    private boolean bindListener = false;           // 由于新增View所以需要在layout绑定监听1次
 
     private static final String TAG = "StereoView";
     private static final int startChild = 1;        // 开始时的child位置
@@ -38,7 +40,7 @@ public class StereoView extends ViewGroup {
     private int mWidth;             // 容器的宽度
     private int mHeight;            // 容器的高度
     private int mCurItem = 1;       // 记录当前item
-
+    private StereoListener mStereoListener;
 
     private VelocityTracker mVelocityTracker;     // 滑动速度跟踪
     private int mTouchSlop;
@@ -49,9 +51,6 @@ public class StereoView extends ViewGroup {
     private int alreadyAdd = 0;     // 滑动多页时已经新增页面数
 
 
-    /**
-     * 默认构造器
-     */
     public StereoView(Context context) {
         this(context, null);
     }
@@ -99,6 +98,17 @@ public class StereoView extends ViewGroup {
                 top += child.getMeasuredHeight();
             }
         }
+        Log.d(TAG, "onLayout: "+Integer.toString(getChildCount()));
+        /*
+        // 绑定监听
+        if (bindListener) {
+            for (int index=0;index<getChildCount();index++) {
+                View child = getChildAt(index);
+                child.setOnClickListener(new itemListener(index));
+            }
+            bindListener = false;
+        }
+        */
     }
     /**
      * 当父控件要放置子控件时，父控件会调用子控件的onMeasure方法询问子控件，在onLayout()之前
@@ -126,13 +136,11 @@ public class StereoView extends ViewGroup {
         super.onFinishInflate();
         Log.d(TAG, "onFinishInflate: ");
         Log.d(TAG, Integer.toString(getChildCount()));
-        for (int i=0;i<getChildCount();i++) {
-            View child = getChildAt(i);
-            child.setOnClickListener(new itemListener(i));
-        }
+        bindListener = true;
     }
+    /*
     // 可以添加更多方法和属性
-    private class itemListener implements View.OnClickListener {
+    public class itemListener implements View.OnClickListener {
         private int id;
 
         private itemListener(int i) {
@@ -143,9 +151,10 @@ public class StereoView extends ViewGroup {
         @Override
         public void onClick(View view) {
             Toast.makeText(getContext(), Integer.toString(id), Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "onClick: ");
+            Log.d(TAG, "onClick: "+id);
         }
     }
+    */
     /***************************************监听事件处理的部分***************************************/
 
 
@@ -336,6 +345,9 @@ public class StereoView extends ViewGroup {
         View view = getChildAt(0);
         removeViewAt(0);
         addView(view, childCount - 1);
+        if (mStereoListener != null) {
+            mStereoListener.toNext(mCurItem);
+        }
     }
 
     private void addPre() {
@@ -344,11 +356,14 @@ public class StereoView extends ViewGroup {
         View view = getChildAt(childCount - 1);
         removeViewAt(childCount - 1);
         addView(view, 0);
+        if (mStereoListener != null) {
+            mStereoListener.toPre(mCurItem);
+        }
     }
 
     @Override
     public void computeScroll() {
-        //滑动没有结束时，进行的操作
+        // 滑动没有结束时
         if (mScroller.computeScrollOffset()) {
             if (mState == State.Pre) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY() + mHeight * alreadyAdd);
@@ -372,7 +387,7 @@ public class StereoView extends ViewGroup {
             }
             postInvalidate();
         }
-        //滑动结束时相关用于计数变量复位
+        // 滑动结束时
         if (mScroller.isFinished()) {
             alreadyAdd = 0;
             addCount = 0;
@@ -382,10 +397,7 @@ public class StereoView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         if (!isAdding) {
-            //当开启3D效果并且当前状态不属于 computeScroll中 addPre() 或者addNext()
-            //如果不做这个判断，addPre() 或者addNext()时页面会进行闪动一下
-            //我当时写的时候就被这个坑了，后来通过log判断，原来是computeScroll中的onlayout,和子Child的draw触发的顺序导致的。
-            //知道原理的朋友希望可以告知下
+            // 如果不做这个判断，addPre() 或者addNext()时页面会进行闪动一下
             for (int i = 0; i < getChildCount(); i++) {
                 draw3D(canvas, i, getDrawingTime());
             }
@@ -423,5 +435,15 @@ public class StereoView extends ViewGroup {
         canvas.concat(mMatrix);
         drawChild(canvas, getChildAt(i), drawingTime);
         canvas.restore();
+    }
+
+    // 对外接口
+    public interface StereoListener {
+        void toPre(int curItem);
+        void toNext(int curItem);
+    }
+
+    public void setStereoListener(StereoListener mStereoListener) {
+        this.mStereoListener = mStereoListener;
     }
 }
