@@ -18,6 +18,8 @@
     <color name="anim_icon">#0C1736</color>
     <color name="detail_card_bg">#ebf4f7</color>
 
+    <color name="guidecolor">#242A38</color>
+
     <!-- Duplicated -->
     <color name="light_bg">#D8E6F3</color>
 </resources>

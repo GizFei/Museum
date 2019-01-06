@@ -15,6 +15,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -51,6 +52,7 @@ public class MuseumActivity extends AppCompatActivity {
     private PanoramaFragmentNew mPanoramaFragment;
     private AnsFragment mAnsFragment;
     private TreasureFragment mTreasureFragment;
+    private GuideFragment mGuideFragment;
 
     private FloatingActionButton mStarImgView;
     private FloatingActionButton mArcMainBtn;
@@ -271,9 +273,16 @@ public class MuseumActivity extends AppCompatActivity {
                 }else{
                     transaction.show(mTreasureFragment);
                 }
+                mTreasureFragment.toggleSensor(true);
                 break;
             case 4:
                 hideArcMenu();
+                if (mGuideFragment == null) {
+                    mGuideFragment = GuideFragment.newInstance(mMuseum.getMuseumId());
+                    transaction.add(R.id.fragment_container, mGuideFragment);
+                }else {
+                    transaction.show(mGuideFragment);
+                }
                 break;
             case 5:
                 hideArcMenu();
@@ -319,7 +328,11 @@ public class MuseumActivity extends AppCompatActivity {
         if(mAnsFragment != null){
             transaction.hide(mAnsFragment);
         }
+        if (mGuideFragment != null) {
+            transaction.hide(mGuideFragment);
+        }
         if(mTreasureFragment != null){
+            mTreasureFragment.toggleSensor(false);
             transaction.hide(mTreasureFragment);
         }
     }
