@@ -8,8 +8,7 @@
     android:layout_margin="@dimen/small"
     android:foreground="@drawable/ripple_effect_light_gray"
     app:cardElevation="@dimen/tiny"
-    app:cardCornerRadius="@dimen/tiny"
-    >
+    app:cardCornerRadius="@dimen/small">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

@@ -16,42 +16,10 @@
         android:fadingEdge="none"
         app:spanCount="3"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/treasure_actions">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <LinearLayout
-        android:id="@+id/treasure_actions"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/double_large"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
-            android:id="@+id/treasure_creative_btn"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:foreground="@drawable/ripple_effect_light_gray"
-            android:background="@color/colorPrimary_old"
-            android:contentDescription="@string/image_description"
-            android:text="了解文创"
-            android:textColor="@color/white"/>
-
-        <Button
-            android:id="@+id/treasure_artifact_btn"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:background="@color/colorAccent"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="0dp"
-            android:foreground="@drawable/ripple_effect_light_gray"
-            android:textColor="@color/white"
-            android:text="了解文物"/>
-
-    </LinearLayout>
+    </android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>

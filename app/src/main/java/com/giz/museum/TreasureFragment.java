@@ -59,8 +59,6 @@ public class TreasureFragment extends TestFragment {
 
     private MuseumActivity mActivity;
     private Museum mMuseum;
-    private TextView mArtifactBtn;
-    private TextView mCreativeBtn;
     private TreasureAdapter mTreasureAdapter;
     private RecyclerView mRecyclerView;
 
@@ -186,23 +184,7 @@ public class TreasureFragment extends TestFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_treasure, container, false);
 
-        mArtifactBtn = view.findViewById(R.id.treasure_artifact_btn);
-        mCreativeBtn = view.findViewById(R.id.treasure_creative_btn);
         mRecyclerView = view.findViewById(R.id.treasure_detail_rv);
-
-        mArtifactBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: 文物");
-                startActivity(ArtifactActivity.newIntent(mActivity, mMuseum.getMuseumId()));
-            }
-        });
-        mCreativeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: 文创");
-            }
-        });
 
         return view;
     }

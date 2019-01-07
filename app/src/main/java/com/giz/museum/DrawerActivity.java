@@ -53,6 +53,7 @@ public class DrawerActivity extends AppCompatActivity {
     private IndexFragment mIndexFragment;      // 保存首页片段
     private CollectionFragment mCollectionFragment; // 我的收藏
     private RecordFragment mRecordFragment;         // 我的记录
+    private AboutFragment mAboutFragment;           // 关于Museum
 
     private FragmentManager mManager;
 
@@ -135,6 +136,14 @@ public class DrawerActivity extends AppCompatActivity {
                         break;
                     case DrawerMenuFragment.ITEM_ABOUT:
                         // 关于Museum
+                        hideFragments();
+                        if(mAboutFragment == null){
+                            mAboutFragment = new AboutFragment();
+                            mManager.beginTransaction().setCustomAnimations(R.anim.fragment_from_bottom, 0).add(drawerContentContainer,
+                                    mAboutFragment, TAG_RECORD_FRAGMENT).commit();
+                        }else{
+                            mManager.beginTransaction().setCustomAnimations(R.anim.fragment_from_bottom, 0).show(mAboutFragment).commit();
+                        }
                         break;
                 }
             }
@@ -157,6 +166,9 @@ public class DrawerActivity extends AppCompatActivity {
         }
         if(mRecordFragment != null){
             transaction.hide(mRecordFragment);
+        }
+        if(mAboutFragment != null){
+            transaction.hide(mAboutFragment);
         }
         transaction.commit();
     }
