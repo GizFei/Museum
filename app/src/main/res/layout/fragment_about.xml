@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/about_open_menu"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:padding="@dimen/tiny"
+        android:layout_margin="@dimen/normal"
+        android:foreground="@drawable/image_ripple"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/index_ic_menu"/>
+
+    <ImageView
+        android:id="@+id/about_logo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:contentDescription="@string/image_description"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="@dimen/double_huge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/about_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/small"
+        android:text="Musuem v2.0"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/about_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/about_cv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/huge"
+        android:layout_marginEnd="@dimen/huge"
+        android:layout_marginTop="@dimen/normal"
+        android:backgroundTint="@color/light_gray"
+        android:foreground="@drawable/ripple_effect_gray"
+        app:layout_constraintTop_toBottomOf="@id/about_version"
+        app:cardCornerRadius="@dimen/small"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="制作人：Giz @ TK"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/huge"
+        android:layout_marginEnd="@dimen/huge"
+        android:layout_marginTop="@dimen/normal"
+        android:layout_marginBottom="@dimen/normal"
+        android:backgroundTint="@color/light_gray"
+        android:foreground="@drawable/ripple_effect_gray"
+        app:layout_constraintTop_toBottomOf="@id/about_cv1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardCornerRadius="@dimen/small"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="使用小技巧"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:scrollbarStyle="insideOverlay">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <com.giz.customize.RoundedImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/small"
+                    android:contentDescription="@string/image_description"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/trick1"
+                    app:type="corner"
+                    app:radius="@dimen/small"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:background="@color/dark_gray"/>
+
+                <com.giz.customize.RoundedImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_margin="@dimen/small"
+                    android:contentDescription="@string/image_description"
+                    android:src="@drawable/trick2"
+                    app:type="corner"
+                    app:radius="@dimen/small"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="@dimen/small"
+                    android:layout_marginEnd="@dimen/small"
+                    android:background="@color/dark_gray"/>
+
+                <com.giz.customize.RoundedImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/trick3"
+                    android:adjustViewBounds="true"
+                    android:layout_margin="@dimen/small"
+                    android:contentDescription="@string/image_description"
+                    app:type="corner"
+                    app:radius="@dimen/small"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

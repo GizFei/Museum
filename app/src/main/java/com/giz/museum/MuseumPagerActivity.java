@@ -63,6 +63,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -403,6 +404,7 @@ public class MuseumPagerActivity extends AppCompatActivity {
                             museum.setCommendIndex((float)object.getDouble("commend"));
                             mMuseumList.add(museum);
                         }
+                        Collections.shuffle(mMuseumList);
                         MuseumLibrary.get().setMuseumList(mMuseumList);
                         setUpBlurBackground();
 //                        new MuseumListTask().execute();
