@@ -1,7 +1,10 @@
 package com.giz.museum;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,9 +16,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,6 +34,7 @@ import com.giz.database.MuseumLibrary;
 import com.giz.database.RecordDB;
 import com.giz.customize.ArcMenu;
 import com.giz.customize.CustomToast;
+import com.giz.utils.ACache;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +51,7 @@ public class MuseumActivity extends AppCompatActivity {
 
     private static final String TAG = "MuseumActivity";
     private static final String EXTRA_MUSEUM = "museum_intent";
+    private static final int REQUEST_PERMISSION_STORAGE = 1;
 
     private Museum mMuseum;
 
@@ -59,6 +67,7 @@ public class MuseumActivity extends AppCompatActivity {
     private ArcMenu mArcMenu;
 
     private boolean mHasStarred;
+    private ACache mACache;
 
     public static Intent newIntent(Context context, String museumId){
         Intent intent = new Intent(context, MuseumActivity.class);
@@ -120,6 +129,7 @@ public class MuseumActivity extends AppCompatActivity {
             setFragment(1);
         }
 
+        mACache = ACache.get(this);
         // 初始化控件
         initViews();
     }
@@ -372,6 +382,9 @@ public class MuseumActivity extends AppCompatActivity {
      * 分享事件
      */
     private void share() {
+        if(!requestWriteStorage()){
+            return;
+        }
         //只是用到了Android自带的分享，如果有更高需求可以使用shareSDK包
         TextView textView = new TextView(getApplicationContext());
         textView.setBackgroundResource(R.color.white);
@@ -385,21 +398,54 @@ public class MuseumActivity extends AppCompatActivity {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
         ArrayList<Uri> imageUris = new ArrayList<>();
-        Drawable img = MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getCover();
+        Drawable img = mACache.getAsDrawable(MuseumLibrary.get().getMuseumById(mMuseum.getMuseumId()).getLogoCacheKey());
         //强制转换Drawable/Textview为Bitmap
         //Bitmap bitmap1 = drawableToBitmap(img);
-        Bitmap bitmap1 = ((BitmapDrawable)img).getBitmap();
+        Bitmap bitmap1;
+        if (img != null) {
+            bitmap1 = ((BitmapDrawable)img).getBitmap();
+            Uri uri1 = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap1, null,null));
+            imageUris.add(uri1);
+        }
         //Bitmap bitmap1 = drawableToBitmap(img);
         Bitmap bitmap2 = textViewToBitmap(textView);
         //Bitmap转化为Uri
-        Uri uri1 = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap1, null,null));
         Uri uri2 = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap2, null,null));
-        imageUris.add(uri1);
         imageUris.add(uri2);
 
         shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
         shareIntent.setType("image/*");
         startActivity(Intent.createChooser(shareIntent, "分享到"));
+    }
+
+    /**
+     * 获得“允许存储”权限
+     */
+    private boolean requestWriteStorage(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(MuseumActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                Log.d(TAG, "shouldPermission");
+                new AlertDialog.Builder(MuseumActivity.this)
+                        .setTitle("需要获取允许存储的权限。")
+                        .setPositiveButton("修改权限", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(MuseumActivity.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
+                            }
+                        }).setCancelable(false).show();
+                return false;
+            }else{
+                Log.d(TAG, "requestPermission");
+                ActivityCompat.requestPermissions(MuseumActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSION_STORAGE);
+                return false;
+            }
+        }else{
+            return true;
+        }
     }
 
     /*
