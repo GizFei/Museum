@@ -318,7 +318,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener{
                             public void run() {
                                 mMenuItemClickListener.onClick(childView, pos);
                             }
-                        }, 300);
+                        }, 350);
                     }
 
                 }
