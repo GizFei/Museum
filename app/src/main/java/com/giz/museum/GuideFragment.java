@@ -207,8 +207,8 @@ public class GuideFragment extends TestFragment {
         mStereoView.setStereoListener(mScrollListener);
 
 //        补充初始化文字信息
-        mTextViewTitle.setText(mTitleList.get(0));
-        mTextViewContent.setText(DetailUtils.createIndentText(mContentList.get(0)));
+        mTextViewTitle.setText(mTitleList.get(1));
+        mTextViewContent.setText(DetailUtils.createIndentText(mContentList.get(1)));
     }
 
     @Nullable
