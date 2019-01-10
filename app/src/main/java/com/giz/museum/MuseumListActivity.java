@@ -312,7 +312,7 @@ public class MuseumListActivity extends AppCompatActivity {
                     if(drawable == null){
                         drawable = (Drawable.createFromStream(new URL(museum.getLogoUrl()).openStream(), "LL"));
                         museum.setLogo(drawable);
-                        mACache.put(museum.getLogoCacheKey(), drawable);
+                        mACache.put(museum.getLogoCacheKey(), drawable, 86400); // 存一天
                     }else{
                         museum.setLogo(drawable);
                     }
