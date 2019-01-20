@@ -1,19 +1,27 @@
-#### Drawable文件命名规则
+# Museum
 
-1. 格式：类型+名称+属性
+### 测试
+   - Xiaomi MI 5s Plus(Android 7.0.0 API 24) 
+   - HUAWEI EVA-AL00(Android 8.0.0 API 26)
+   - Nubia NX549J (Android 6.0.1, API 23) 
+   - Google Nexus 5X - 8.0 - API 26 - 1080*1920
+   
+### 主要功能
+   - 博物馆详情⻚面五个Fragment
+      - 概况（博物馆的基本信息）
+      - 展览（博物馆最新新闻和展览）
+      - 馆藏（传感器+音频播放+重排序）
+      - 导览（3D视图容器，参考 blog.csdn.net/Mr_immortalZ ）
+      - 全景（Google相关SDK）
+      
+   - 博物馆概况页面五个功能
+      - 记录（拍照写文字进行实时记录）
+      - 收藏（收藏到收藏夹）
+      - 打卡（盖章动画）
+      - 导航（高德相关SDK）
+      - 分享（分享到QQ等社交平台）
+   
+### 其他特色
+   - 界面美观，布局合理
+   - 卡片和列表两种方式显示博物馆
 
-2. 例如：
-
-   > 星形图标：icon_star
-   >
-   > 彩色星形图标：icon_star_color
-   >
-   > 确认按钮样式：btn_ok或btn_confirm等等
-   >
-   > 确认按钮按下时样式：btn_ok_pressed或btn_confirm_pressed等等
-
-#### Assets规则
-
-- assets资源文件夹下放置所有博物馆的图片，一个博物馆对应一个子文件夹，且该文件夹的名称必须与Museum对象的mPicFolder变量名称一致。
-
-- 一个博物馆里的照片不能超过5张。
