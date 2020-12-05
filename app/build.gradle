@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.giz.museum"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "2.0"
         renderscriptTargetApi 21
@@ -43,7 +43,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //2D地图
-    api 'com.amap.api:map2d:latest.integration'
+//    api 'com.amap.api:map2d:latest.integration'
     //3D地图so及jar
     api 'com.amap.api:3dmap:latest.integration'
     //定位功能

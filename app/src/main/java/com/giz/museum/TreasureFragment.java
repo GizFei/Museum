@@ -40,6 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +52,9 @@ import java.util.List;
 import javax.net.ssl.HandshakeCompletedListener;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.QueryListener;
 
 import static cn.bmob.v3.Bmob.getApplicationContext;
@@ -200,8 +206,9 @@ public class TreasureFragment extends TestFragment {
             public void done(JSONArray array, BmobException e) {
                 try {
                     Log.d(TAG, array.toString(4));
-                    JSONObject treasureFile = array.getJSONObject(0).getJSONObject("treasure");
-                    JsonArrayRequest request1 = new JsonArrayRequest(treasureFile.getString("url"),
+
+                    String treasureJsonFile = "https://museum-treasure.oss-cn-beijing.aliyuncs.com/" + mMuseum.getName() + "/Treasure/treasures.json";
+                    JsonArrayRequest request1 = new JsonArrayRequest(treasureJsonFile,
                             new Response.Listener<JSONArray>() {
                                 @Override
                                 public void onResponse(JSONArray response) {
@@ -215,6 +222,37 @@ public class TreasureFragment extends TestFragment {
                 }
             }
         });
+    }
+
+    private JSONArray getJson(String jsonFilePath) throws JSONException {
+        if (jsonFilePath == null) {
+            return new JSONArray("");
+        }
+        File file = new File(jsonFilePath);
+        BufferedReader br = null;
+        StringBuilder json = new StringBuilder("");
+        try {
+            br = new BufferedReader(new FileReader(file));
+            char[] line = new char[1024];
+            int read = 0;
+            while ((read = br.read(line, 0, 1024)) != -1) {
+                json.append(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (br != null) {
+            try {
+                br.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d(TAG, "getJson 馆藏jSON: " + json.toString());
+        return new JSONArray(json.toString());
     }
 
     private void updateGridLayout(JSONArray response) {

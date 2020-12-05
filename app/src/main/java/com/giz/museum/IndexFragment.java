@@ -184,6 +184,7 @@ public class IndexFragment extends TestFragment {
      * 第一次加载列表视图
      */
     private void initRecyclerView(){
+        Log.d(TAG, "执行museum搜索");
         if(!isNetWorkAvailableAndConnected()){
             // 没有网络
 //            mIndexAdapter = new IndexAdapter();
@@ -191,18 +192,18 @@ public class IndexFragment extends TestFragment {
             mNoNetTipImg.setVisibility(View.VISIBLE);
             return;
         }
-        Log.d(TAG, "执行museum搜索");
+        Log.d(TAG, "执行museum搜索1");
         BmobQuery museumQuery = new BmobQuery("museum");
         museumQuery.addQueryKeys("objectId,name,logo");
         museumQuery.findObjectsByTable(new QueryListener<JSONArray>() {
             @Override
             public void done(JSONArray array, BmobException e) {
                 try {
-//                        Log.d(TAG, "museum list" + array.toString(4));
+                        Log.d(TAG, "museum list" + array.toString(4));
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
                         Museum museum = new Museum(object.getString("objectId"));
-                        museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                        museum.setLogoUrl("https://museum-treasure.oss-cn-beijing.aliyuncs.com/Logo/" + object.getJSONObject("logo").getString("filename"));
                         museum.setName(object.getString("name"));
                         mMuseumList.add(museum);
                     }

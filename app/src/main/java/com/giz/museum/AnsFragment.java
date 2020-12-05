@@ -135,7 +135,7 @@ public class AnsFragment extends TestFragment {
                     try {
                         Log.d(TAG, array.toString(4));
                         JSONObject anInfo = array.getJSONObject(0);
-                        String ansJSONUrl = anInfo.getJSONObject("ans").getString("url");
+                        String ansJSONUrl = "https://museum-treasure.oss-cn-beijing.aliyuncs.com/Ans/" + mMuseum.getName() + "_ANS.json";
                         JsonObjectRequest ansRequest = new JsonObjectRequest(ansJSONUrl, null, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {

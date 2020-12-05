@@ -108,7 +108,13 @@ public class GuideFragment extends TestFragment {
             public void done(JSONArray array, BmobException e) {
                 try {
                     JSONObject object = array.getJSONObject(0);
-                    String jsonUrl = object.getJSONObject("guide").getString("url");
+                    String name = mMuseum.getName();
+                    if(name.equals("杭州南宋官窑博物馆")) {
+                        name = "南宋官窑博物馆";
+                    } else if (name.equals("浙江博物馆孤山馆")) {
+                        name = "浙博孤山馆";
+                    }
+                    String jsonUrl = "https://museum-treasure.oss-cn-beijing.aliyuncs.com/" + name+ "/Guide/guide.json";
                     JsonArrayRequest request = new JsonArrayRequest(jsonUrl, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {

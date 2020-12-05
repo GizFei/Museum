@@ -101,7 +101,7 @@ public class MuseumActivity extends AppCompatActivity {
                         Log.d(TAG, "get the museum info" + object.toString(4));
                         mMuseum.setName(object.getString("name"));
                         mMuseum.setCatalog(getCatalog(object.getJSONArray("catalog")));
-                        mMuseum.setLogoUrl(object.getJSONObject("logo").getString("url"));
+                        mMuseum.setLogoUrl("https://museum-treasure.oss-cn-beijing.aliyuncs.com/Logo/" + object.getJSONObject("logo").getString("filename"));
                         mMuseum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
                                 object.getJSONArray("location").getDouble(1)});
                         MuseumLibrary.get().addMuseum(mMuseum);

@@ -318,8 +318,8 @@ public class DrawerActivity extends AppCompatActivity {
                 Museum museum = new Museum(object.getString("objectId"));
                 museum.setName(object.getString("name"));
                 museum.setCatalog(getCatalog(object.getJSONArray("catalog")));
-                museum.setLogoUrl(object.getJSONObject("logo").getString("url"));
-                museum.setCoverUrl(object.getJSONObject("cover").getString("url"));
+                museum.setLogoUrl("https://museum-treasure.oss-cn-beijing.aliyuncs.com/Logo/" + object.getJSONObject("logo").getString("filename"));
+                museum.setCoverUrl("https://museum-treasure.oss-cn-beijing.aliyuncs.com/Logo/" + object.getJSONObject("cover").getString("filename"));
                 museum.setLocation(new double[]{object.getJSONArray("location").getDouble(0),
                         object.getJSONArray("location").getDouble(1)});
                 museum.setLogo(mACache.getAsDrawable(museum.getLogoCacheKey()));

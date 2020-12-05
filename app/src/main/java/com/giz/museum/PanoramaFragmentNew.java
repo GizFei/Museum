@@ -108,7 +108,7 @@ public class PanoramaFragmentNew extends Fragment {
             public void done(JSONArray array, BmobException e) {
                 try {
                     JSONObject object = array.getJSONObject(0);
-                    String panoUrl = object.getJSONObject("panorama").getString("url");
+                    String panoUrl = "https://museum-treasure.oss-cn-beijing.aliyuncs.com/%E6%9D%AD%E5%B7%9E%E5%B7%A5%E8%89%BA%E7%BE%8E%E6%9C%AF%E5%8D%9A%E7%89%A9%E9%A6%86/Panorama/%E6%9D%AD%E5%B7%9E%E5%B7%A5%E8%89%BA%E9%A6%86.json";
                     JsonArrayRequest request = new JsonArrayRequest(panoUrl, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {

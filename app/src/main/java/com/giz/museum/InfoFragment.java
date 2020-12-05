@@ -210,32 +210,39 @@ public class InfoFragment extends Fragment {
         }
         mDotsLinearLayout.setVisibility(View.VISIBLE);
 
-        BmobQuery query = new BmobQuery("picture");
-        query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
-        Log.d("ID", mMuseum.getMuseumId());
-        query.findObjectsByTable(new QueryListener<JSONArray>() {
-            @Override
-            public void done(JSONArray array, BmobException e) {
-                if(e == null && array.length() != 0){
-                    try{
-                        List<String> urls = new ArrayList<>();
-                        JSONObject pics = array.getJSONObject(0);
-                        int num = pics.getInt("num");
-                        for(int i = 0; i < num; i++){
-                            urls.add(pics.getJSONObject("img" + i).getString("url"));
-                        }
-                        Log.d(TAG, "done: " + urls);
-                        new PagerPicTask().execute(urls);
-                    }catch (Exception ee){
-                        ee.printStackTrace();
-                    }
-                }else{
-                    mImagesProgressBar.setVisibility(View.GONE);
-                    mDotsLinearLayout.setVisibility(View.GONE);
-                    CustomToast.make(getContext(), "图片丢了...").show();
-                }
-            }
-        });
+        List<String> urls = new ArrayList<>();
+        for(int i = 0; i < 3; i++){
+            urls.add("https://museum-treasure.oss-cn-beijing.aliyuncs.com/InfoPicture/" + mMuseum.getName() + "/" + i + ".jpg");
+        }
+        Log.d(TAG, "done: " + urls);
+        new PagerPicTask().execute(urls);
+
+//        BmobQuery query = new BmobQuery("picture");
+//        query.addWhereEqualTo("museumId", mMuseum.getMuseumId());
+//        Log.d("ID", mMuseum.getMuseumId());
+//        query.findObjectsByTable(new QueryListener<JSONArray>() {
+//            @Override
+//            public void done(JSONArray array, BmobException e) {
+//                if(e == null && array.length() != 0){
+//                    try{
+//                        List<String> urls = new ArrayList<>();
+//                        JSONObject pics = array.getJSONObject(0);
+//                        int num = pics.getInt("num");
+//                        for(int i = 0; i < num; i++){
+//                            urls.add(pics.getJSONObject("img" + i).getString("url"));
+//                        }
+//                        Log.d(TAG, "done: " + urls);
+//                        new PagerPicTask().execute(urls);
+//                    }catch (Exception ee){
+//                        ee.printStackTrace();
+//                    }
+//                }else{
+//                    mImagesProgressBar.setVisibility(View.GONE);
+//                    mDotsLinearLayout.setVisibility(View.GONE);
+//                    CustomToast.make(getContext(), "图片丢了...").show();
+//                }
+//            }
+//        });
     }
 
     private void initInfoCard(){
